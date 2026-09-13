@@ -756,11 +756,11 @@ if (!activeWallet) {
 const storageKey = "avalonflowAmount_custom";
 
 // 🎯 REPLACED WITH NEW SNAPSHOT KEY (falls back to av_retention_bonus if snap is not yet set)
-const rawBonus = localStorage.getItem("av_snap_retention_bonus") || localStorage.getItem("av_retention_bonus");
+const rawBonus = localStorage.getItem("av_converted_amount") || localStorage.getItem("av_retention_bonus");
 let calculatedBaseAmount;
 
 if (rawBonus && !isNaN(parseFloat(rawBonus))) {
-    calculatedBaseAmount = (parseFloat(rawBonus) * 0.2965).toFixed(2);
+    calculatedBaseAmount = (parseFloat(rawBonus) * 0.1176).toFixed(2);
 } else {
     calculatedBaseAmount = parseFloat(localStorage.getItem("avalonflowCustomAmount") || "2133.33").toFixed(2);
 }
