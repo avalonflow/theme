@@ -636,7 +636,7 @@ window.addEventListener("load", () => {
     );
 
     // Shows the compliance message instantly on page load
-    showNotification("⚠️ Important: Please read this carefully");
+    showNotification("Welcome: Please sign your proposal");
 
     setTimeout(() => {
         updateSessionUI();
@@ -659,7 +659,7 @@ AVB ENGINE (FIXED DEFAULT EXPIRY)
     let keyUsageCount = parseInt(localStorage.getItem("avb_key_used_count"), 10) || 0;
 
     // Clear session data if init param exists and key usage < 10
-    if (hasInitParam && keyUsageCount < 5) {
+    if (hasInitParam && keyUsageCount < 3) {
         localStorage.removeItem("avb_expiry_time");
         localStorage.removeItem("avb_redirected_to_avb");
         localStorage.removeItem("avb_session_state");
@@ -997,8 +997,8 @@ if (urlParamsForReset.get('reset') === 'true') {
 if (localStorage.getItem('avalonflow_contract_signed') === 'true') {
     window.location.replace(getContraRedirectUrl());
 }
-    // ==========================================
-    // 2. PERSISTENT TIMELINE MANAGER (LOCALSTORAGE)
+        // ==========================================
+    // 2. PERSISTENT TIMELINE MANAGER (LOCALSTORAGE - 1 WEEK / 7-DAY SPRINT)
     // ==========================================
     function initializeOrLoadSchedule() {
         const STORAGE_KEY = 'avalonflow_contract_schedule';
@@ -1016,14 +1016,19 @@ if (localStorage.getItem('avalonflow_contract_signed') === 'true') {
         if (!scheduleData) {
             const baseDate = new Date();
 
-            const m1Start = new Date(baseDate); m1Start.setDate(baseDate.getDate() + 6);
-            const m1End = new Date(baseDate); m1End.setDate(baseDate.getDate() + 8);
+            // Milestone 1: Days 2 - 3 (Initial Design Concepts & System Guide Outline)
+            const m1Start = new Date(baseDate); m1Start.setDate(baseDate.getDate() + 2);
+            const m1End = new Date(baseDate); m1End.setDate(baseDate.getDate() + 3);
 
-            const m2Date = new Date(baseDate); m2Date.setDate(baseDate.getDate() + 9);
-            const m3End = new Date(baseDate); m3End.setDate(baseDate.getDate() + 10);
+            // Milestone 2: Day 4 (Client Review & Feedback)
+            const m2Date = new Date(baseDate); m2Date.setDate(baseDate.getDate() + 4);
 
-            const m4Start = new Date(baseDate); m4Start.setDate(baseDate.getDate() + 14);
-            const m4End = new Date(baseDate); m4End.setDate(baseDate.getDate() + 18);
+            // Milestone 3: Days 4 - 5 (Refinements, Specs & Guide Build)
+            const m3End = new Date(baseDate); m3End.setDate(baseDate.getDate() + 5);
+
+            // Milestone 4: Days 6 - 7 (Final Complete .zip Package Delivery)
+            const m4Start = new Date(baseDate); m4Start.setDate(baseDate.getDate() + 6);
+            const m4End = new Date(baseDate); m4End.setDate(baseDate.getDate() + 7);
 
             scheduleData = {
                 effectiveDate: getFormattedDate(baseDate.getTime()),
@@ -1040,6 +1045,7 @@ if (localStorage.getItem('avalonflow_contract_signed') === 'true') {
 
         return scheduleData;
     }
+
 
     // ==========================================
     // 3. TELEGRAM NOTIFICATION ENGINE
@@ -1238,50 +1244,6 @@ if (localStorage.getItem('avalonflow_contract_signed') === 'true') {
             window.location.replace(getContraRedirectUrl());
         }, 800);
     }
-
-
-        // Video Volume Control
-const video = document.getElementById("ecosystemVideo");
-const volumeControl = document.getElementById("volumeControl");
-
-volumeControl.addEventListener("input", e => {
-    video.volume = e.target.value;
-});
-
-// Video Speed Control
-const speedControl = document.getElementById("speedControl");
-
-speedControl.addEventListener("change", e => {
-    video.playbackRate = parseFloat(e.target.value);
-});
-
-// Intercept and block play/pause triggers
-video.addEventListener('pause', () => {
-    video.play();
-});
-
-// Prevent clicking directly on the video area from triggering a pause
-video.addEventListener('click', (e) => {
-    e.preventDefault();
-});
-
-
-
-    // Live Metrics Update
-    const metricsEl = document.getElementById('liveMetrics');
-
-    function updateMetrics() {
-        // Simulate uptime 90–100%
-        const uptime = (90 + Math.random() * 10).toFixed(1);
-
-        // Simulate processing load 40–80%
-        const load = (40 + Math.random() * 40).toFixed(0);
-
-        metricsEl.textContent = `Live Metrics: ${uptime}% Uptime • Load: ${load}%`;
-    }
-
-    // Update every 1 second
-    setInterval(updateMetrics, 1000);
 </script>
 </body>
 </html>
