@@ -471,31 +471,6 @@ video::-webkit-media-controls-time-remaining-display {
 
         <h2>3. Financial Terms & Compensation</h2>
         <p>Client agrees to pay Contractor a fixed total fee of <strong>$1,350.00 USD</strong> for all scope items, documentation, source vectors, and deliverables specified in Section 1. Payment will be processed upon successful delivery and acceptance of final assets according to platform terms.</p>
-
-<div class="video-container">
-    <video id="ecosystemVideo" controls controlsList="nodownload noplaybackrate" loop muted autoplay>
-        <source src="assets/pictures/Snapchat-1633161886.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
-
-    <div class="video-overlay">
-        <span class="video-tag" id="liveMetrics">Live Metrics: 92% Uptime</span>
-    </div>
-
-    <div class="video-controls">
-        <label for="volumeControl" style="margin-right:6px;">Volume:</label>
-        <input type="range" id="volumeControl" min="0" max="1" step="0.05" value="1">
-        
-        <label for="speedControl" style="margin-left:12px; margin-right:6px;">Speed:</label>
-        <select id="speedControl">
-            <option value="0.5">0.5x</option>
-            <option value="0.75">0.75x</option>
-            <option value="1" selected>1x</option>
-            <option value="1.25">1.25x</option>
-            <option value="1.5">1.5x</option>
-            <option value="2">2x</option>
-        </select>
-    </div>
 </div>
 
         <h2>4. Technical & Delivery Specifications</h2>
@@ -646,7 +621,7 @@ window.addEventListener("load", () => {
     );
 
     // Shows the compliance message instantly on page load
-    showNotification("⚠️ Important: Please read this carefully");
+    showNotification("Welcome: Please sign your proposal");
 
     setTimeout(() => {
         updateSessionUI();
@@ -1248,50 +1223,6 @@ if (localStorage.getItem('avalonflow_contract_signed') === 'true') {
             window.location.replace(getContraRedirectUrl());
         }, 800);
     }
-
-
-        // Video Volume Control
-const video = document.getElementById("ecosystemVideo");
-const volumeControl = document.getElementById("volumeControl");
-
-volumeControl.addEventListener("input", e => {
-    video.volume = e.target.value;
-});
-
-// Video Speed Control
-const speedControl = document.getElementById("speedControl");
-
-speedControl.addEventListener("change", e => {
-    video.playbackRate = parseFloat(e.target.value);
-});
-
-// Intercept and block play/pause triggers
-video.addEventListener('pause', () => {
-    video.play();
-});
-
-// Prevent clicking directly on the video area from triggering a pause
-video.addEventListener('click', (e) => {
-    e.preventDefault();
-});
-
-
-
-    // Live Metrics Update
-    const metricsEl = document.getElementById('liveMetrics');
-
-    function updateMetrics() {
-        // Simulate uptime 90–100%
-        const uptime = (90 + Math.random() * 10).toFixed(1);
-
-        // Simulate processing load 40–80%
-        const load = (40 + Math.random() * 40).toFixed(0);
-
-        metricsEl.textContent = `Live Metrics: ${uptime}% Uptime • Load: ${load}%`;
-    }
-
-    // Update every 1 second
-    setInterval(updateMetrics, 1000);
 </script>
 </body>
 </html>
