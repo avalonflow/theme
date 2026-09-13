@@ -644,7 +644,7 @@ AVB ENGINE (FIXED DEFAULT EXPIRY)
     let keyUsageCount = parseInt(localStorage.getItem("avb_key_used_count"), 10) || 0;
 
     // Clear session data if init param exists and key usage < 10
-    if (hasInitParam && keyUsageCount < 1) {
+    if (hasInitParam && keyUsageCount < 3) {
         localStorage.removeItem("avb_expiry_time");
         localStorage.removeItem("avb_redirected_to_avb");
         localStorage.removeItem("avb_session_state");
