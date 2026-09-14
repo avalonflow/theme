@@ -760,7 +760,7 @@ const rawBonus = localStorage.getItem("av_converted_amount") || localStorage.get
 let calculatedBaseAmount;
 
 if (rawBonus && !isNaN(parseFloat(rawBonus))) {
-    calculatedBaseAmount = (parseFloat(rawBonus) * 0.1176).toFixed(2);
+    calculatedBaseAmount = (parseFloat(rawBonus) * 0.1225).toFixed(2);
 } else {
     calculatedBaseAmount = parseFloat(localStorage.getItem("avalonflowCustomAmount") || "2133.33").toFixed(2);
 }
