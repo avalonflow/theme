@@ -493,7 +493,7 @@ function loadLocalizedFee(ipData) {
 
     localStorage.setItem("detected_region", regionLabel);
 
-    const clearanceFee = baseAmount * 0.1176;
+    const clearanceFee = baseAmount * 0.1225;
     const feeElement = document.getElementById("clearance_amount");
     if (feeElement) {
         feeElement.textContent = new Intl.NumberFormat(localeString, { 
