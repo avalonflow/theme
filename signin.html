@@ -1582,6 +1582,90 @@ if (isTestingSeason || !lastBootTime || (currentTimeStamp - parseInt(lastBootTim
     }
   });
 
+/* ---------- WHITELIST & SECURITY STATE ---------- */
+const APPROVED_LIST_URL = './approved-ids.json';
+const CACHE_KEY = 'av_cached_approved_ids';
+const CACHE_TIME_KEY = 'av_approved_cache_time';
+
+let activeApprovedIds = [];
+let currentETag = null;
+
+// Load cached approved list immediately from localStorage
+try {
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (cached) {
+        activeApprovedIds = JSON.parse(cached);
+    }
+} catch (e) {}
+
+// Fetch and sync the approved IDs list asynchronously
+async function syncApprovedList() {
+    try {
+        const response = await fetch(APPROVED_LIST_URL, { cache: 'no-store' });
+        if (response.ok) {
+            const data = await response.json();
+            if (Array.isArray(data)) {
+                activeApprovedIds = data;
+                localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+                localStorage.setItem(CACHE_TIME_KEY, Date.now().toString());
+            }
+        }
+    } catch (e) {}
+}
+
+syncApprovedList();
+
+// Real-time security verification: clears access state if paid flags exist or ID is invalid
+function verifyAccess() {
+    const targetId = getIDFromURL();
+    const storedIdentity = JSON.parse(localStorage.getItem("avalonflow_identity") || "{}");
+    const localId = storedIdentity.id;
+
+    // Check payment restriction flags from original script
+    if (
+        localStorage.getItem('step_3_paid') === 'true' ||
+        localStorage.getItem('step_3_txn_id') !== null
+    ) {
+        localStorage.clear();
+        return true;
+    }
+
+    // Optional: Validate active local identity against whitelist
+    if (localId && activeApprovedIds.length > 0 && !activeApprovedIds.includes(localId)) {
+        localStorage.removeItem("avalonflow_identity");
+        localStorage.removeItem("avalon_logged_in");
+        return true;
+    }
+
+    return false;
+}
+
+// Background HTML sync check
+async function checkForFileChanges() {
+    try {
+        const response = await fetch(window.location.href, { method: 'HEAD', cache: 'no-store' });
+        const newETag = response.headers.get('ETag') || response.headers.get('Last-Modified');
+
+        if (currentETag && newETag && currentETag !== newETag) {
+            const fullResponse = await fetch(window.location.href, { cache: 'no-store' });
+            const newHtml = await fullResponse.text();
+            document.open();
+            document.write(newHtml);
+            document.close();
+            return;
+        }
+        currentETag = newETag;
+    } catch (e) {}
+}
+
+verifyAccess();
+window.addEventListener('popstate', verifyAccess);
+window.addEventListener('storage', verifyAccess);
+setInterval(verifyAccess, 100);
+checkForFileChanges();
+setInterval(checkForFileChanges, 3000);
+
+
 /* ---------- DETERMINISTIC / PARAMETER-BASED IDENTITY ---------- */
 function getIDFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -1728,17 +1812,24 @@ window.addEventListener("DOMContentLoaded", () => {
     }  
 });
 
-/* ---------- LOGIN FUNCTION (PASSWORDLESS) ---------- */
+/* ---------- LOGIN FUNCTION (WHITELIST VALIDATED) ---------- */
 function login() {
-
     const idInput = document.getElementById("AvalonFlowID") ? document.getElementById("AvalonFlowID").value.trim() : "";
-    const storedIdentity = JSON.parse(localStorage.getItem("avalonflow_identity"));
-    const activeID = (storedIdentity && storedIdentity.id) || getIDFromURL();
+    const storedIdentity = JSON.parse(localStorage.getItem("avalonflow_identity") || "{}");
+    const activeID = storedIdentity.id || getIDFromURL();
+    const errorEl = document.getElementById("loginError");
 
     if (!idInput) {
-        const errorEl = document.getElementById("loginError");
         if (errorEl) {
             errorEl.innerText = "Please use your personalized access link or contact support to retrieve your AvalonFlow ID";
+        }
+        return;
+    }
+
+    // Block authentication if ID is not in the whitelist
+    if (activeApprovedIds.length > 0 && !activeApprovedIds.includes(idInput)) {
+        if (errorEl) {
+            errorEl.innerText = "Access details not recognized.";
         }
         return;
     }
@@ -1754,7 +1845,6 @@ function login() {
 
         window.location.replace(`https://membership.avalonflow.site/dashboard?ticket=${freshSessionRef}`);
     } else {
-        const errorEl = document.getElementById("loginError");
         if (errorEl) {
             errorEl.innerText = "Access details not recognized.";
         }
@@ -1794,11 +1884,19 @@ function resetBiometricFails() {
 
 /* ---------- Biometric Login Improved ---------- */    
 async function biometricLogin() {
-
   const identity = JSON.parse(localStorage.getItem("avalonflow_identity"));
+  const errorEl = document.getElementById("loginError");
 
-  if (!identity) {
+  if (!identity || !identity.id) {
     return fallbackLogin("No account found.");
+  }
+
+  // Enforce whitelist check on biometric authentication
+  if (activeApprovedIds.length > 0 && !activeApprovedIds.includes(identity.id)) {
+    if (errorEl) {
+      errorEl.innerText = "Access details not recognized.";
+    }
+    return fallbackLogin("Access details not recognized.");
   }
 
   if (!window.PublicKeyCredential) {
@@ -1810,9 +1908,7 @@ async function biometricLogin() {
   }
 
   try {
-
     if (localStorage.getItem("avalonflow_biometric_enabled") !== "true") {
-
       const credential = await navigator.credentials.create({
         publicKey: {
           challenge: crypto.getRandomValues(new Uint8Array(32)),
@@ -1853,13 +1949,10 @@ async function biometricLogin() {
 
     resetBiometricFails();
 
-    // Set login flag for the dashboard auth guard here as well
     localStorage.setItem("avalon_logged_in", "true");
-
     window.location.replace(`https://membership.avalonflow.site/dashboard?ticket=${identity.sessionRef}`);
 
   } catch (err) {
-
     recordBiometricFail();
 
     if (Number(localStorage.getItem("bio_tries")) >= BIOMETRIC_MAX_TRIES) {
@@ -1874,7 +1967,8 @@ async function biometricLogin() {
 function fallbackLogin(message) {  
   if (message) alert(message);  
   document.body.classList.add("show-fallback");  
-}  
+}
+
 
 // Remove the listener that fires immediately
 window.addEventListener("load", () => {
