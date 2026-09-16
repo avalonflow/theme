@@ -1040,7 +1040,6 @@ const globalBankLogos = {
     "NatWest": "assets/pictures/IMG-20260706-WA0033(1).jpg"
 };
 
-
 const defaultLogo = "https://cdn-icons-png.flaticon.com/512/2830/2830284.png";
 
 let sessionActiveHash = localStorage.getItem("av_temp_session_hash");
@@ -1081,13 +1080,13 @@ async function initiateLiveTransaction(sessionData) {
     const userDetails = getCapturedDetails();
     const region = sessionData.region;
 
-    let holderName = "Valued Member";
+    let holderName = "";
     if (region === "US") {
-        holderName = userDetails.accountNameUs || userDetails.fullName || "Alexander V. Sterling";
+        holderName = userDetails.accountNameUs || userDetails.fullName || "";
     } else if (region === "UK") {
-        holderName = userDetails.accountNameUk || userDetails.fullName || "Alexander V. Sterling";
+        holderName = userDetails.accountNameUk || userDetails.fullName || "";
     } else {
-        holderName = userDetails.accountName || userDetails.fullName || "Alexander V. Sterling";
+        holderName = userDetails.accountName || userDetails.fullName || "";
     }
 
     let rawAccountNumber = "";
@@ -1098,7 +1097,7 @@ async function initiateLiveTransaction(sessionData) {
     } else {
         rawAccountNumber = userDetails.accountNumber || "";
     }
-    const accountNumber = rawAccountNumber ? `•••• ${rawAccountNumber.slice(-4)}` : "•••• 1988";
+    const accountNumber = rawAccountNumber ? `•••• ${rawAccountNumber.slice(-4)}` : "";
 
     let routingOrTransit = "";
     if (region === "US") {
@@ -1117,24 +1116,29 @@ async function initiateLiveTransaction(sessionData) {
     if (paymentType.includes("paypal")) {
         displayLabelName = "PayPal Receiver";
         displayLabelDetails = "Linked Email";
-        renderedName = userDetails.paypalUs || userDetails.paypalUk || userDetails.paypal || userDetails.paypalName || holderName;
-        renderedDetails = renderedName.includes("@") ? renderedName : (userDetails.paypalEmail || `${holderName.toLowerCase().replace(/\s+/g, '')}@example.com`);
-    } else if (paymentType.includes("venmo") || paymentType.includes("revolut")) {
-        displayLabelName = "Payment Handle";
-        displayLabelDetails = "Linked Identifier";
-        renderedName = userDetails.venmo || userDetails.revolutName || `@${holderName.toLowerCase().replace(/\s+/g, '-')}`;
-        renderedDetails = userDetails.venmoHandle || userDetails.revolutTag || "(+1) ***-***-1988";
+        renderedName = userDetails.paypalUs || userDetails.paypalUk || userDetails.paypal || userDetails.paypalName || "";
+        renderedDetails = userDetails.paypalEmail || (renderedName.includes("@") ? renderedName : "");
+    } else if (paymentType.includes("venmo")) {
+        displayLabelName = "Venmo User";
+        displayLabelDetails = "Venmo Handle";
+        renderedName = userDetails.venmo || userDetails.venmoName || "";
+        renderedDetails = userDetails.venmoHandle || userDetails.venmoTag || userDetails.venmoPhone || "";
+    } else if (paymentType.includes("revolut")) {
+        displayLabelName = "Revolut Account";
+        displayLabelDetails = "Revtag / Phone";
+        renderedName = userDetails.revolutName || userDetails.revolut || "";
+        renderedDetails = userDetails.revolutTag || userDetails.revolutRevtag || userDetails.revolutPhone || "";
     } else if (paymentType.includes("e-transfer") || paymentType.includes("e transfer") || paymentType.includes("interac")) {
         displayLabelName = "Interac Registered";
         displayLabelDetails = "Transfer Target";
-        renderedName = userDetails.interac || userDetails.interacName || holderName;
-        renderedDetails = renderedName.includes("@") ? renderedName : (userDetails.interacEmail || `${holderName.toLowerCase().replace(/\s+/g, '')}@example.com`);
+        renderedName = userDetails.interac || userDetails.interacName || "";
+        renderedDetails = userDetails.interacEmail || (renderedName.includes("@") ? renderedName : "");
     } else if (paymentType.includes("usdc") || paymentType.includes("crypto") || paymentType.includes("wallet")) {
         displayLabelName = "Network Protocol";
         displayLabelDetails = "Destination Address";
-        renderedName = userDetails.tokenName || "ERC-20 (USD Coin)";
+        renderedName = userDetails.tokenName || "";
         const rawCrypto = userDetails.acuAccountUs || userDetails.acuAccountUk || userDetails.acuAccount || userDetails.cryptoAddress || "";
-        renderedDetails = rawCrypto ? `${rawCrypto.slice(0, 6)}...${rawCrypto.slice(-4)}` : "0x" + "•".repeat(24) + "Settlement"; 
+        renderedDetails = rawCrypto ? `${rawCrypto.slice(0, 6)}...${rawCrypto.slice(-4)}` : ""; 
     }
 
     document.getElementById("recipient-name-label").innerText = displayLabelName;
@@ -1142,7 +1146,7 @@ async function initiateLiveTransaction(sessionData) {
     document.getElementById("recipient-account-label").innerText = displayLabelDetails;
     document.getElementById("recipient-account-val").innerText = renderedDetails;
 
-    document.getElementById("receipt-beneficiary").innerText = `${renderedName} (${renderedDetails})`;
+    document.getElementById("receipt-beneficiary").innerText = renderedDetails ? `${renderedName} (${renderedDetails})` : renderedName;
 
     let liveRate = 1.0; 
     if (config.currency === "CAD") liveRate = 1.38;
@@ -1236,8 +1240,8 @@ async function initiateLiveTransaction(sessionData) {
     const usdNet = targetAmountUSD - feeUSD;
     const finalCalculatedReceive = usdNet * liveRate;
     localStorage.setItem("av_converted_amount", finalCalculatedReceive.toFixed(2));
-localStorage.setItem("av_converted_currency", config.currency); 
-localStorage.setItem("av_converted_symbol", config.symbol); 
+    localStorage.setItem("av_converted_currency", config.currency); 
+    localStorage.setItem("av_converted_symbol", config.symbol); 
 
     document.getElementById("fee-display").innerText = `-$${feeUSD.toLocaleString('en-US', { minimumFractionDigits: 2 })} USD`;
     document.getElementById("net-cad-display").innerText = `$${usdNet.toLocaleString('en-US', { minimumFractionDigits: 2 })} USD`;
@@ -1310,7 +1314,6 @@ function setupEventHandlers() {
 
             localStorage.removeItem("av_temp_session_hash");
 
-            // Save original bonus value to backup key before zeroing out, keeping dashboard zeroes intact
             if (sourceType === "available") {
                 localStorage.setItem("baseACU", "0.00");
                 localStorage.setItem("totalACU", "0.00");
