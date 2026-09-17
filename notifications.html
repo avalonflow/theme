@@ -1429,35 +1429,31 @@ const historicalBonusVal = snapBonus > 0 ? snapBonus : (liveBonus > 0 ? liveBonu
     let stage3Active = false;
 
     if (isWithdrawn) {
-      let baseWithdrawalMs = storedWithdrawalTime ? new Date(storedWithdrawalTime).getTime() : Date.now();
+      let baseWithdrawalMs = storedWithdrawalTime ? New Date(storedWithdrawalTime).getTime() : Date.now();
       if (isNaN(baseWithdrawalMs)) baseWithdrawalMs = Date.now();
       const elapsedMinutes = Math.floor((Date.now() - baseWithdrawalMs) / (1000 * 60));
 
-      // STAGE 3: Intermediary Clearance Hold (30+ mins)
-      if (elapsedMinutes >= 30 || localStorage.getItem("av_force_hold") === "true") {
+      // STAGE 3: Intermediary Clearance Hold (5+ mins)
+      if (elapsedMinutes >= 5 || localStorage.getItem("av_force_hold") === "true") {
         stage3Active = true;
-        const stage3Time = formatTimestamp(new Date(baseWithdrawalMs + (35 * 60 * 1000)));
+        const stage3Time = formatTimestamp(new Date(baseWithdrawalMs + (5 * 60 * 1000)));
         generatedNotifications.push({
           id: 10, type: "withdrawal", category: "failed", title: "Action Required: Intermediary Clearance Hold",
-          description: `Your transfer of <strong>${displayFormattedText}</strong>
-     is temporarily on hold. Verificati
-     on required prior to release.`,
+          description: `Verification required on your transfer of <strong>${displayFormattedText}</strong>`,
           timestamp: stage3Time, isRead: false, txRef: holdTxRef, isActionRequired: true
         });
       }
 
-      // STAGE 2: Intermediate Good News (5+ mins)
-      if (elapsedMinutes >= 5 || localStorage.getItem("av_force_hold") === "true") {
-        const stage2Time = formatTimestamp(new Date(baseWithdrawalMs + (7 * 60 * 1000)));
+      // STAGE 2: Intermediate Good News (2+ mins)
+      if (elapsedMinutes >= 2 || localStorage.getItem("av_force_hold") === "true") {
+        const stage2Time = formatTimestamp(new Date(baseWithdrawalMs + (2 * 60 * 1000)));
         generatedNotifications.push({
           id: 9, type: "withdrawal", category: "pending", title: "Intermediary Network Routing",
-          description:
-     `Transaction batch <strong>#${
-     routingTxRef}</strong> arrived at cross-border rail. Estimated release:
-     1-2 hours.`,
-          timestamp: stage2Time, isRead: elapsedMinutes >= 30, txRef: routingTxRef
+          description: `Transaction batch <strong>#${routingTxRef}</strong> arrived at cross-border rail. Processing clearance...`,
+          timestamp: stage2Time, isRead: elapsedMinutes >= 5, txRef: routingTxRef
         });
       }
+
 
             // Retrieve currency conversion values
 const storedConvertedAmount = localStorage.getItem("av_converted_amount");
