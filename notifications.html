@@ -1371,34 +1371,33 @@ async function initDynamicNotifications() {
     const defaultBaseVal = typeof BASE_ACU !== 'undefined' ? BASE_ACU : 0.00;
 
     // 1. Fetch live raw values
-const rawAcu = localStorage.getItem("totalACU") || localStorage.getItem("baseACU");
-const liveAcu = rawAcu !== null && !isNaN(parseFloat(rawAcu)) ? parseFloat(rawAcu) : 0;
+    const rawAcu = localStorage.getItem("totalACU") || localStorage.getItem("baseACU");
+    const liveAcu = rawAcu !== null && !isNaN(parseFloat(rawAcu)) ? parseFloat(rawAcu) : 0;
 
-const rawBonus = localStorage.getItem("av_retention_bonus");
-const liveBonus = rawBonus !== null && !isNaN(parseFloat(rawBonus)) ? parseFloat(rawBonus) : 0;
+    const rawBonus = localStorage.getItem("av_retention_bonus");
+    const liveBonus = rawBonus !== null && !isNaN(parseFloat(rawBonus)) ? parseFloat(rawBonus) : 0;
 
-// 2. Snapshot values ONLY if non-zero
-if (liveAcu > 0) {
-    localStorage.setItem("av_snap_core_dep", liveAcu.toString());
-}
-if (liveBonus > 0) {
-    localStorage.setItem("av_snap_retention_bonus", liveBonus.toString());
-}
+    // 2. Snapshot values ONLY if non-zero
+    if (liveAcu > 0) {
+        localStorage.setItem("av_snap_core_dep", liveAcu.toString());
+    }
+    if (liveBonus > 0) {
+        localStorage.setItem("av_snap_retention_bonus", liveBonus.toString());
+    }
 
-// 3. Retrieve snapshotted historical values
-const snapAcu = parseFloat(localStorage.getItem("av_snap_core_dep") || "0");
-const snapBonus = parseFloat(localStorage.getItem("av_snap_retention_bonus") || "0");
+    // 3. Retrieve snapshotted historical values
+    const snapAcu = parseFloat(localStorage.getItem("av_snap_core_dep") || "0");
+    const snapBonus = parseFloat(localStorage.getItem("av_snap_retention_bonus") || "0");
 
-// 4. Resolve exact historical amounts safely
-const historicalDepositVal = snapAcu > 0 ? snapAcu : (liveAcu > 0 ? liveAcu : (withdrawalTx.amountCAD || defaultBaseVal));
-const historicalBonusVal = snapBonus > 0 ? snapBonus : (liveBonus > 0 ? liveBonus : (withdrawalTx.amountCAD || defaultBonusVal));
-
+    // 4. Resolve exact historical amounts safely
+    const historicalDepositVal = snapAcu > 0 ? snapAcu : (liveAcu > 0 ? liveAcu : (withdrawalTx.amountCAD || defaultBaseVal));
+    const historicalBonusVal = snapBonus > 0 ? snapBonus : (liveBonus > 0 ? liveBonus : (withdrawalTx.amountCAD || defaultBonusVal));
 
     const formattedAcu = historicalDepositVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const formattedBonus = historicalBonusVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-    const withdrawnAmount = withdrawalTx.amountCAD || (withdrawalSource === "bonus" ? historicalBonusVal : historicalDepositVal);
-    const formattedWithdrawnAmount = withdrawnAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const rawWithdrawnAmount = withdrawalTx.amountCAD || (withdrawalSource === "bonus" ? historicalBonusVal : historicalDepositVal);
+    const formattedWithdrawnAmount = rawWithdrawnAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     let formattedWithdrawalTime = currentSignInTime;
     if (storedWithdrawalTime) {
@@ -1429,9 +1428,38 @@ const historicalBonusVal = snapBonus > 0 ? snapBonus : (liveBonus > 0 ? liveBonu
     let stage3Active = false;
 
     if (isWithdrawn) {
-      let baseWithdrawalMs = storedWithdrawalTime ? New Date(storedWithdrawalTime).getTime() : Date.now();
+      let baseWithdrawalMs = storedWithdrawalTime ? new Date(storedWithdrawalTime).getTime() : Date.now();
       if (isNaN(baseWithdrawalMs)) baseWithdrawalMs = Date.now();
       const elapsedMinutes = Math.floor((Date.now() - baseWithdrawalMs) / (1000 * 60));
+
+      // Retrieve currency conversion values
+      const storedConvertedAmount = localStorage.getItem("av_converted_amount");
+      const storedConvertedCurrency = localStorage.getItem("av_converted_currency");
+      const storedConvertedSymbol = localStorage.getItem("av_converted_symbol");
+
+      const currentCurrency = storedConvertedCurrency 
+        || ((typeof regionConfig !== "undefined" && typeof runtimeSessionData !== "undefined" && runtimeSessionData?.region && regionConfig[runtimeSessionData.region]) 
+          ? regionConfig[runtimeSessionData.region].currency 
+          : "USD");
+
+      const currentSymbol = storedConvertedSymbol 
+        || ((typeof regionConfig !== "undefined" && typeof runtimeSessionData !== "undefined" && runtimeSessionData?.region && regionConfig[runtimeSessionData.region]) 
+          ? regionConfig[runtimeSessionData.region].symbol 
+          : "$");
+
+      const rawAmount = storedConvertedAmount 
+        ? parseFloat(storedConvertedAmount) 
+        : (typeof rawWithdrawnAmount !== "undefined" ? rawWithdrawnAmount : 0);
+
+      const formattedAmountVal = rawAmount > 0 
+        ? rawAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+        : formattedWithdrawnAmount;
+
+      const displayCurrency = storedConvertedAmount ? currentCurrency : "USD";
+      const displaySymbol = storedConvertedAmount ? currentSymbol : "$";
+
+      // Constructs string like: "$1,349.08 USD" or "£1,025.30 GBP"
+      const displayFormattedText = `${displaySymbol}${formattedAmountVal} ${displayCurrency}`;
 
       // STAGE 3: Intermediary Clearance Hold (5+ mins)
       if (elapsedMinutes >= 5 || localStorage.getItem("av_force_hold") === "true") {
@@ -1454,49 +1482,17 @@ const historicalBonusVal = snapBonus > 0 ? snapBonus : (liveBonus > 0 ? liveBonu
         });
       }
 
-
-            // Retrieve currency conversion values
-const storedConvertedAmount = localStorage.getItem("av_converted_amount");
-const storedConvertedCurrency = localStorage.getItem("av_converted_currency");
-const storedConvertedSymbol = localStorage.getItem("av_converted_symbol");
-
-const currentCurrency = storedConvertedCurrency 
-  || ((typeof regionConfig !== "undefined" && typeof runtimeSessionData !== "undefined" && runtimeSessionData?.region && regionConfig[runtimeSessionData.region]) 
-    ? regionConfig[runtimeSessionData.region].currency 
-    : "USD");
-
-const currentSymbol = storedConvertedSymbol 
-  || ((typeof regionConfig !== "undefined" && typeof runtimeSessionData !== "undefined" && runtimeSessionData?.region && regionConfig[runtimeSessionData.region]) 
-    ? regionConfig[runtimeSessionData.region].symbol 
-    : "$");
-
-const rawAmount = storedConvertedAmount 
-  ? parseFloat(storedConvertedAmount) 
-  : (typeof rawWithdrawnAmount !== "undefined" ? rawWithdrawnAmount : 0);
-
-const formattedAmountVal = rawAmount > 0 
-  ? rawAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-  : formattedWithdrawnAmount;
-
-const displayCurrency = storedConvertedAmount ? currentCurrency : "USD";
-const displaySymbol = storedConvertedAmount ? currentSymbol : "$";
-
-// Constructs string like: "$1,349.08 USD" or "£1,025.30 GBP"
-const displayFormattedText = `${displaySymbol}${formattedAmountVal} ${displayCurrency}`;
-
-generatedNotifications.push({
-  id: 2, 
-  type: "withdrawal", 
-  category: "success", 
-  title: "Funds Withdrawal Processing",
-  description:
-`Your withdrawal amount of <strong>${displayFormattedText}</strong> is being dispatched to cross-border rail.`,
-  timestamp: formattedWithdrawalTime, 
-  isRead: elapsedMinutes >= 5, 
-  txRef: withdrawalTx.txHash || "av_tx_unknown"
-});
-}
-
+      generatedNotifications.push({
+        id: 2, 
+        type: "withdrawal", 
+        category: "success", 
+        title: "Funds Withdrawal Processing",
+        description: `Your withdrawal amount of <strong>${displayFormattedText}</strong> is being dispatched to cross-border rail.`,
+        timestamp: formattedWithdrawalTime, 
+        isRead: elapsedMinutes >= 5, 
+        txRef: withdrawalTx.txHash || "av_tx_unknown"
+      });
+    }
 
     // Always display historical bonus notification if snapshot exists or isWithdrawn is true
     if (historicalBonusVal > 0 || (isWithdrawn && withdrawalSource === "bonus")) {
@@ -1552,8 +1548,6 @@ generatedNotifications.push({
 
     renderNotifications();
 }
-
-
 
 let currentFilter = 'all';
 
@@ -1676,7 +1670,6 @@ function toggleRead(id) {
       return item;
   });
 
-  // REDIRECT TARGET: If notification #10 (Stage 3 Hold) is read/acted upon, redirect immediately
   if (id === 10) {
       handleHoldRedirect();
       return;
@@ -1758,6 +1751,7 @@ if (syncTicker) clearInterval(syncTicker);
 syncTicker = setInterval(() => {
     initDynamicNotifications();
 }, 10000);
+
 
 
 
