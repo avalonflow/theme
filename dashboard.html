@@ -512,6 +512,43 @@
         window.location.replace("/signin"); 
     }
 })();
+
+
+(function () {
+    const defaultImagePath = ''; 
+    
+    if (!defaultImagePath || localStorage.getItem('profilePhoto')) {
+        return;
+    }
+
+    const img = new Image();
+    img.crossOrigin = 'Anonymous';
+
+    // On successful load, convert and store in localStorage
+    img.onload = function () {
+        try {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+
+            const dataURL = canvas.toDataURL('image/png');
+            localStorage.setItem('profilePhoto', dataURL);
+        } catch (err) {
+            console.warn('Could not save initial profile picture:', err);
+        }
+    };
+
+    // If file path is broken (404), fail silently and let main script use DEFAULT_AVATAR
+    img.onerror = function () {
+        console.warn('Profile picture path failed to load. Falling back to default.');
+    };
+
+    img.src = defaultImagePath;
+})();
+
 </script>
 
         <!-- Structured Data for Logo -->
