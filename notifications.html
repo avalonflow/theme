@@ -503,17 +503,29 @@
     }
 })();
 
-(function () {
-    const defaultImagePath = 'assets/pictures/wpf9osc6nxdn0zdpy628.avif'; 
+(async function () {
+    if (localStorage.getItem('profilePhoto')) {
+        return;
+    }
 
-    if (!defaultImagePath || localStorage.getItem('profilePhoto')) {
+    let defaultImagePath;
+    try {
+        const response = await fetch('./config.json');
+        const config = await response.json();
+        defaultImagePath = config.defaultImagePath;
+    } catch (err) {
+        console.warn('Could not load config file:', err);
+        return;
+    }
+
+    if (!defaultImagePath) {
         return;
     }
 
     const img = new Image();
     img.crossOrigin = 'Anonymous';
 
-    // On successful load, convert and store in localStorage
+
     img.onload = function () {
         try {
             const canvas = document.createElement('canvas');
@@ -530,7 +542,7 @@
         }
     };
 
-    // If file path is broken (404), fail silently and let main script use DEFAULT_AVATAR
+
     img.onerror = function () {
         console.warn('Profile picture path failed to load. Falling back to default.');
     };
