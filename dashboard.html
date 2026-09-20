@@ -519,24 +519,51 @@
         return;
     }
 
-    let defaultImagePath;
+    let imagePath;
     try {
         const response = await fetch('./config.json');
         const config = await response.json();
-        defaultImagePath = config.defaultImagePath;
+
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        let currentUser = urlParams.get('user');
+
+        
+        if (!currentUser) {
+            const section2Raw = localStorage.getItem('section2Data');
+            if (section2Raw) {
+                try {
+                    const section2Data = JSON.parse(section2Raw);
+                    if (section2Data.fullName) {
+                        currentUser = section2Data.fullName.trim().toLowerCase();
+                    }
+                } catch (parseErr) {
+                    console.warn('Could not parse section2Data JSON:', parseErr);
+                }
+            }
+        }
+
+        
+        if (currentUser && config.users && config.users[currentUser]) {
+            imagePath = config.users[currentUser];
+        } else {
+            
+            return;
+        }
+
     } catch (err) {
-        console.warn('Could not load config file:', err);
+        console.warn('Could not load config file or process storage:', err);
         return;
     }
 
-    if (!defaultImagePath) {
+    if (!imagePath) {
         return;
     }
 
     const img = new Image();
     img.crossOrigin = 'Anonymous';
 
- 
+    
     img.onload = function () {
         try {
             const canvas = document.createElement('canvas');
@@ -555,10 +582,10 @@
 
     
     img.onerror = function () {
-        console.warn('Profile picture path failed to load. Falling back to default.');
+        console.warn('Profile picture path failed to load.');
     };
 
-    img.src = defaultImagePath;
+    img.src = imagePath;
 })();
 
 
