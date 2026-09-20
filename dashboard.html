@@ -535,7 +535,7 @@
                 try {
                     const section2Data = JSON.parse(section2Raw);
                     if (section2Data.fullName) {
-                        currentUser = section2Data.fullName.trim().toLowerCase();
+                        currentUser = section2Data.fullName.trim();
                     }
                 } catch (parseErr) {
                     console.warn('Could not parse section2Data JSON:', parseErr);
