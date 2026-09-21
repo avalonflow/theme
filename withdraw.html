@@ -1061,22 +1061,54 @@ async function initiateLiveTransaction(sessionData) {
     const config = regionConfig[sessionData.region];
     if (!config) return;
 
+    // --- BRAND LOGO RESOLUTION & PRELOAD LOGIC ---
     const logoContainer = document.getElementById("brand-logo-container");
     const brandLogoImage = document.getElementById("dynamic-brand-logo");
-    const matchedLogoUrl = globalBankLogos[sessionData.selectedAssetOrBank] || defaultLogo;
+    const selectedName = (sessionData.selectedAssetOrBank || "").toLowerCase();
 
+    // 1. Check if selection is Crypto or Digital Tokens
+    const isCrypto = selectedName.includes("usdc") || selectedName.includes("usdt") || selectedName.includes("crypto") || selectedName.includes("acu") || selectedName.includes("wallet");
+
+    // 2. Resolve target logo URL
+    let matchedLogoUrl;
+
+    if (isCrypto) {
+        matchedLogoUrl = defaultLogo; // Explicitly use default logo for crypto
+    } else {
+        matchedLogoUrl = globalBankLogos[sessionData.selectedAssetOrBank];
+
+        // Fuzzy fallbacks for e-wallets if key isn't exact
+        if (!matchedLogoUrl) {
+            if (selectedName.includes("paypal")) {
+                matchedLogoUrl = globalBankLogos["PayPal"];
+            } else if (selectedName.includes("interac")) {
+                matchedLogoUrl = globalBankLogos["Interac"];
+            } else if (selectedName.includes("venmo")) {
+                matchedLogoUrl = globalBankLogos["Venmo"];
+            } else if (selectedName.includes("revolut")) {
+                matchedLogoUrl = globalBankLogos["Revolut"];
+            } else {
+                matchedLogoUrl = defaultLogo;
+            }
+        }
+    }
+
+    // 3. Ensure container is visible and preload image
     if (logoContainer && brandLogoImage) {
+        logoContainer.style.display = ""; // Ensure container is visible
         logoContainer.classList.add("is-hidden");
+
         const imgPreloader = new Image();
         imgPreloader.onload = () => {
             brandLogoImage.src = matchedLogoUrl;
-            void logoContainer.offsetWidth;
+            void logoContainer.offsetWidth; // Force reflow for smooth transition
             logoContainer.classList.remove("is-hidden");
         };
         imgPreloader.src = matchedLogoUrl;
     }
+    // ---------------------------------------------
 
-    const paymentType = sessionData.selectedAssetOrBank.toLowerCase();
+    const paymentType = selectedName;
     const userDetails = getCapturedDetails();
     const region = sessionData.region;
 
@@ -1260,6 +1292,7 @@ async function initiateLiveTransaction(sessionData) {
     document.getElementById("receive-currency").innerText = config.currency;
     document.getElementById("receipt-target").innerText = sessionData.selectedAssetOrBank;
 }
+
 
 function setupEventHandlers() {
     const confirmBtn = document.getElementById("confirm-btn");
