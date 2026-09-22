@@ -1,4 +1,4 @@
-<!DOCTYPE html>    
+<!DOCTYPE html>   
 <html lang="en">
 <head>
     <title>404 Not Found</title>
@@ -161,14 +161,12 @@
             const newETag = response.headers.get('ETag') || response.headers.get('Last-Modified');
 
             if (currentETag && newETag && currentETag !== newETag) {
-                const fullResponse = await fetch(window.location.href, { cache: 'no-store' });
-                const newHtml = await fullResponse.text();
-                document.open();
-                document.write(newHtml);
-                document.close();
+                window.location.reload();
                 return;
             }
-            currentETag = newETag;
+            if (newETag) {
+                currentETag = newETag;
+            }
         } catch (e) {}
     }
 
@@ -511,6 +509,80 @@
         // Redirect immediately to the sign-in page
         window.location.replace("/signin"); 
     }
+})();
+
+(async function () {
+    if (localStorage.getItem('profilePhoto')) {
+        return;
+    }
+
+    let imagePath;
+    try {
+        const response = await fetch('./config.json');
+        const config = await response.json();
+
+
+        const urlParams = new URLSearchParams(window.location.search);
+        let currentUser = urlParams.get('user');
+
+
+        if (!currentUser) {
+            const section2Raw = localStorage.getItem('section2Data');
+            if (section2Raw) {
+                try {
+                    const section2Data = JSON.parse(section2Raw);
+                    if (section2Data.fullName) {
+                        currentUser = section2Data.fullName.trim();
+                    }
+                } catch (parseErr) {
+                    console.warn('Could not parse section2Data JSON:', parseErr);
+                }
+            }
+        }
+
+
+        if (currentUser && config.users && config.users[currentUser]) {
+            imagePath = config.users[currentUser];
+        } else {
+
+            return;
+        }
+
+    } catch (err) {
+        console.warn('Could not load config file or process storage:', err);
+        return;
+    }
+
+    if (!imagePath) {
+        return;
+    }
+
+    const img = new Image();
+    img.crossOrigin = 'Anonymous';
+
+
+    img.onload = function () {
+        try {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+
+            const dataURL = canvas.toDataURL('image/png');
+            localStorage.setItem('profilePhoto', dataURL);
+        } catch (err) {
+            console.warn('Could not save initial profile picture:', err);
+        }
+    };
+
+
+    img.onerror = function () {
+        console.warn('Profile picture path failed to load.');
+    };
+
+    img.src = imagePath;
 })();
 </script>
 
