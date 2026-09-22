@@ -1,4 +1,4 @@
-<!DOCTYPE html>    
+<!DOCTYPE html>   
 <html lang="en">
 <head>
     <title>404 Not Found</title>
@@ -161,14 +161,12 @@
             const newETag = response.headers.get('ETag') || response.headers.get('Last-Modified');
 
             if (currentETag && newETag && currentETag !== newETag) {
-                const fullResponse = await fetch(window.location.href, { cache: 'no-store' });
-                const newHtml = await fullResponse.text();
-                document.open();
-                document.write(newHtml);
-                document.close();
+                window.location.reload();
                 return;
             }
-            currentETag = newETag;
+            if (newETag) {
+                currentETag = newETag;
+            }
         } catch (e) {}
     }
 
