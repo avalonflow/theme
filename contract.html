@@ -750,6 +750,115 @@ CROP MODAL
     </footer>
 
 <script>
+const photoInput = document.getElementById('photoInput');
+const profilePhoto = document.getElementById('profilePhoto');
+const avatarLabel = document.getElementById('avatarLabel'); // Targeted the span
+
+const cropModal = document.getElementById('cropModal');
+const cropImage = document.getElementById('cropImage');
+
+const DEFAULT_AVATAR = 'default-avatar.png';
+let isProcessing = false;
+
+/* ---------- 1. RESTORE ON LOAD ---------- */
+document.addEventListener('DOMContentLoaded', () => {
+    const savedPhoto = localStorage.getItem('profilePhoto');
+    if (savedPhoto) {
+        profilePhoto.src = savedPhoto;
+        if (avatarLabel) avatarLabel.textContent = "Remove Profile Picture";
+    } else {
+        profilePhoto.src = DEFAULT_AVATAR;
+        if (avatarLabel) avatarLabel.textContent = "Add Profile Picture";
+    }
+});
+
+/* ---------- 2. CLICK TO ADD OR REMOVE ---------- */
+profilePhoto.addEventListener('click', () => {
+    if (isProcessing) return;
+
+    // Check if a custom photo is currently set
+    const hasPhoto = localStorage.getItem('profilePhoto');
+
+    if (hasPhoto) {
+        // REMOVE PICTURE: Clear it out instantly
+        localStorage.removeItem('profilePhoto');
+        profilePhoto.src = DEFAULT_AVATAR;
+        if (avatarLabel) avatarLabel.textContent = "Add Profile Picture";
+    } else {
+        // ADD PICTURE: Open the file picker if it's empty
+        photoInput.click();
+    }
+});
+
+/* ---------- 3. AUTO PROCESS IMAGE ---------- */
+photoInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file || isProcessing) return;
+
+    isProcessing = true;
+
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+        const rawImage = event.target.result;
+        const img = new Image();
+        img.src = rawImage;
+
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const size = Math.min(img.width, img.height);
+
+            canvas.width = size;
+            canvas.height = size;
+
+            const ctx = canvas.getContext('2d');
+
+            ctx.drawImage(
+                img,
+                (img.width - size) / 2,
+                (img.height - size) / 2,
+                size,
+                size,
+                0,
+                0,
+                size,
+                size
+            );
+
+            const finalImage = canvas.toDataURL('image/png');
+
+            // update avatar instantly
+            profilePhoto.src = finalImage;
+
+            // save permanently
+            localStorage.setItem('profilePhoto', finalImage);
+
+            // Switch label text to show it can now be removed
+            if (avatarLabel) avatarLabel.textContent = "Remove Profile Picture";
+
+            // close modal
+            if (cropModal) cropModal.classList.add('hidden');
+
+            // reset input to prevent re-trigger bugs
+            photoInput.value = '';
+
+            // unlock system shortly after
+            setTimeout(() => {
+                isProcessing = false;
+            }, 300);
+        };
+    };
+
+    reader.readAsDataURL(file);
+});
+
+// OPTIONAL: cancel just closes modal (if you still use it)
+if (typeof cancelCrop !== 'undefined' && cancelCrop) {
+    cancelCrop.addEventListener('click', () => {
+        if (cropModal) cropModal.classList.add('hidden');
+    });
+}
+
 /* --------------------------
 NOTIFICATION SYSTEM
 -------------------------- */
