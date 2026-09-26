@@ -703,6 +703,32 @@ ANIMATIONS
         opacity: 0.75;
     }
 }
+
+/* Crop Modal Container */
+.crop-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+
+/* Hide the modal properly when .hidden class is present */
+.crop-modal.hidden {
+    display: none !important;
+}
+
+/* Hide the raw file input off-screen */
+#photoInput {
+    display: none;
+}
+
     </style>
 </head>
 <body>
@@ -737,7 +763,16 @@ CROP MODAL
             <img id="cropImage">
         </div>
 
+        <!-- actions -->
+        <div class="crop-actions">
+            <button id="saveCropped">Save Photo</button>
+            <button id="cancelCrop">Cancel</button>
+        </div>
+
+    </div>
+
 </div>
+
 
 
 
