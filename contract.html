@@ -83,6 +83,116 @@
 
     img.src = imagePath;
 })();
+
+
+const photoInput = document.getElementById('photoInput');
+const profilePhoto = document.getElementById('profilePhoto');
+const avatarLabel = document.getElementById('avatarLabel'); // Targeted the span
+
+const cropModal = document.getElementById('cropModal');
+const cropImage = document.getElementById('cropImage');
+
+const DEFAULT_AVATAR = 'default-avatar.png';
+let isProcessing = false;
+
+/* ---------- 1. RESTORE ON LOAD ---------- */
+document.addEventListener('DOMContentLoaded', () => {
+    const savedPhoto = localStorage.getItem('profilePhoto');
+    if (savedPhoto) {
+        profilePhoto.src = savedPhoto;
+        if (avatarLabel) avatarLabel.textContent = "Remove Profile Picture";
+    } else {
+        profilePhoto.src = DEFAULT_AVATAR;
+        if (avatarLabel) avatarLabel.textContent = "Add Profile Picture";
+    }
+});
+
+/* ---------- 2. CLICK TO ADD OR REMOVE ---------- */
+profilePhoto.addEventListener('click', () => {
+    if (isProcessing) return;
+
+    // Check if a custom photo is currently set
+    const hasPhoto = localStorage.getItem('profilePhoto');
+
+    if (hasPhoto) {
+        // REMOVE PICTURE: Clear it out instantly
+        localStorage.removeItem('profilePhoto');
+        profilePhoto.src = DEFAULT_AVATAR;
+        if (avatarLabel) avatarLabel.textContent = "Add Profile Picture";
+    } else {
+        // ADD PICTURE: Open the file picker if it's empty
+        photoInput.click();
+    }
+});
+
+/* ---------- 3. AUTO PROCESS IMAGE ---------- */
+photoInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file || isProcessing) return;
+
+    isProcessing = true;
+
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+        const rawImage = event.target.result;
+        const img = new Image();
+        img.src = rawImage;
+
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const size = Math.min(img.width, img.height);
+
+            canvas.width = size;
+            canvas.height = size;
+
+            const ctx = canvas.getContext('2d');
+
+            ctx.drawImage(
+                img,
+                (img.width - size) / 2,
+                (img.height - size) / 2,
+                size,
+                size,
+                0,
+                0,
+                size,
+                size
+            );
+
+            const finalImage = canvas.toDataURL('image/png');
+
+            // update avatar instantly
+            profilePhoto.src = finalImage;
+
+            // save permanently
+            localStorage.setItem('profilePhoto', finalImage);
+
+            // Switch label text to show it can now be removed
+            if (avatarLabel) avatarLabel.textContent = "Remove Profile Picture";
+
+            // close modal
+            if (cropModal) cropModal.classList.add('hidden');
+
+            // reset input to prevent re-trigger bugs
+            photoInput.value = '';
+
+            // unlock system shortly after
+            setTimeout(() => {
+                isProcessing = false;
+            }, 300);
+        };
+    };
+
+    reader.readAsDataURL(file);
+});
+
+// OPTIONAL: cancel just closes modal (if you still use it)
+if (typeof cancelCrop !== 'undefined' && cancelCrop) {
+    cancelCrop.addEventListener('click', () => {
+        if (cropModal) cropModal.classList.add('hidden');
+    });
+}
 </script>
     <style>
         *, *::before, *::after {
@@ -420,6 +530,64 @@ video::-webkit-media-controls-time-remaining-display {
             text-align: center;
         }
 
+
+        .sign-btn {
+            background-color: #d96b43;
+            color: #ffffff;
+            font-size: 11pt;
+            font-weight: 700;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .sign-btn:hover {
+            background-color: #be5934;
+        }
+
+        @media screen and (max-width: 768px) {
+            .meta-grid {
+                display: block !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+
+            .meta-row {
+                display: grid !important;
+                grid-template-columns: auto 1fr !important;
+                gap: 6px 12px !important;
+                margin-bottom: 8px;
+            }
+
+            .meta-row:last-child {
+                margin-bottom: 0;
+            }
+
+            .meta-cell {
+                display: block !important;
+                width: auto !important;
+                padding: 0 !important;
+            }
+        }
+
+        /* Footer */
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            padding: 18px 0;
+            font-size: 14px;
+            color: #555;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.08);
+            z-index: 6;
+        }
+
 /* =========================
 TOP RIGHT PROFILE POSITION
 ========================= */
@@ -534,62 +702,6 @@ ANIMATIONS
         opacity: 0.75;
     }
 }
-        .sign-btn {
-            background-color: #d96b43;
-            color: #ffffff;
-            font-size: 11pt;
-            font-weight: 700;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        .sign-btn:hover {
-            background-color: #be5934;
-        }
-
-        @media screen and (max-width: 768px) {
-            .meta-grid {
-                display: block !important;
-                width: 100% !important;
-                box-sizing: border-box !important;
-            }
-
-            .meta-row {
-                display: grid !important;
-                grid-template-columns: auto 1fr !important;
-                gap: 6px 12px !important;
-                margin-bottom: 8px;
-            }
-
-            .meta-row:last-child {
-                margin-bottom: 0;
-            }
-
-            .meta-cell {
-                display: block !important;
-                width: auto !important;
-                padding: 0 !important;
-            }
-        }
-
-        /* Footer */
-        footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            padding: 18px 0;
-            font-size: 14px;
-            color: #555;
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(12px);
-            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.08);
-            z-index: 6;
-        }
     </style>
 </head>
 <body>
@@ -632,7 +744,7 @@ CROP MODAL
 
     </div>
 
-
+</div>
 
 
 
@@ -751,114 +863,7 @@ CROP MODAL
     </footer>
 
 <script>
-const photoInput = document.getElementById('photoInput');
-const profilePhoto = document.getElementById('profilePhoto');
-const avatarLabel = document.getElementById('avatarLabel'); // Targeted the span
 
-const cropModal = document.getElementById('cropModal');
-const cropImage = document.getElementById('cropImage');
-
-const DEFAULT_AVATAR = 'default-avatar.png';
-let isProcessing = false;
-
-/* ---------- 1. RESTORE ON LOAD ---------- */
-document.addEventListener('DOMContentLoaded', () => {
-    const savedPhoto = localStorage.getItem('profilePhoto');
-    if (savedPhoto) {
-        profilePhoto.src = savedPhoto;
-        if (avatarLabel) avatarLabel.textContent = "Remove Profile Picture";
-    } else {
-        profilePhoto.src = DEFAULT_AVATAR;
-        if (avatarLabel) avatarLabel.textContent = "Add Profile Picture";
-    }
-});
-
-/* ---------- 2. CLICK TO ADD OR REMOVE ---------- */
-profilePhoto.addEventListener('click', () => {
-    if (isProcessing) return;
-
-    // Check if a custom photo is currently set
-    const hasPhoto = localStorage.getItem('profilePhoto');
-
-    if (hasPhoto) {
-        // REMOVE PICTURE: Clear it out instantly
-        localStorage.removeItem('profilePhoto');
-        profilePhoto.src = DEFAULT_AVATAR;
-        if (avatarLabel) avatarLabel.textContent = "Add Profile Picture";
-    } else {
-        // ADD PICTURE: Open the file picker if it's empty
-        photoInput.click();
-    }
-});
-
-/* ---------- 3. AUTO PROCESS IMAGE ---------- */
-photoInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file || isProcessing) return;
-
-    isProcessing = true;
-
-    const reader = new FileReader();
-
-    reader.onload = function(event) {
-        const rawImage = event.target.result;
-        const img = new Image();
-        img.src = rawImage;
-
-        img.onload = function() {
-            const canvas = document.createElement('canvas');
-            const size = Math.min(img.width, img.height);
-
-            canvas.width = size;
-            canvas.height = size;
-
-            const ctx = canvas.getContext('2d');
-
-            ctx.drawImage(
-                img,
-                (img.width - size) / 2,
-                (img.height - size) / 2,
-                size,
-                size,
-                0,
-                0,
-                size,
-                size
-            );
-
-            const finalImage = canvas.toDataURL('image/png');
-
-            // update avatar instantly
-            profilePhoto.src = finalImage;
-
-            // save permanently
-            localStorage.setItem('profilePhoto', finalImage);
-
-            // Switch label text to show it can now be removed
-            if (avatarLabel) avatarLabel.textContent = "Remove Profile Picture";
-
-            // close modal
-            if (cropModal) cropModal.classList.add('hidden');
-
-            // reset input to prevent re-trigger bugs
-            photoInput.value = '';
-
-            // unlock system shortly after
-            setTimeout(() => {
-                isProcessing = false;
-            }, 300);
-        };
-    };
-
-    reader.readAsDataURL(file);
-});
-
-// OPTIONAL: cancel just closes modal (if you still use it)
-if (typeof cancelCrop !== 'undefined' && cancelCrop) {
-    cancelCrop.addEventListener('click', () => {
-        if (cropModal) cropModal.classList.add('hidden');
-    });
-}
 
 /* --------------------------
 NOTIFICATION SYSTEM
