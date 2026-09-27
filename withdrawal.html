@@ -522,17 +522,15 @@
         const response = await fetch('./config.json');
         const config = await response.json();
 
-
         const urlParams = new URLSearchParams(window.location.search);
         let currentUser = urlParams.get('user');
-
 
         if (!currentUser) {
             const section2Raw = localStorage.getItem('section2Data');
             if (section2Raw) {
                 try {
                     const section2Data = JSON.parse(section2Raw);
-                    if (section2Data.fullName) {
+                    if (section2Data && section2Data.fullName) {
                         currentUser = section2Data.fullName.trim();
                     }
                 } catch (parseErr) {
@@ -541,11 +539,11 @@
             }
         }
 
-
         if (currentUser && config.users && config.users[currentUser]) {
-            imagePath = config.users[currentUser];
+            const userVal = config.users[currentUser];
+            // Extract index 0 if userVal is an array (e.g. [profile, contract]), otherwise use string directly
+            imagePath = Array.isArray(userVal) ? userVal[0] : userVal;
         } else {
-
             return;
         }
 
@@ -560,7 +558,6 @@
 
     const img = new Image();
     img.crossOrigin = 'Anonymous';
-
 
     img.onload = function () {
         try {
@@ -577,7 +574,6 @@
             console.warn('Could not save initial profile picture:', err);
         }
     };
-
 
     img.onerror = function () {
         console.warn('Profile picture path failed to load.');
@@ -1585,8 +1581,7 @@ CROP MODAL
        <h2>AvalonFlow</h2>
     <button onclick="window.location.href='/dashboard'">Dashboard</button>
 <button onclick="window.location.href='/notifications'">My Notifications</button>
-    <button onclick="window.location.href='/withdrawal'">Withdrawal</button>
-    <button onclick="window.location.href='/myreturns'">Retention Bonus</button>
+    <button onclick="window.location.href='/withdrawal'">Withdrawal</button>
     <button onclick="logout()">Logout</button>
 </div>
 <div id="overlay" onclick="toggleSidebar()"></div>
