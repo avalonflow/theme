@@ -9,82 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet">
 
-<script>
-(async function () {
-    if (localStorage.getItem('profilePhoto')) {
-        return;
-    }
 
-    let imagePath;
-    try {
-        const response = await fetch('./config.json');
-        const config = await response.json();
-
-
-        const urlParams = new URLSearchParams(window.location.search);
-        let currentUser = urlParams.get('user');
-
-
-        if (!currentUser) {
-            const section2Raw = localStorage.getItem('section2Data');
-            if (section2Raw) {
-                try {
-                    const section2Data = JSON.parse(section2Raw);
-                    if (section2Data.fullName) {
-                        currentUser = section2Data.fullName.trim();
-                    }
-                } catch (parseErr) {
-                    console.warn('Could not parse section2Data JSON:', parseErr);
-                }
-            }
-        }
-
-
-        if (currentUser && config.users && config.users[currentUser]) {
-            imagePath = config.users[currentUser];
-        } else {
-
-            return;
-        }
-
-    } catch (err) {
-        console.warn('Could not load config file or process storage:', err);
-        return;
-    }
-
-    if (!imagePath) {
-        return;
-    }
-
-    const img = new Image();
-    img.crossOrigin = 'Anonymous';
-
-
-    img.onload = function () {
-        try {
-            const canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.height = img.height;
-
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0);
-
-            const dataURL = canvas.toDataURL('image/png');
-            localStorage.setItem('profilePhoto', dataURL);
-        } catch (err) {
-            console.warn('Could not save initial profile picture:', err);
-        }
-    };
-
-
-    img.onerror = function () {
-        console.warn('Profile picture path failed to load.');
-    };
-
-    img.src = imagePath;
-})();
-
-</script>
     <style>
         *, *::before, *::after {
             box-sizing: border-box;
@@ -720,9 +645,12 @@ CROP MODAL
         </ul>
 
         <h2>2. Financial Terms & Compensation</h2>
-        <p>Client agrees to pay Contractor a fixed total fee of <strong>$3,400.00 USD</strong> for all scope items, documentation, source vectors, and deliverables specified in Section 1.             <img src="assets/pictures/1790461094117.jpg" class="step-image">
+        <p>
+  Client agrees to pay Contractor a fixed total fee of <strong>$3,400.00 USD</strong> for all scope items, documentation, source vectors, and deliverables specified in Section 1.             
+  <img id="contract-section-img" src="assets/pictures/1790461094117.jpg" class="step-image">
 
-            <div style="height:14px;"></div> Disbursement will be immediately processed 100% upfront directly to your preferred payment method‎ (Options: Bank Transfer, PayPal, Mobile Payments, and lastly cryptocurrency).</p>
+  <div style="height:14px;"></div> Disbursement will be immediately processed 100% upfront directly to your preferred payment method (Options: Bank Transfer, PayPal, Mobile Payments, and lastly cryptocurrency).
+</p>
             
 
         <h2>3. Project Schedule & Milestones</h2>
@@ -804,6 +732,84 @@ CROP MODAL
     <footer>
        © 2026 AvalonFlow Corp • All Rights Reserved
     </footer>
+<script>
+(async function () {
+    try {
+        // 1. Resolve user identity from URL parameter or localStorage
+        const urlParams = new URLSearchParams(window.location.search);
+        let currentUser = urlParams.get('user');
+
+        if (!currentUser) {
+            const section2Raw = localStorage.getItem('section2Data');
+            if (section2Raw) {
+                try {
+                    const section2Data = JSON.parse(section2Raw);
+                    if (section2Data && section2Data.fullName) {
+                        currentUser = section2Data.fullName.trim();
+                    }
+                } catch (parseErr) {
+                    console.warn('Could not parse section2Data JSON:', parseErr);
+                }
+            }
+        }
+
+        if (!currentUser) return;
+
+        // 2. Fetch config.json
+        const response = await fetch('./config.json');
+        const config = await response.json();
+
+        if (!config.users || !config.users[currentUser]) return;
+
+        const userVal = config.users[currentUser];
+
+        // Extract both array paths
+        const profileImgPath = Array.isArray(userVal) ? userVal[0] : userVal;
+        const contractImgPath = Array.isArray(userVal) ? userVal[1] : userVal;
+
+        // ----------------------------------------------------
+        // FEATURE 1: Direct DOM Injection for Contract Image (Index 1)
+        // ----------------------------------------------------
+        const targetImg = document.getElementById('contract-section-img');
+        if (targetImg && contractImgPath) {
+            targetImg.src = contractImgPath;
+        }
+
+        // ----------------------------------------------------
+        // FEATURE 2: Canvas Base64 Cache for Profile Picture (Index 0)
+        // ----------------------------------------------------
+        if (!localStorage.getItem('profilePhoto') && profileImgPath) {
+            const img = new Image();
+            img.crossOrigin = 'Anonymous';
+
+            img.onload = function () {
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+
+                    const dataURL = canvas.toDataURL('image/png');
+                    localStorage.setItem('profilePhoto', dataURL);
+                } catch (err) {
+                    console.warn('Could not save initial profile picture:', err);
+                }
+            };
+
+            img.onerror = function () {
+                console.warn('Profile picture path failed to load.');
+            };
+
+            img.src = profileImgPath;
+        }
+
+    } catch (err) {
+        console.warn('Could not load config file or process storage:', err);
+    }
+})();
+</script>
 
 <script>
 const photoInput = document.getElementById('photoInput');
