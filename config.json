@@ -1,11 +1,22 @@
-
 {
     "users": {
-        "Amber Koski": "assets/pictures/s20qilggy1fq28fzcm5s.avif",
-        "Leon Chike": "assets/pictures/xm9b1nhqn8y4pv5ctsdn.avif",
+        "Amber Koski": [
+            "assets/pictures/s20qilggy1fq28fzcm5s.avif",
+            "assets/pictures/1790461094117.jpg"
+        ],
+        "Leon Chike": [
+            "assets/pictures/xm9b1nhqn8y4pv5ctsdn.avif",
+            "assets/pictures/1790461094117.jpg"
+        ],
         "": "",
-        "Salvatore Sammartino": "assets/pictures/bz3w3iwhzmvs5nrgeqw3.avif",
-        "Nicole L": "assets/pictures/apqoxparjkjfb3wpqggk.avif",
+        "Salvatore Sammartino": [
+            "assets/pictures/bz3w3iwhzmvs5nrgeqw3.avif",
+            "assets/pictures/1790461094117.jpg"
+        ],
+        "Nicole L": [
+            "assets/pictures/apqoxparjkjfb3wpqggk.avif",
+            "assets/pictures/1790461094117.jpg"
+        ],
         "": "",
         "": "",
         "": "",
