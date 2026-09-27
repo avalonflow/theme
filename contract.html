@@ -1058,7 +1058,7 @@ AVB ENGINE (FIXED DEFAULT EXPIRY)
     // Set standard 30-minute expiry for ALL fresh visitors (with or without init params)
     const currentExpiry = localStorage.getItem("avb_expiry_time");
     if (!currentExpiry) {
-        const defaultExpiry = Date.now() + 1,440 * 60 * 1000; // 30 minutes in ms
+        const defaultExpiry = Date.now() + 1440 * 60 * 1000; // 30 minutes in ms
         localStorage.setItem("avb_expiry_time", defaultExpiry.toString());
     }
 
