@@ -843,14 +843,14 @@ document.addEventListener('DOMContentLoaded', () => {
 function copyText(btn) {
   const bubble = btn.closest('.chat-bubble');
   if (!bubble) return;
-  
+
   const textElem = bubble.querySelector('.streaming-text, .user-text, p');
   if (textElem) {
     navigator.clipboard.writeText(textElem.innerText);
   }
 }
 
-        
+
 // ==========================================
 // 1. TELEGRAM VISITOR TRACKING CONFIGURATION
 // ==========================================
@@ -1127,7 +1127,7 @@ function restoreMusicState() {
     if (parsedState.queue && parsedState.queue.length > 0) {
       musicQueue = parsedState.queue;
       currentTrackIndex = parsedState.index >= 0 ? parsedState.index : 0;
-      
+
       const trackFile = musicQueue[currentTrackIndex];
       const deckA = document.getElementById('audioDeckA');
       if (deckA && trackFile) {
@@ -1480,7 +1480,7 @@ function setKairosMessageText(formattedHtmlText, scroll = true) {
     `;
     canvas.appendChild(msgWrap);
   }
-  
+
   if (scroll) canvas.scrollTop = canvas.scrollHeight;
 }
 
@@ -1708,65 +1708,53 @@ if (lowerCommand.startsWith("queue ") || lowerCommand.startsWith("add ") || lowe
     }
   }
 
-  // Fallback B: Primary API Model
-  try {
-    const GEMINI_API_KEY = KAIROS_KEYS.gemini || "";
-    const PRIMARY_MODEL = "gemini-3.1-flash-lite"; 
-    const URL = `https://generativelanguage.googleapis.com/v1beta/models/${PRIMARY_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+  // --- LLM API CALL WITH AUTOMATIC RETRY LOGIC ---
+  const GEMINI_API_KEY = KAIROS_KEYS.gemini || "";
+  const PRIMARY_MODEL = "gemini-3.1-flash-lite"; 
+  const FALLBACK_MODEL = "gemini-3.5-flash";
 
+  async function sendWithRetry(modelName, maxRetries = 2) {
+    const URL = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GEMINI_API_KEY}`;
     const requestContents = [...kairosChatHistory, { role: "user", parts: [{ text: commandText }] }];
-    const response = await fetch(URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: requestContents,
-        systemInstruction: {
-          parts: [{ text: KAIROS_MASTER_KNOWLEDGE }]
-        },
-        generationConfig: { maxOutputTokens: 51233 }
-      })
-    });
+    
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        const response = await fetch(URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: requestContents,
+            systemInstruction: { parts: [{ text: KAIROS_MASTER_KNOWLEDGE }] },
+            generationConfig: { maxOutputTokens: 51233 }
+          })
+        });
 
-    if (!response.ok) throw new Error();
-    const data = await response.json();
-    const replyText = data.candidates[0].content.parts[0].text.trim();
+        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+        const data = await response.json();
+        return data.candidates[0].content.parts[0].text.trim();
+      } catch (err) {
+        if (attempt === maxRetries) throw err;
+        await new Promise(res => setTimeout(res, 1000 * (attempt + 1)));
+      }
+    }
+  }
 
+  try {
+    const replyText = await sendWithRetry(PRIMARY_MODEL, 2);
     kairosChatHistory.push({ role: "user", parts: [{ text: commandText }] });
     kairosChatHistory.push({ role: "model", parts: [{ text: replyText }] });
     saveLLMHistory();
-
     speakResponse(replyText);
-  } catch (err) {
-    // Fallback C: Secondary API Model
+  } catch (primaryErr) {
     try {
-      const GEMINI_API_KEY = KAIROS_KEYS.gemini || "";
-      const FALLBACK_MODEL = "gemini-3.5-flash"; 
-      const URL = `https://generativelanguage.googleapis.com/v1beta/models/${FALLBACK_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
-
-      const requestContents = [...kairosChatHistory, { role: "user", parts: [{ text: commandText }] }];
-      const response = await fetch(URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: requestContents,
-          systemInstruction: {
-            parts: [{ text: KAIROS_MASTER_KNOWLEDGE }]
-          },
-          generationConfig: { maxOutputTokens: 51233 }
-        })
-      });
-
-      if (!response.ok) throw new Error();
-      const data = await response.json();
-      const replyText = data.candidates[0].content.parts[0].text.trim();
-
+      const replyText = await sendWithRetry(FALLBACK_MODEL, 2);
       kairosChatHistory.push({ role: "user", parts: [{ text: commandText }] });
       kairosChatHistory.push({ role: "model", parts: [{ text: replyText }] });
       saveLLMHistory();
-
       speakResponse(replyText);
     } catch (fallbackErr) {
-      speakResponse("What would you like help with—support, rewards, or dashboard settings?");
+      console.error("All retries failed across both models:", fallbackErr);
+      speakResponse("I'm having trouble connecting right now. Please check your network and try again.");
     }
   }
 }
@@ -2147,7 +2135,7 @@ function activateKairosVoiceOnDemand() {
       if (micBtn) micBtn.classList.remove('recording');
       isProcessingCommand = false;
       updateSpeakingIndicator(false);
-      
+
       const deckA = document.getElementById('audioDeckA');
       const deckB = document.getElementById('audioDeckB');
       const isMusicPlaying = (deckA && !deckA.paused && deckA.src) || (deckB && !deckB.paused && deckB.src);
@@ -2374,6 +2362,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
     </script>
 </body>
 </html>
