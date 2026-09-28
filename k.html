@@ -808,7 +808,7 @@
  */
 
 // ==========================================
-// DYNAMIC TIME & USER IDENTITY RESOLVER
+// DYNAMIC TIME & USER IDENTITY RESOLVER (SYNCHRONIZED)
 // ==========================================
 function getCurrentTime() {
   return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
@@ -816,14 +816,22 @@ function getCurrentTime() {
 
 function getUserDisplayName() {
   try {
-    const storedUser = localStorage.getItem("section2Data");
-    if (storedUser) {
-      const parsed = JSON.parse(storedUser);
-      if (parsed.name) return parsed.name;
-      if (parsed.displayName) return parsed.displayName;
-      if (parsed.firstName) return parsed.firstName;
+    const localData = localStorage.getItem("section2Data");
+    if (localData) {
+      const savedData = JSON.parse(localData);
+      // Priority 1: Original key 'fullName'
+      if (savedData.fullName) {
+        const rawFirstName = savedData.fullName.trim().split(" ")[0];
+        return rawFirstName.charAt(0).toUpperCase() + rawFirstName.slice(1).toLowerCase();
+      }
+      // Priority 2: Alternative fallback keys
+      if (savedData.name) return savedData.name.trim().split(" ")[0];
+      if (savedData.displayName) return savedData.displayName.trim().split(" ")[0];
+      if (savedData.firstName) return savedData.firstName.trim();
     }
-  } catch(e) {}
+  } catch (e) {
+    console.error("Failed to parse registration name metrics:", e);
+  }
   return "You";
 }
 
@@ -1233,7 +1241,7 @@ function formatTrackTitle(filePath) {
         let title = toTitleCase(parts[0].trim());
         let featuredArtist = toTitleCase(parts[1].trim());
         let leadArtist = parts[2] ? toTitleCase(parts[2].trim()) : "Rod Wave";
-        return `${title} by ${leadArtist} Ft${featuredArtist}`;
+        return `${title} by ${leadArtist} Ft ${featuredArtist}`;
     }
 
     if (name.includes('-')) {
@@ -1244,12 +1252,14 @@ function formatTrackTitle(filePath) {
 
         if (artist) {
             let title = (part1.toLowerCase().includes(artist.toLowerCase())) ? part2 : part1;
-            return `${toTitleCase(title)} by${toTitleCase(artist)}`;
+            // FIXED: Added space between 'by' and '${toTitleCase(artist)}'
+            return `${toTitleCase(title)} by ${toTitleCase(artist)}`;
         }
     }
 
     return toTitleCase(name);
 }
+
 
 function loadFemaleVoice() {
   if (!kairosVoiceEngine) return;
@@ -1373,54 +1383,68 @@ function toggleDock(forcedState = null) {
   }
 }
 
-// ---------- Profile Picture Assets & Configuration ----------
-const photoInput = document.getElementById('photoInput');
-const profilePhoto = document.getElementById('profilePhoto');
+// ==========================================
+// PROFILE PICTURE CONTROLLER (SYNCHRONIZED)
+// ==========================================
 const DEFAULT_AVATAR = 'default-avatar.png';
-let isProcessing = false;
 
-if (profilePhoto) {
+function initProfilePhotoController() {
+  const photoInput = document.getElementById('photoInput');
+  const profilePhoto = document.getElementById('profilePhoto');
+  let isProcessing = false;
+
+  if (profilePhoto) {
+    // Restore profile picture from localStorage on DOM Ready
+    const savedPhoto = localStorage.getItem('profilePhoto');
+    profilePhoto.src = savedPhoto ? savedPhoto : DEFAULT_AVATAR;
+
+    // Toggle photo removal or trigger upload
     profilePhoto.addEventListener('click', () => {
-        if (isProcessing) return;
-        const hasPhoto = localStorage.getItem('profilePhoto');
-        if (hasPhoto) {
-            localStorage.removeItem('profilePhoto');
-            profilePhoto.src = DEFAULT_AVATAR;
-        } else {
-            if (photoInput) photoInput.click();
-        }
+      if (isProcessing) return;
+      const hasPhoto = localStorage.getItem('profilePhoto');
+      if (hasPhoto) {
+        localStorage.removeItem('profilePhoto');
+        profilePhoto.src = DEFAULT_AVATAR;
+      } else if (photoInput) {
+        photoInput.click();
+      }
     });
-}
+  }
 
-if (photoInput && profilePhoto) {
+  if (photoInput && profilePhoto) {
     photoInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file || isProcessing) return;
-        isProcessing = true;
+      const file = e.target.files[0];
+      if (!file || isProcessing) return;
+      isProcessing = true;
 
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            const img = new Image();
-            img.src = event.target.result;
-            img.onload = function() {
-                const canvas = document.createElement('canvas');
-                const size = Math.min(img.width, img.height);
-                canvas.width = size;
-                canvas.height = size;
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = function () {
+          const canvas = document.createElement('canvas');
+          const size = Math.min(img.width, img.height);
+          canvas.width = size;
+          canvas.height = size;
 
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, (img.width - size) / 2, (img.height - size) / 2, size, size, 0, 0, size, size);
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, (img.width - size) / 2, (img.height - size) / 2, size, size, 0, 0, size, size);
 
-                const finalImage = canvas.toDataURL('image/png');
-                profilePhoto.src = finalImage;
-                localStorage.setItem('profilePhoto', finalImage);
-                photoInput.value = '';
-                setTimeout(() => { isProcessing = false; }, 300);
-            };
+          const finalImage = canvas.toDataURL('image/png');
+          profilePhoto.src = finalImage;
+          localStorage.setItem('profilePhoto', finalImage);
+          photoInput.value = '';
+          setTimeout(() => { isProcessing = false; }, 300);
         };
-        reader.readAsDataURL(file);
+      };
+      reader.readAsDataURL(file);
     });
+  }
 }
+
+// Call inside DOMContentLoaded to ensure elements exist before attaching listeners
+document.addEventListener('DOMContentLoaded', initProfilePhotoController);
+
 
 // SAFE UI RENDERER: Appends a dedicated user message bubble
 function appendUserMessage(text, scroll = true) {
@@ -1430,7 +1454,11 @@ function appendUserMessage(text, scroll = true) {
   const activeStream = canvas.querySelector('.streaming-text');
   if (activeStream) activeStream.classList.remove('streaming-text');
 
-  const profilePhotoSrc = profilePhoto?.getAttribute('src') || DEFAULT_AVATAR;
+  // Pull directly from localStorage or DOM element, fallback to default asset
+  const savedPhoto = localStorage.getItem('profilePhoto');
+  const profilePhotoEl = document.getElementById('profilePhoto');
+  const profilePhotoSrc = savedPhoto || (profilePhotoEl ? profilePhotoEl.getAttribute('src') : DEFAULT_AVATAR);
+
   const userSig = getUserSignature();
   const timeStr = getCurrentTime();
 
@@ -1452,6 +1480,7 @@ function appendUserMessage(text, scroll = true) {
   canvas.appendChild(msgWrap);
   if (scroll) canvas.scrollTop = canvas.scrollHeight;
 }
+
 
 // SAFE UI RENDERER: Updates or appends Kairos responses safely
 function setKairosMessageText(formattedHtmlText, scroll = true) {
