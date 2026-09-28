@@ -1711,8 +1711,12 @@ if (lowerCommand.startsWith("queue ") || lowerCommand.startsWith("add ") || lowe
     return;
   }
 
-  // Set typing indicator in chat window while model produces content
+    // Set typing indicator in chat window while model produces content
   setKairosMessageText("Thinking...");
+
+  // Build dynamic system instruction with user's actual name
+  const userName = getUserDisplayName();
+  const dynamicSystemInstruction = `${KAIROS_MASTER_KNOWLEDGE}\n\nThe user's name is ${userName}. Address them naturally by name when appropriate.`;
 
   // Fallback A: Chrome Gemini Nano
   if (window.ai && window.ai.languageModel) {
@@ -1720,7 +1724,7 @@ if (lowerCommand.startsWith("queue ") || lowerCommand.startsWith("add ") || lowe
       const caps = await window.ai.languageModel.capabilities();
       if (caps.available !== 'no') {
         const session = await window.ai.languageModel.create({
-          systemPrompt: KAIROS_MASTER_KNOWLEDGE + "\nRespond concisely, accurately, and helpful based on the knowledge guidelines."
+          systemPrompt: dynamicSystemInstruction + "\nRespond concisely, accurately, and helpful based on the knowledge guidelines."
         });
         const aiReply = await session.prompt(commandText);
         session.destroy();
@@ -1745,7 +1749,7 @@ if (lowerCommand.startsWith("queue ") || lowerCommand.startsWith("add ") || lowe
   async function sendWithRetry(modelName, maxRetries = 2) {
     const URL = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GEMINI_API_KEY}`;
     const requestContents = [...kairosChatHistory, { role: "user", parts: [{ text: commandText }] }];
-    
+
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       try {
         const response = await fetch(URL, {
@@ -1753,7 +1757,7 @@ if (lowerCommand.startsWith("queue ") || lowerCommand.startsWith("add ") || lowe
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             contents: requestContents,
-            systemInstruction: { parts: [{ text: KAIROS_MASTER_KNOWLEDGE }] },
+            systemInstruction: { parts: [{ text: dynamicSystemInstruction }] },
             generationConfig: { maxOutputTokens: 51233 }
           })
         });
@@ -1767,6 +1771,7 @@ if (lowerCommand.startsWith("queue ") || lowerCommand.startsWith("add ") || lowe
       }
     }
   }
+
 
   try {
     const replyText = await sendWithRetry(PRIMARY_MODEL, 2);
@@ -2220,17 +2225,21 @@ function wakeUpKairosWithGreeting() {
 
   toggleDock(true);
 
+  // Retrieve user name dynamically
+  const userName = getUserDisplayName();
+  const displayName = userName !== "You" ? ` ${userName}` : "";
+
   const greetings = [
-    "Hey there, i'm online how can i help you today?",
-    "Hello, i'm here ready when you are.",
-    "Hey i'm active what are we working on?",
-    "Yo! How can I help you today?",
-    "Sup. What's on your mind?",
-    "Great to see you! Drop your task here and let's get it done.",
-    "What's the play for today? I'm ready when you are.",
-    "Yo! How can I help make things smoother today?",
-    "Ready to assist. Please let me know what you need.",
-    "Hey! What are we diving into today?"
+    `Hey${displayName}, i'm online how can i help you today?`,
+    `Hello${displayName}, i'm here ready when you are.`,
+    `Hey${displayName} i'm active what are we working on?`,
+    `Yo${displayName}! How can I help you today?`,
+    `Sup${displayName}. What's on your mind?`,
+    `Great to see you${displayName}! Drop your task here and let's get it done.`,
+    `What's the play for today${displayName}? I'm ready when you are.`,
+    `Yo${displayName}! How can I help make things smoother today?`,
+    `Ready to assist${displayName}. Please let me know what you need.`,
+    `Hey${displayName}! What are we diving into today?`
   ];
 
   const greetingText = greetings[Math.floor(Math.random() * greetings.length)];
@@ -2240,6 +2249,7 @@ function wakeUpKairosWithGreeting() {
 
   speakResponse(greetingText);
 }
+
 
 // Main Send Routine for Input Box
 function sendMessage() {
