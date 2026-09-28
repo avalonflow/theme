@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -370,6 +371,7 @@
 
         /* Chat Bubbles */
         .chat-bubble {
+            position: relative;
             max-width: 78%;
             padding: 10px 14px;
             border-radius: 18px;
@@ -377,6 +379,39 @@
             line-height: 1.45;
             word-wrap: break-word;
             animation: bubblePop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .chat-bubble-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+            gap: 8px;
+        }
+
+        /* Copy Button Styling */
+        .copy-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .copy-btn svg {
+            width: 12px;
+            height: 12px;
+            fill: currentColor;
         }
 
         @keyframes bubblePop {
@@ -398,7 +433,6 @@
             font-weight: 700;
             letter-spacing: 0.8px;
             font-size: 11px;
-            margin-bottom: 4px;
             opacity: 0.9;
         }
 
@@ -415,7 +449,6 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 4px;
             opacity: 0.6;
         }
 
@@ -707,14 +740,20 @@
                 <div class="voice-transcript-canvas" id="transcriptCanvas">
                     <div id="status-text" class="ambient">Synchronization online.</div>
 
+                    <!-- Kairos Message Bubble -->
                     <div class="msgWrap">
                         <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Kairos&backgroundColor=6b2cd8" class="chat-bubble-avatar" alt="Kairos Avatar">
                         <div class="chat-bubble kairos">
-                            <div class="speaker-label">KAIROS INTELLIGENCE</div>
+                            <div class="chat-bubble-header">
+                                <div class="speaker-label">KAIROS INTELLIGENCE</div>
+                                <button class="copy-btn" onclick="copyText(this)" aria-label="Copy message">
+                                    <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                                </button>
+                            </div>
                             <p class="streaming-text">How can I assist you today?</p>
                             <div class="meta">
                                 <span class="timestamp" id="initialKairosTime">10:00 AM</span>
-                            </div>
+                             </div>
                         </div>
                     </div>
                 </div>
@@ -753,15 +792,19 @@
         </div>
     </div>
 
+    
+
+    
     <footer>
         AvalonFlow Interface System
     </footer>
 
     <script>
-        /**
+              
+/**
  * AvalonFlow: Kairos Intelligent Voice & UI Controller
  * Comprehensive Master Core Edition (Flicker-Free Optimized)
- * * PATCH VERIFIED: Multi-Turn Conversation Loop Removed, Music-Aware Auto-Collapse Integrated
+ * * PATCH VERIFIED: Persistent LLM & Interactive Music State Integration
  */
 
 // ==========================================
@@ -773,7 +816,7 @@ function getCurrentTime() {
 
 function getUserDisplayName() {
   try {
-    const storedUser = localStorage.getItem('user_profile') || localStorage.getItem('userData');
+    const storedUser = localStorage.getItem("section2Data");
     if (storedUser) {
       const parsed = JSON.parse(storedUser);
       if (parsed.name) return parsed.name;
@@ -797,6 +840,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+function copyText(btn) {
+  const bubble = btn.closest('.chat-bubble');
+  if (!bubble) return;
+  
+  const textElem = bubble.querySelector('.streaming-text, .user-text, p');
+  if (textElem) {
+    navigator.clipboard.writeText(textElem.innerText);
+  }
+}
+
+        
 // ==========================================
 // 1. TELEGRAM VISITOR TRACKING CONFIGURATION
 // ==========================================
@@ -824,11 +878,15 @@ async function sendVisitorDetailsToTelegram() {
     };
 
     const messageText = `⚡ *New Visitor Alert | AvalonFlow*\n\n` +
-                        `🌐 *IP:* ${payload.ip}\n` +                         `📍 *Location:* ${payload.city}, ${payload.region},${payload.country}\n` +
-                        `🏢 *ISP:* ${payload.isp}\n` +                         `🖥️ *OS/Platform:* ${payload.platform}\n` +
+                        `🌐 *IP:* ${payload.ip}\n` + 
+                        `📍 *Location:* ${payload.city}, ${payload.region},${payload.country}\n` +
+                        `🏢 *ISP:* ${payload.isp}\n` + 
+                        `🖥️ *OS/Platform:* ${payload.platform}\n` +
                         `📱 *Device Setup:* ${payload.device}\n` +
                         `📐 *Screen Res:* ${payload.screenResolution}\n` +
-                        `📐 *Time:* ${payload.timestamp}`;      await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                        `📐 *Time:* ${payload.timestamp}`;
+
+    await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -860,14 +918,33 @@ let activeTypingInterval = null;
 
 let blockNextMicActivation = false; 
 
-let chatHistory = JSON.parse(localStorage.getItem('tg_chat_history_v3')) || [];
-let kairosChatHistory = []; 
+// --- LOCAL STORAGE CONTEXT MEMORY KEYS ---
+const LLM_HISTORY_KEY = 'kairos_llm_history_v1';
+const MUSIC_STATE_KEY = 'avalon_music_state_v1';
+
+// Load LLM Chat History context from LocalStorage
+let kairosChatHistory = JSON.parse(localStorage.getItem(LLM_HISTORY_KEY)) || [];
+let chatHistory = JSON.parse(localStorage.getItem('tg_chat_history_v2')) || [];
 let conversationMemory = []; 
 
 const SILENCE_WAIT_TIME = 10000; 
 
+function saveLLMHistory() {
+  if (kairosChatHistory.length > 30) {
+    kairosChatHistory = kairosChatHistory.slice(-30); 
+  }
+  localStorage.setItem(LLM_HISTORY_KEY, JSON.stringify(kairosChatHistory));
+}
+
 function getStatusTextElement() {
   return document.getElementById('status-text') || document.getElementById('dockStatusText');
+}
+
+function updateStatusDisplay(text) {
+  const dockStatusText = document.getElementById('dockStatusText');
+  const statusTxt = getStatusTextElement();
+  if (dockStatusText) dockStatusText.innerText = text;
+  if (statusTxt) statusTxt.innerText = text;
 }
 
 const KAIROS_TITLE = "KAIROS INTELLIGENCE"; 
@@ -888,39 +965,18 @@ let pannerNodeA = null, pannerNodeB = null;
 let ambientPanAngle = 0;
 let ambientPanInterval = null;
 
-// Helper to reliably locate transcript element
 function getTranscriptCanvas() {
   return document.getElementById('kairosTranscript') || document.getElementById('transcriptCanvas');
 }
 
-// SAFE UI RENDERER: Updates inner streaming text without destroying HTML/CSS structure
-function setKairosMessageText(formattedHtmlText) {
-  const canvas = getTranscriptCanvas();
-  if (!canvas) return;
-
-  let streamingTextElem = canvas.querySelector('.chat-bubble.kairos .streaming-text') || canvas.querySelector('.streaming-text');
-
-  if (streamingTextElem) {
-    streamingTextElem.innerHTML = formattedHtmlText;
-  } else {
-    const msgWrap = document.createElement('div');
-    msgWrap.className = 'msgWrap';
-    msgWrap.innerHTML = `
-      <img src="${KAIROS_AVATAR}" class="chat-bubble-avatar" alt="Kairos Avatar">
-      <div class="chat-bubble kairos">
-          <div class="speaker-label">${KAIROS_TITLE}</div>
-          <p class="streaming-text">${formattedHtmlText}</p>
-          <div class="meta">
-              <span class="timestamp">${getCurrentTime()}</span>
-          </div>
-      </div>
-    `;
-    canvas.appendChild(msgWrap);
-  }
-  
-  canvas.scrollTop = canvas.scrollHeight;
-}
-
+// Reusable Copy Button SVG Template
+const COPY_BTN_HTML = `
+  <button class="copy-btn" onclick="copyText(this)" aria-label="Copy message">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+          <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+      </svg>
+  </button>
+`;
 
 // =================================================================
 // 3. DATA STRUCTURES & PREMIUM AUDIO VAULT DIRECTORY
@@ -954,21 +1010,7 @@ const PREMIUM_AUDIO_VAULT = {
   "No paused track found in the session queue": "assets/audio/no_paused_track.mp3",
   "Resuming track": "assets/audio/music_resume.mp3",
   "There is no music playing right now": "assets/audio/music_paused.mp3",
-  "Music paused. Let me know when you want to resume": "assets/audio/music_paused.mp3",
-  "The AvalonCare Verification Bonds: 🪽 AvalonCare Lite, 🪽 AvalonCare Basic and 🪽 AvalonCare Premium having each separate Cycle Rate, are designated tiers for smaller transactions": "assets/audio/avb.mp3",
-  "The Cycle Rate is a designated cooling-off period used to batch and clear each automatic disbursement on a principal guarantee which states your funds are secured until verification is confirmed": "assets/audio/cycle_rate.mp3",
-  "The AvalonCare verification Bond: 🪽 AvalonCare Custom, is built for security and speed in high-value transactions and utilizes Compliance Verification—meaning a dedicated regulatory body oversees the fund-hold release": "assets/audio/avaloncare_custom.mp3",
-  "Click forgot password on the login page and follow instructions": "assets/audio/reset_password.mp3",
-  "Navigate to your sidebar then withdrawals to update payment methods": "assets/audio/update_billing.mp3",
-  "Generate a ticket under technical category and describe the issue in detail": "assets/audio/ticket_generation.mp3",
-  "Generate a ticket and email support at avalonflowsystemhelpdeskgmailcom including your reference": "assets/audio/contact_support.mp3",
-  "Support is online MONDAY-SUNDAY 9AM to 6PM EST": "assets/audio/support_hours.mp3",
-  "No, Avalonflow app isn't available on IOS AND ANDROID currently": "assets/audio/mobile_app.mp3",
-  "Not right now soon for supported apps": "assets/audio/integrations.mp3",
-  "You can generate a new one but include any old reference if available when emailing support": "assets/audio/lost_ticketreference.mp3",
-  "Yes enable mobile notifications in your account settings or browser": "assets/audio/notifications.mp3",
-  "Click the toggle DARK/LIGHT button at the top right corner": "assets/audio/toggle_modes.mp3",
-  "For urgent issues, generate a ticket and mark it high priority, then Email Support": "assets/audio/high_priority.mp3"
+  "Music paused. Let me know when you want to resume": "assets/audio/music_paused.mp3"
 };
 
 const audioLibrary = [
@@ -1060,6 +1102,72 @@ let currentTrackIndex = -1;
 let activeDeck = null;
 const crossfadeDuration = 10; 
 
+// Persistent Music Engine State Loader & Saver
+function saveMusicState() {
+  const currentDeck = activeDeck;
+  const isPaused = currentDeck ? currentDeck.paused : true;
+  const currentTime = currentDeck ? currentDeck.currentTime : 0;
+
+  const state = {
+    queue: musicQueue,
+    index: currentTrackIndex,
+    time: currentTime,
+    paused: isPaused
+  };
+
+  localStorage.setItem(MUSIC_STATE_KEY, JSON.stringify(state));
+}
+
+function restoreMusicState() {
+  try {
+    const savedState = localStorage.getItem(MUSIC_STATE_KEY);
+    if (!savedState) return;
+
+    const parsedState = JSON.parse(savedState);
+    if (parsedState.queue && parsedState.queue.length > 0) {
+      musicQueue = parsedState.queue;
+      currentTrackIndex = parsedState.index >= 0 ? parsedState.index : 0;
+      
+      const trackFile = musicQueue[currentTrackIndex];
+      const deckA = document.getElementById('audioDeckA');
+      if (deckA && trackFile) {
+        activeDeck = deckA;
+        deckA.src = trackFile;
+        deckA.currentTime = parsedState.time || 0;
+        setupTrackEndMonitor(deckA);
+
+        const trackTitle = formatTrackTitle(trackFile);
+        if (!parsedState.paused) {
+          updateStatusDisplay(`Playing ${trackTitle}...`);
+        } else {
+          updateStatusDisplay(`Paused: ${trackTitle}`);
+        }
+      }
+    }
+  } catch (e) {
+    console.warn("Could not restore music state:", e);
+  }
+}
+
+// Restore saved transcripts into UI on application start
+function restoreSavedTranscripts() {
+  const canvas = getTranscriptCanvas();
+  if (!canvas || kairosChatHistory.length === 0) return;
+
+  kairosChatHistory.forEach(item => {
+    const role = item.role;
+    const text = item.parts && item.parts[0] ? item.parts[0].text : "";
+
+    if (!text) return;
+
+    if (role === "user") {
+      appendUserMessage(text, false);
+    } else if (role === "model") {
+      setKairosMessageText(renderMarkdownToHTML(text), false);
+    }
+  });
+}
+
 // ====================================================================
 // KAIROS MASTER KNOWLEDGE REGISTRY (FAQ & SYSTEM ABILITIES)
 // ====================================================================
@@ -1089,9 +1197,8 @@ Your knowledge base includes the following official operational parameters and F
 3. INTERACTIVE MEDIA CAPABILITIES:
 - You have direct, programmatic control over a crossfading dual-deck media system.
 - When users ask to "play [song name]", "pause", "resume", "skip/next", or "go back", you must yield to the script's local media interceptors.
-- If an escalation keyword is hit ("support", "live chat", "agent", "avaloncare"), notify the user they are being connected to Sarah, as the UI will redirect them to https://membership.avalonflow.site/livechat.
 
-3. Message to Yusra:
+4. Message to Yusra:
 - ‎Because we operate on an enterprise infrastructure, our project allocations, milestones, and release triggers are managed directly through our internal system so we can automate releases the moment the final delivery is approved, rather than accept proposals through third-party marketplace escrows.
 
 CONVERSATIONAL RULES:
@@ -1105,34 +1212,6 @@ CONVERSATIONAL RULES:
 // ==========================================
 function normalize(text) {
   return text.toLowerCase().replace(/[^\w\s]/g, '');
-}
-
-function similarity(a, b){
-    const aWords = normalize(a).split(' ');
-    const bWords = normalize(b).split(' ');
-    const important = ['password','ticket','support','billing','plan','rewards','custom','cycle','bond','app','notification'];
-    let score = 0;
-    aWords.forEach(w=>{
-        if(bWords.includes(w)){
-            score += important.includes(w) ? 2 : 1;
-        }
-    });
-    return score / bWords.length;
-}
-
-function findFAQByIntent(input) {
-  const text = input.toLowerCase();
-  let bestKey = null;
-  let maxSim = 0;
-
-  for (const key of Object.keys(PREMIUM_AUDIO_VAULT)) {
-    const simScore = similarity(text, key);
-    if (simScore > maxSim) {
-      maxSim = simScore;
-      bestKey = key;
-    }
-  }
-  return maxSim > 0.40 ? bestKey : null; 
 }
 
 function formatTrackTitle(filePath) {
@@ -1253,8 +1332,6 @@ function toggleDock(forcedState = null) {
   const dockWrap = document.querySelector('.assistant-dock-wrap') || document.getElementById('dockWrap');
   const collapsedView = document.getElementById('collapsedView');
   const expandedView = document.getElementById('expandedView');
-  const dockStatusText = document.getElementById('dockStatusText');
-  const statusTxt = getStatusTextElement();
 
   if (!dockWrap || !collapsedView || !expandedView) return;
 
@@ -1286,28 +1363,74 @@ function toggleDock(forcedState = null) {
     const deckB = document.getElementById('audioDeckB');
     const isMusicPlaying = (deckA && !deckA.paused && deckA.src) || (deckB && !deckB.paused && deckB.src);
 
-    if (isMusicPlaying) {
-      if (dockStatusText) dockStatusText.innerText = "Playing Audio Stream...";
-      if (statusTxt) statusTxt.innerText = "Playing Audio Stream...";
+    if (isMusicPlaying && activeDeck && activeDeck.src) {
+      updateStatusDisplay(`Playing ${formatTrackTitle(activeDeck.src)}...`);
     } else {
-      if (dockStatusText) dockStatusText.innerText = KAIROS_TITLE + "...";
-      if (statusTxt) statusTxt.innerText = KAIROS_TITLE + "...";
+      updateStatusDisplay(KAIROS_TITLE + "...");
     }
 
-    // Always keep the wave animation bars active when the dock is collapsed
     setTimeout(() => setWaveAnimationSpeed(true), 200); 
   }
 }
 
-// SAFE UI RENDERER: Appends a dedicated user message bubble with dynamic signature styling, ticks, and image-matched layout
-function appendUserMessage(text) {
+// ---------- Profile Picture Assets & Configuration ----------
+const photoInput = document.getElementById('photoInput');
+const profilePhoto = document.getElementById('profilePhoto');
+const DEFAULT_AVATAR = 'default-avatar.png';
+let isProcessing = false;
+
+if (profilePhoto) {
+    profilePhoto.addEventListener('click', () => {
+        if (isProcessing) return;
+        const hasPhoto = localStorage.getItem('profilePhoto');
+        if (hasPhoto) {
+            localStorage.removeItem('profilePhoto');
+            profilePhoto.src = DEFAULT_AVATAR;
+        } else {
+            if (photoInput) photoInput.click();
+        }
+    });
+}
+
+if (photoInput && profilePhoto) {
+    photoInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file || isProcessing) return;
+        isProcessing = true;
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const size = Math.min(img.width, img.height);
+                canvas.width = size;
+                canvas.height = size;
+
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, (img.width - size) / 2, (img.height - size) / 2, size, size, 0, 0, size, size);
+
+                const finalImage = canvas.toDataURL('image/png');
+                profilePhoto.src = finalImage;
+                localStorage.setItem('profilePhoto', finalImage);
+                photoInput.value = '';
+                setTimeout(() => { isProcessing = false; }, 300);
+            };
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+// SAFE UI RENDERER: Appends a dedicated user message bubble
+function appendUserMessage(text, scroll = true) {
   const canvas = getTranscriptCanvas();
   if (!canvas) return;
 
   const activeStream = canvas.querySelector('.streaming-text');
   if (activeStream) activeStream.classList.remove('streaming-text');
 
-  const profilePhotoSrc = document.getElementById('profilePhoto')?.getAttribute('src') || 'default-avatar.png';
+  const profilePhotoSrc = profilePhoto?.getAttribute('src') || DEFAULT_AVATAR;
   const userSig = getUserSignature();
   const timeStr = getCurrentTime();
 
@@ -1315,7 +1438,9 @@ function appendUserMessage(text) {
   msgWrap.className = 'msgWrap user-wrap';
   msgWrap.innerHTML = `
     <div class="chat-bubble user">
-        <div class="speaker-label">${userSig}</div>
+        <div class="chat-bubble-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <div class="speaker-label">${userSig}</div>${COPY_BTN_HTML}
+        </div>
         <p class="user-text" style="margin: 0; word-break: break-word;">${renderMarkdownToHTML(text)}</p>
         <div class="meta">
             <span class="timestamp">${timeStr}</span>
@@ -1325,11 +1450,11 @@ function appendUserMessage(text) {
     <img src="${profilePhotoSrc}" class="chat-bubble-avatar" alt="User Avatar" style="margin-left: 8px;">
   `;
   canvas.appendChild(msgWrap);
-  canvas.scrollTop = canvas.scrollHeight;
+  if (scroll) canvas.scrollTop = canvas.scrollHeight;
 }
 
-// SAFE UI RENDERER: Updates or appends Kairos responses safely without overlapping user bubbles (Tick marks excluded)
-function setKairosMessageText(formattedHtmlText) {
+// SAFE UI RENDERER: Updates or appends Kairos responses safely
+function setKairosMessageText(formattedHtmlText, scroll = true) {
   const canvas = getTranscriptCanvas();
   if (!canvas) return;
 
@@ -1344,7 +1469,9 @@ function setKairosMessageText(formattedHtmlText) {
     msgWrap.innerHTML = `
       <img src="${KAIROS_AVATAR}" class="chat-bubble-avatar" alt="Kairos Avatar" style="width: 28px; height: 28px; border-radius: 50%; margin-right: 8px;">
       <div class="chat-bubble kairos">
-          <div class="speaker-label" style="font-size: 0.75em; opacity: 0.7;">${KAIROS_TITLE}</div>
+          <div class="chat-bubble-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <div class="speaker-label" style="font-size: 0.75em; opacity: 0.7;">${KAIROS_TITLE}</div>${COPY_BTN_HTML}
+          </div>
           <p class="streaming-text" style="margin: 0; word-break: break-word;">${formattedHtmlText}</p>
           <div class="meta">
               <span class="timestamp">${timeStr}</span>
@@ -1354,110 +1481,7 @@ function setKairosMessageText(formattedHtmlText) {
     canvas.appendChild(msgWrap);
   }
   
-  canvas.scrollTop = canvas.scrollHeight;
-}
-
-
-// ==========================================
-// 6. UNIFIED BRAIN & INTENT ROUTER ENGINE
-// ==========================================
-function generateFollowUp(msg) {
-  const text = msg.toLowerCase();
-  if (text.length < 5) return "Can you tell me a bit more about what you need?";
-  if (/help|issue|problem|error|not working/.test(text)) return "Got you. Is this about a payment, account access, or something else?";
-  if (text.includes("?")) return "Are you asking about support, rewards, or your account?";
-  if (/money|earn|profit/.test(text)) return "Do you want to check your reward progress or understand how it works?";
-  return "What would you like help with—support, rewards, or dashboard settings?";
-}
-
-function detectIntent(msg){
-    const text = msg.toLowerCase();
-    if(/light mode|too dark|increase brightness/.test(text)) return {type:'theme', value:'light'};
-    if(/dark mode|too bright|reduce brightness/.test(text)) return {type:'theme', value:'dark'};
-    if(/ticket|complaint/.test(text)) return {type:'ticket'};
-    if(/logout|sign out/.test(text)) return {type:'logout'};
-    return {type:'chat'};
-}
-
-function generateSmartReply(msg) {
-  const text = msg.toLowerCase();
-  const shortReply = msg.trim().split(" ").length <= 2;
-
-  if (personality.lastIntent === "faq" && shortReply) {
-    personality.lastIntent = null;
-    return "Want me to break that specific resolution down step-by-step?";
-  }
-
-  const localFAQMatch = findFAQByIntent(msg);
-  if (localFAQMatch) {
-    personality.lastIntent = "faq";
-    return localFAQMatch;
-  }
-
-  const last = conversationMemory.slice(-2).map(m => m.content).join(" ").toLowerCase();
-  const lastBot = conversationMemory.filter(m => m.role === "bot").slice(-1)[0]?.content.toLowerCase() || "";
-
-  if (last.includes("password") && text.includes("not working")) {
-    return "Got it—you’re having trouble resetting your password. Are you seeing an error or just not receiving the link?";
-  }
-  if (last.includes("ticket") && /not working|failed|error/.test(text)) {
-    return "Is the ticket not generating or are you not seeing it in your dashboard?";
-  }
-
-  if (/yes|yeah|sure|ok/.test(text) && lastBot.includes("ticket")) {
-    if (typeof generateTicket === "function") generateTicket();
-    return "Done. Your support ticket has been created seamlessly.";
-  }
-
-  if (/no|not really/.test(text)) return "Alright. What would you like help with instead?";
-
-  if (/reward balance|progress|earnings balance|cashback/.test(text)) {
-    let unlocked = JSON.parse(localStorage.getItem('unlockedPlans')) || {};
-    let unlockTimes = JSON.parse(localStorage.getItem('unlockTimes')) || {};
-    let res = "Bond progress:\n";
-    let activeAny = false;
-
-    ['premium', 'basic', 'lite', 'custom'].forEach(plan => {
-      if (unlocked[plan]) {
-        activeAny = true;
-        const now = Date.now();
-        const elapsed = now - (unlockTimes[plan] || now);
-        const total = plan === 'premium' ? 14 * 86400000 : plan === 'basic' ? 28 * 86400000 : 42 * 86400000;
-        const percent = Math.min(100, Math.round((elapsed / total) * 100));
-        res += `${plan}:${percent}%\n`;
-      } else {
-        res += `${plan}: Locked\n`;
-      }
-    });
-    return activeAny ? res : "Bond progress:\npremium: Locked\nbasic: Locked\nlite: Locked\ncustom: Locked";
-  }
-
-  return generateFollowUp(msg);
-}
-
-function adaptTone(msg) {
-  const text = msg.toLowerCase();
-  if (/frustrated|angry|not working|annoying|stupid/.test(text)) {
-    personality.tone = "calm";
-    personality.userMood = "frustrated";
-  } else if (/thanks|nice|good|perfect/.test(text)) {
-    personality.tone = "friendly";
-    personality.userMood = "positive";
-  } else {
-    personality.tone = "neutral";
-  }
-}
-
-function humanize(text) {
-  if (!text) return "";
-  if (PREMIUM_AUDIO_VAULT[text]) return text;
-
-  const fillers = ["", "", "Alright… ", "Okay, so ", "Got it. ", "Hmm, ", "Let me see… ", "Right, ", "Makes sense. "];
-  let prefix = fillers[Math.floor(Math.random() * fillers.length)];
-
-  if (personality.tone === "calm") prefix = "I get how that can be frustrating. ";
-  if (personality.tone === "friendly") return prefix + text + " 👍";
-  return prefix + text;
+  if (scroll) canvas.scrollTop = canvas.scrollHeight;
 }
 
 function initializeSpatialEngine() {
@@ -1510,12 +1534,10 @@ function startAmbientAutoPanning() {
 }
 
 /**
- * MASTER ROUTING FRAMEWORK: Handles local logic routing for voice processing strings
+ * MASTER ROUTING FRAMEWORK: Handles local media interceptors & streams directly to LLM
  */
 async function processUserCommandLocally(commandText) {
   const lowerCommand = commandText.trim().toLowerCase();
-
-  setKairosMessageText("Thinking...");
 
   const deckA = document.getElementById('audioDeckA');
   const deckB = document.getElementById('audioDeckB');
@@ -1524,11 +1546,13 @@ async function processUserCommandLocally(commandText) {
   // --- INTERACTIVE MEDIA CONTROLS INTERCEPTORS ---
   if (
       lowerCommand === "pause" || 
-      /\b(pause|stop|halt|freeze|hold)\b/.test(lowerCommand) && /\b(music|audio|song|track|playing|it)\b/.test(lowerCommand)
+      (/\b(pause|stop|halt|freeze|hold)\b/.test(lowerCommand) && /\b(music|audio|song|track|playing|it)\b/.test(lowerCommand))
   ) {
       if (currentLiveDeck && !currentLiveDeck.paused) {
           currentLiveDeck.pause();
+          saveMusicState();
           speakResponse("Music paused. Let me know when you want to resume");
+          updateStatusDisplay("Music Paused");
       } else {
           speakResponse("There is no music playing right now");
       }
@@ -1538,11 +1562,13 @@ async function processUserCommandLocally(commandText) {
   if (
       lowerCommand === "resume" || lowerCommand === "continue" || lowerCommand === "unpause" ||
       /\b(resume|continue|unpause)\b/.test(lowerCommand) ||
-      /\b(play|start)\b/.test(lowerCommand) && /\b(again|music|track|song|audio|it)\b/.test(lowerCommand)
+      (/\b(play|start)\b/.test(lowerCommand) && /\b(again|music|track|song|audio|it)\b/.test(lowerCommand))
   ) {
       if (currentLiveDeck && currentLiveDeck.paused && currentLiveDeck.src) {
           currentLiveDeck.play().catch(err => console.log(err));
+          saveMusicState();
           speakResponse("Resuming track");
+          updateStatusDisplay(`Playing ${formatTrackTitle(currentLiveDeck.src)}...`);
       } else {
           speakResponse("No paused track found in the session queue");
       }
@@ -1551,7 +1577,7 @@ async function processUserCommandLocally(commandText) {
 
   if (
       lowerCommand === "next" || lowerCommand === "skip" ||
-      /\b(skip|next|change|forward)\b/.test(lowerCommand) && /\b(track|song|music|audio|this|one|it)\b/.test(lowerCommand) ||
+      (/\b(skip|next|change|forward)\b/.test(lowerCommand) && /\b(track|song|music|audio|this|one|it)\b/.test(lowerCommand)) ||
       lowerCommand.includes("play something else")
   ) {
       if (musicQueue.length > 0 && currentTrackIndex < musicQueue.length - 1) {
@@ -1560,7 +1586,7 @@ async function processUserCommandLocally(commandText) {
           if(deckA) deckA.ontimeupdate = null;
           if(deckB) deckB.ontimeupdate = null;
 
-          botMusicReply(`Skipping forward.`, nextFile);
+          botMusicReply(nextFile);
       } else if (musicQueue.length > 0) {
           speakResponse("You've reached the end of the current playlist stream");
       } else {
@@ -1571,7 +1597,7 @@ async function processUserCommandLocally(commandText) {
 
   if (
       lowerCommand === "prev" || lowerCommand === "previous" || lowerCommand === "back" ||
-      /\b(prev|previous|back|last)\b/.test(lowerCommand) && /\b(track|song|music|audio|one|it)\b/.test(lowerCommand) ||
+      (/\b(prev|previous|back|last)\b/.test(lowerCommand) && /\b(track|song|music|audio|one|it)\b/.test(lowerCommand)) ||
       lowerCommand.includes("go back")
   ) {
       if (musicQueue.length > 0 && currentTrackIndex > 0) {
@@ -1580,7 +1606,7 @@ async function processUserCommandLocally(commandText) {
           if(deckA) deckA.ontimeupdate = null;
           if(deckB) deckB.ontimeupdate = null;
 
-          botMusicReply(`Going back.`, prevFile);
+          botMusicReply(prevFile);
       } else if (currentTrackIndex === 0) {
           speakResponse("This is the very first track in the queue");
       } else {
@@ -1595,12 +1621,18 @@ async function processUserCommandLocally(commandText) {
           musicQueue = [...audioLibrary];
           currentTrackIndex = Math.floor(Math.random() * audioLibrary.length);
           const randomFile = musicQueue[currentTrackIndex];
-          botMusicReply(`Playing random track.`, randomFile);
+          botMusicReply(randomFile);
       } else {
           speakResponse("No worries. What else can i help you with?");
       }
       return;
   }
+
+// --- QUEUE / ADD TRACK COMMANDS ---
+if (lowerCommand.startsWith("queue ") || lowerCommand.startsWith("add ") || lowerCommand.includes("to queue")) {
+  handleYouTubeMusicSearch(lowerCommand, true);
+  return;
+}
 
   if (lowerCommand.startsWith("play ") || lowerCommand.includes("play me") || lowerCommand === "play") {
     const searchTarget = lowerCommand.replace("play me", "").replace("play", "").trim().replace(/[^a-z0-9]/g, "");
@@ -1614,12 +1646,12 @@ async function processUserCommandLocally(commandText) {
         const trackIdx = audioLibrary.indexOf(matchedFile);
         musicQueue = audioLibrary.slice(trackIdx);
         currentTrackIndex = 0;
-        botMusicReply(`Playing track.`, matchedFile);
+        botMusicReply(matchedFile);
     } else if (searchTarget === "") {
         musicQueue = [...audioLibrary];
         currentTrackIndex = Math.floor(Math.random() * audioLibrary.length);
         const randomFile = musicQueue[currentTrackIndex];
-        botMusicReply(`Playing random selection.`, randomFile);
+        botMusicReply(randomFile);
     } else if (lowerCommand.includes("youtube") || lowerCommand.includes("yt") || lowerCommand.includes("stream") || lowerCommand.includes("cloud")) {
         handleYouTubeMusicSearch(lowerCommand, false);
     } else {
@@ -1627,30 +1659,15 @@ async function processUserCommandLocally(commandText) {
         speakResponse("I couldn't find that track inside the vault directory. Want me to play a random one from the library instead?");
     }
     return;
-}
+  }
 
-  if (/^(hi|hello|hey|yo|wassup|kairos|sup|ski)\b/.test(lowerCommand)) {
+  if (/^(hi|hello|hey|yo|wassup|kairos|sup)\b/.test(lowerCommand) && lowerCommand.split(' ').length <= 2) {
     const lines = [
       "Yo! How can I help you today?", 
       "Hey there, i'm online how can i help you today?", 
       "Sup. What's on your mind?"
     ];
     speakResponse(lines[Math.floor(Math.random() * lines.length)]);
-    return;
-  }
-
-  const intent = detectIntent(commandText);
-  if (intent.type === 'theme') {
-    speakResponse(`Switched to ${intent.value} mode.`);
-    return;
-  }
-  if (intent.type === 'ticket') {
-    personality.lastIntent = "ticket";
-    speakResponse("Generate a ticket under technical category and describe the issue in detail");
-    return;
-  }
-  if (intent.type === 'logout') {
-    speakResponse("Logging you out...");
     return;
   }
 
@@ -1665,35 +1682,8 @@ async function processUserCommandLocally(commandText) {
     return;
   }
 
-  // ====================================================================
-  // 6a. LIVE CHAT ESCALATION LAYER
-  // ====================================================================
-  const localFAQMatch = findFAQByIntent(commandText);
-
-  if (!localFAQMatch) {
-    const escalationKeywords = ["withdrawal", "support", "dashboard", "help", "agent", "chat", "live"];
-    const needsEscalation = escalationKeywords.some(keyword => lowerCommand.includes(keyword));
-
-    if (needsEscalation) {
-      const escalationMessage = "That requires priority authorization. Hold on a moment while I connect your session directly with an agent...";
-      speakResponse(escalationMessage);
-
-      setKairosMessageText(`<strong>${escalationMessage}</strong><br><br><span style='opacity:0.6; font-size:0.9em;'>Connecting you with Sarah in a bit...</span>`);
-
-      setTimeout(() => {
-        window.location.href = "https://membership.avalonflow.site/livechat";
-      }, 12000);
-      return;
-    }
-  }
-
-  adaptTone(commandText);
-  const coreReplyText = generateSmartReply(commandText);
-
-  if (coreReplyText && coreReplyText !== generateFollowUp(commandText)) {
-    speakResponse(coreReplyText);
-    return;
-  }
+  // Set typing indicator in chat window while model produces content
+  setKairosMessageText("Thinking...");
 
   // Fallback A: Chrome Gemini Nano
   if (window.ai && window.ai.languageModel) {
@@ -1708,6 +1698,7 @@ async function processUserCommandLocally(commandText) {
 
         kairosChatHistory.push({ role: "user", parts: [{ text: commandText }] });
         kairosChatHistory.push({ role: "model", parts: [{ text: aiReply.trim() }] });
+        saveLLMHistory();
 
         speakResponse(aiReply.trim());
         return;
@@ -1717,7 +1708,7 @@ async function processUserCommandLocally(commandText) {
     }
   }
 
-  // Fallback B: Cloud Endpoint Session
+  // Fallback B: Primary API Model
   try {
     const GEMINI_API_KEY = KAIROS_KEYS.gemini || "";
     const PRIMARY_MODEL = "gemini-3.1-flash-lite"; 
@@ -1742,9 +1733,11 @@ async function processUserCommandLocally(commandText) {
 
     kairosChatHistory.push({ role: "user", parts: [{ text: commandText }] });
     kairosChatHistory.push({ role: "model", parts: [{ text: replyText }] });
+    saveLLMHistory();
 
     speakResponse(replyText);
   } catch (err) {
+    // Fallback C: Secondary API Model
     try {
       const GEMINI_API_KEY = KAIROS_KEYS.gemini || "";
       const FALLBACK_MODEL = "gemini-3.5-flash"; 
@@ -1769,10 +1762,11 @@ async function processUserCommandLocally(commandText) {
 
       kairosChatHistory.push({ role: "user", parts: [{ text: commandText }] });
       kairosChatHistory.push({ role: "model", parts: [{ text: replyText }] });
+      saveLLMHistory();
 
       speakResponse(replyText);
     } catch (fallbackErr) {
-      speakResponse(coreReplyText || "What would you like help with—support, rewards, or dashboard settings?");
+      speakResponse("What would you like help with—support, rewards, or dashboard settings?");
     }
   }
 }
@@ -1821,7 +1815,7 @@ async function speakResponse(rawResponseText) {
   }
 
   const vaultAssetPath = PREMIUM_AUDIO_VAULT[rawResponseText];
-  let typedChatText = vaultAssetPath ? rawResponseText : humanize(rawResponseText);
+  let typedChatText = rawResponseText;
 
   let spokenText = rawResponseText
     .replace(/-{3,}/g, '')        
@@ -1841,7 +1835,7 @@ async function speakResponse(rawResponseText) {
 
   chatHistory = chatHistory || [];
   chatHistory.push({ sender: 'bot', text: typedChatText, type: 'text', actualSender: 'kairos' });
-  localStorage.setItem('tg_chat_history_v3', JSON.stringify(chatHistory));
+  localStorage.setItem('tg_chat_history_v2', JSON.stringify(chatHistory));
 
   const transcriptCanvas = getTranscriptCanvas();
   if (!transcriptCanvas) return;
@@ -1853,7 +1847,7 @@ async function speakResponse(rawResponseText) {
     return;
   }
 
-  // --- VAULT PIPELINE (Pre-recorded Audio Assets) ---
+  // --- VAULT PIPELINE ---
   if (vaultAssetPath) {
     console.log(`🎵 Playing Premium Vault Audio Asset directly: ${vaultAssetPath}`);
     const nativeVaultAudio = new Audio(vaultAssetPath);
@@ -1876,7 +1870,7 @@ async function speakResponse(rawResponseText) {
 
       if (blockNextMicActivation || isMusicPlaying) {
         blockNextMicActivation = false;
-        return; // Music is active, keep pill open
+        return; 
       }
     };
 
@@ -1896,7 +1890,6 @@ async function speakResponse(rawResponseText) {
     return;
   }
 
-  // --- DIRECT ROUTING TO LOCAL ENGINE ---
   fallbackSynthesisExecution(spokenText, typedChatText, transcriptCanvas);
 }
 
@@ -1930,7 +1923,7 @@ function fallbackSynthesisExecution(spokenText, typedChatText, transcriptCanvas)
 
     if (blockNextMicActivation || isMusicPlaying) {
       blockNextMicActivation = false;
-      return; // Music active, keep pill open
+      return;
     }
   };
 
@@ -1945,17 +1938,16 @@ function fallbackSynthesisExecution(spokenText, typedChatText, transcriptCanvas)
 // ==========================================
 // 8. MULTI-DECK CROSSFADE ENGINE
 // ==========================================
-function botMusicReply(statusNotification, file) {
+function botMusicReply(file) {
     const trackTitle = formatTrackTitle(file);
-    const uiDisplayMessage = `Playing ${trackTitle}...`;
+
+    updateStatusDisplay(`Playing ${trackTitle}...`);
 
     const deckA = document.getElementById('audioDeckA');
     const deckB = document.getElementById('audioDeckB');
     if (!deckA || !deckB) return;
 
     blockNextMicActivation = true; 
-
-    speakResponse(uiDisplayMessage);
 
     let primaryDeck = activeDeck === deckA ? deckB : deckA;
     let secondaryDeck = activeDeck === deckA ? deckA : deckB;
@@ -1965,7 +1957,7 @@ function botMusicReply(statusNotification, file) {
         activeDeck.src = file;
         activeDeck.volume = 1;
         activeDeck.load();
-        activeDeck.play().catch(err => console.log(err));
+        activeDeck.play().then(() => saveMusicState()).catch(err => console.log(err));
         setupTrackEndMonitor(activeDeck);
     } else {
         executeCrossfade(secondaryDeck, primaryDeck, file);
@@ -2000,6 +1992,7 @@ function executeCrossfade(currentDeck, nextDeck, nextFile) {
 
     nextDeck.play().then(() => {
         setupTrackEndMonitor(nextDeck);
+        saveMusicState();
     }).catch(err => console.log("Crossfade play error:", err));
 
     activeDeck = nextDeck;
@@ -2043,6 +2036,8 @@ function setupTrackEndMonitor(audioDeck) {
     audioDeck.ontimeupdate = () => {
         if (!audioDeck.duration || audioDeck.duration === 0) return;
 
+        saveMusicState();
+
         const timeRemaining = audioDeck.duration - audioDeck.currentTime;
 
         if (timeRemaining <= crossfadeDuration) {
@@ -2053,24 +2048,9 @@ function setupTrackEndMonitor(audioDeck) {
                 const nextFile = musicQueue[currentTrackIndex];
                 let trackTitle = formatTrackTitle(nextFile);
 
-                const transitionPhrases = [
-                    `Playing next, ${trackTitle}...`,
-                    `Moving to next song in queue, ${trackTitle}...`,
-                    `Queue update! Next up is ${trackTitle}...`,
-                    `Dropping into ${trackTitle} right now...`,
-                    `Let's keep it rolling with ${trackTitle}...`,
-                    `Switching gears, here is ${trackTitle}...`,
-                    `Cueing up ${trackTitle} for you...`
-                ];
-
-                const randomAnnouncement = transitionPhrases[Math.floor(Math.random() * transitionPhrases.length)];
-
-                chatHistory = chatHistory || [];
-                chatHistory.push({ sender: 'bot', text: randomAnnouncement, type: 'text', actualSender: 'kairos' });
-                localStorage.setItem('tg_chat_history_v3', JSON.stringify(chatHistory));
+                updateStatusDisplay(`Next Up: ${trackTitle}...`);
 
                 blockNextMicActivation = true; 
-                speakResponse(randomAnnouncement);
 
                 const deckA = document.getElementById('audioDeckA');
                 const deckB = document.getElementById('audioDeckB');
@@ -2082,55 +2062,18 @@ function setupTrackEndMonitor(audioDeck) {
             } else {
                 audioDeck.onended = () => {
                     setWaveAnimationSpeed(false);
-                    blockNextMicActivation = false; // Reset music lock status
-                    const dockStatusText = document.getElementById('dockStatusText');
-                    const statusTxt = getStatusTextElement();
-                    if (dockStatusText) dockStatusText.innerText = KAIROS_TITLE + "...";
-                    if (statusTxt) statusTxt.innerText = KAIROS_TITLE + "...";
+                    blockNextMicActivation = false; 
+                    saveMusicState();
+                    updateStatusDisplay(KAIROS_TITLE + "...");
                 };
             }
         }
     };
 }
 
-// ====================================================================
-// 8b. INTEGRATED CLOUD STREAMING PIPELINE (PUBLIC API STREAMING VERSION)
-// ====================================================================
-async function handleYouTubeMusicSearch(commandText, isDelayedHandoff = false) {
-  const cleanCommand = commandText.toLowerCase().trim();
-
-  let searchQuery = cleanCommand
-    .replace(/\b(play me|play|search for|lookup|find|put on|open)\b/gi, "")
-    .replace(/\b(on youtube music|on yt music|in youtube music|in yt music)\b/gi, "")
-    .trim();
-
-  if (!searchQuery) return;
-
-  let optimizerTag = "";
-  if (!searchQuery.includes("radio") && !searchQuery.includes("mix") && !searchQuery.includes("album") && !searchQuery.includes("playlist")) {
-    optimizerTag = " mix";
-  }
-
-  const finalQuery = searchQuery + optimizerTag;
-  const displayTitle = searchQuery.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-
-  try {
-    const targetQuery = encodeURIComponent(finalQuery);
-    const streamUrl = `https://api.vexd.net/api/mp3?url=https://www.youtube.com/watch?v=${targetQuery}`;
-
-    if (isDelayedHandoff) {
-      musicQueue.push(streamUrl);
-      console.log(`[API Stream] Background queued cloud track: ${displayTitle}`);
-    } else {
-      botMusicReply(`Streaming "${displayTitle}"...`, streamUrl);
-    }
-  } catch (error) {
-    console.error("[API Stream Error]:", error);
-  }
-}
 
 // ==========================================
-// 9. HARDWARE VOICE RECOGNITION (DICTATION) - PATCHED INTERIM ENGINE
+// 9. HARDWARE VOICE RECOGNITION
 // ==========================================
 function killSpeechEngineCompletely() {
   isKairosListeningActive = false;
@@ -2156,12 +2099,7 @@ function activateKairosVoiceOnDemand() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRecognition) return;
 
-  const dockStatusText = document.getElementById('dockStatusText');
-  const statusTxt = getStatusTextElement();
-  const dockInput = document.getElementById('dockInput');
-
-  if (dockStatusText) dockStatusText.innerText = "Kairos is listening...";
-  if (statusTxt) statusTxt.innerText = "Kairos is listening...";
+  updateStatusDisplay("Kairos is listening...");
 
   toggleDock(true);
 
@@ -2187,6 +2125,7 @@ function activateKairosVoiceOnDemand() {
       }
     }
 
+    const dockInput = document.getElementById('dockInput');
     const currentSpokenText = finalTranscript || interimTranscript;
     if (dockInput && currentSpokenText.trim().length > 0) {
       dockInput.value = currentSpokenText.trim();
@@ -2204,8 +2143,7 @@ function activateKairosVoiceOnDemand() {
 
   kairosSpeechRecognizer.onerror = (err) => {
     if (err.error === 'not-allowed' || err.error === 'no-speech') {
-      if (dockStatusText) dockStatusText.innerText = "Mic access closed.";
-      if (statusTxt) statusTxt.innerText = "Mic access closed.";
+      updateStatusDisplay("Mic access closed.");
       if (micBtn) micBtn.classList.remove('recording');
       isProcessingCommand = false;
       updateSpeakingIndicator(false);
@@ -2301,7 +2239,7 @@ function sendMessage() {
   conversationMemory.push({ role: "user", content: text, time: Date.now() });
   chatHistory = chatHistory || [];
   chatHistory.push({ sender: 'user', text: text, type: "text" });
-  localStorage.setItem('tg_chat_history_v3', JSON.stringify(chatHistory));
+  localStorage.setItem('tg_chat_history_v2', JSON.stringify(chatHistory));
 
   processUserCommandLocally(text);
 
@@ -2321,7 +2259,7 @@ const botMessagesContainer = document.getElementById("transcriptCanvas");
 
 if (botInput) {
     botInput.addEventListener("input", () => {
-        const currentUserName = getUserDisplayName(); // Pulls name dynamically
+        const currentUserName = getUserDisplayName(); 
         if (!typingIndicatorEl) {
             typingIndicatorEl = document.createElement("div");
             typingIndicatorEl.className = "ambient";
@@ -2333,20 +2271,8 @@ if (botInput) {
             if(typingIndicatorEl) { typingIndicatorEl.remove(); typingIndicatorEl = null; }
         }, 1200);
     });
-
-    botInput.addEventListener('input', e => {
-        const msg = e.target.value.toLowerCase();
-        const autoSuggest = [
-            {keywords:['ticket','issue'], suggestion:"You can say 'generate ticket'."},
-            {keywords:['faq','question'], suggestion:"Ask your question directly to check database."},
-            {keywords:['quote','motivation'], suggestion:"Type 'quote' for motivation."}
-        ];
-        const found = autoSuggest.find(s => s.keywords.some(k => msg.includes(k)));
-        if(found && typeof notify === "function") notify(`💡 ${found.suggestion}`);
-    });
 }
 
-// Update inside activateKairosVoiceOnDemand() to handle "User is speaking..."
 let speakingIndicatorEl = null;
 
 function updateSpeakingIndicator(isSpeaking) {
@@ -2372,6 +2298,8 @@ function updateSpeakingIndicator(isSpeaking) {
 
 window.addEventListener('DOMContentLoaded', () => {
   sendVisitorDetailsToTelegram();
+  restoreSavedTranscripts();
+  restoreMusicState();
 
   const dockWrap = document.getElementById('dockWrap') || document.querySelector('.assistant-dock-wrap');
   const collapsedView = document.getElementById('collapsedView');
@@ -2403,7 +2331,6 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Bind Microphone Action Button
   if (dockMicBtn) {
     dockMicBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -2412,7 +2339,6 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Dynamic Auto-Expand Textarea Logic
   if (dockInput) {
     dockInput.addEventListener('input', function () {
       this.style.height = 'auto';
@@ -2429,12 +2355,9 @@ window.addEventListener('DOMContentLoaded', () => {
     dockInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        
         if (isMobile) {
-          // On mobile: Let Enter behave naturally (insert a newline)
           return;
         } else {
-          // On desktop: Shift + Enter sends the message, plain Enter lets textarea create a new line
           if (e.shiftKey) {
             e.preventDefault();
             sendMessage();
