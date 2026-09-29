@@ -1459,6 +1459,12 @@ CROP MODAL
 
                     const dataURL = canvas.toDataURL('image/png');
                     localStorage.setItem('profilePhoto', dataURL);
+
+                    // Sync DOM elements if already present
+                    const profilePhoto = document.getElementById('profilePhoto');
+                    const avatarLabel = document.getElementById('avatarLabel');
+                    if (profilePhoto) profilePhoto.src = dataURL;
+                    if (avatarLabel) avatarLabel.textContent = "Remove Profile Picture";
                 } catch (err) {
                     console.warn('Could not save initial profile picture:', err);
                 }
@@ -1486,97 +1492,101 @@ const cropImage = document.getElementById('cropImage');
 const DEFAULT_AVATAR = 'default-avatar.png';
 let isProcessing = false;
 
-/* ---------- 1. RESTORE ON LOAD ---------- */
+/* ---------- 1. RESTORE ON LOAD (UNIFIED HANDSHAKE) ---------- */
 document.addEventListener('DOMContentLoaded', () => {
     const savedPhoto = localStorage.getItem('profilePhoto');
     if (savedPhoto) {
-        profilePhoto.src = savedPhoto;
+        if (profilePhoto) profilePhoto.src = savedPhoto;
         if (avatarLabel) avatarLabel.textContent = "Remove Profile Picture";
     } else {
-        profilePhoto.src = DEFAULT_AVATAR;
+        if (profilePhoto) profilePhoto.src = DEFAULT_AVATAR;
         if (avatarLabel) avatarLabel.textContent = "Add Profile Picture";
     }
 });
 
 /* ---------- 2. CLICK TO ADD OR REMOVE ---------- */
-profilePhoto.addEventListener('click', () => {
-    if (isProcessing) return;
+if (profilePhoto) {
+    profilePhoto.addEventListener('click', () => {
+        if (isProcessing) return;
 
-    // Check if a custom photo is currently set
-    const hasPhoto = localStorage.getItem('profilePhoto');
+        // Check if a custom photo is currently set
+        const hasPhoto = localStorage.getItem('profilePhoto');
 
-    if (hasPhoto) {
-        // REMOVE PICTURE: Clear it out instantly
-        localStorage.removeItem('profilePhoto');
-        profilePhoto.src = DEFAULT_AVATAR;
-        if (avatarLabel) avatarLabel.textContent = "Add Profile Picture";
-    } else {
-        // ADD PICTURE: Open the file picker if it's empty
-        photoInput.click();
-    }
-});
+        if (hasPhoto) {
+            // REMOVE PICTURE: Clear it out instantly
+            localStorage.removeItem('profilePhoto');
+            profilePhoto.src = DEFAULT_AVATAR;
+            if (avatarLabel) avatarLabel.textContent = "Add Profile Picture";
+        } else {
+            // ADD PICTURE: Open the file picker if it's empty
+            if (photoInput) photoInput.click();
+        }
+    });
+}
 
 /* ---------- 3. AUTO PROCESS IMAGE ---------- */
-photoInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file || isProcessing) return;
+if (photoInput) {
+    photoInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file || isProcessing) return;
 
-    isProcessing = true;
+        isProcessing = true;
 
-    const reader = new FileReader();
+        const reader = new FileReader();
 
-    reader.onload = function(event) {
-        const rawImage = event.target.result;
-        const img = new Image();
-        img.src = rawImage;
+        reader.onload = function(event) {
+            const rawImage = event.target.result;
+            const img = new Image();
+            img.src = rawImage;
 
-        img.onload = function() {
-            const canvas = document.createElement('canvas');
-            const size = Math.min(img.width, img.height);
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const size = Math.min(img.width, img.height);
 
-            canvas.width = size;
-            canvas.height = size;
+                canvas.width = size;
+                canvas.height = size;
 
-            const ctx = canvas.getContext('2d');
+                const ctx = canvas.getContext('2d');
 
-            ctx.drawImage(
-                img,
-                (img.width - size) / 2,
-                (img.height - size) / 2,
-                size,
-                size,
-                0,
-                0,
-                size,
-                size
-            );
+                ctx.drawImage(
+                    img,
+                    (img.width - size) / 2,
+                    (img.height - size) / 2,
+                    size,
+                    size,
+                    0,
+                    0,
+                    size,
+                    size
+                );
 
-            const finalImage = canvas.toDataURL('image/png');
+                const finalImage = canvas.toDataURL('image/png');
 
-            // update avatar instantly
-            profilePhoto.src = finalImage;
+                // update avatar instantly
+                if (profilePhoto) profilePhoto.src = finalImage;
 
-            // save permanently
-            localStorage.setItem('profilePhoto', finalImage);
+                // save permanently
+                localStorage.setItem('profilePhoto', finalImage);
 
-            // Switch label text to show it can now be removed
-            if (avatarLabel) avatarLabel.textContent = "Remove Profile Picture";
+                // Switch label text to show it can now be removed
+                if (avatarLabel) avatarLabel.textContent = "Remove Profile Picture";
 
-            // close modal
-            if (cropModal) cropModal.classList.add('hidden');
+                // close modal
+                if (cropModal) cropModal.classList.add('hidden');
 
-            // reset input to prevent re-trigger bugs
-            photoInput.value = '';
+                // reset input to prevent re-trigger bugs
+                photoInput.value = '';
 
-            // unlock system shortly after
-            setTimeout(() => {
-                isProcessing = false;
-            }, 300);
+                // unlock system shortly after
+                setTimeout(() => {
+                    isProcessing = false;
+                }, 300);
+            };
         };
-    };
 
-    reader.readAsDataURL(file);
-});
+        reader.readAsDataURL(file);
+    });
+}
 
 // OPTIONAL: cancel just closes modal (if you still use it)
 if (typeof cancelCrop !== 'undefined' && cancelCrop) {
@@ -1639,39 +1649,41 @@ const updateSessionUI = () => {
     const state = getState(remaining);
 
     // reset styles
-    notification.classList.remove("warning-yellow", "warning-red");
+    if (notification) {
+        notification.classList.remove("warning-yellow", "warning-red");
 
-    // warnings (Uses the exact 200ms single pulse for both warning states)
-    if (state === "yellow") {
-        notification.classList.add("warning-yellow");
-        if (navigator.vibrate) navigator.vibrate(200);
-    }
+        // warnings (Uses the exact 200ms single pulse for both warning states)
+        if (state === "yellow") {
+            notification.classList.add("warning-yellow");
+            if (navigator.vibrate) navigator.vibrate(200);
+        }
 
-    if (state === "red") {
-        notification.classList.add("warning-red");
-        if (navigator.vibrate) navigator.vibrate(200);
-    }
+        if (state === "red") {
+            notification.classList.add("warning-red");
+            if (navigator.vibrate) navigator.vibrate(200);
+        }
 
-    // visibility rules (same as dashboard)
-    if (state === "hide_start") {
-        notification.classList.remove("show");
-    }
-    else if (state === "show_mid") {
-        notification.classList.add("show");
-    }
-    else if (state === "hide_mid") {
-        notification.classList.remove("show");
-    }
-    else {
-        notification.classList.add("show");
-    }
+        // visibility rules (same as dashboard)
+        if (state === "hide_start") {
+            notification.classList.remove("show");
+        }
+        else if (state === "show_mid") {
+            notification.classList.add("show");
+        }
+        else if (state === "hide_mid") {
+            notification.classList.remove("show");
+        }
+        else {
+            notification.classList.add("show");
+        }
 
-    // countdown text
-    const minutes = Math.floor(remaining / 60);
-    const seconds = remaining % 60;
+        // countdown text
+        const minutes = Math.floor(remaining / 60);
+        const seconds = remaining % 60;
 
-    notification.textContent =
-        `Contract-Agreement expires in ${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+        notification.textContent =
+            `Contract-Agreement expires in ${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    }
 };
 
 /* --------------------------
@@ -1961,7 +1973,7 @@ SESSION GUARD (WITH FADE-OUT & 15S DELAYED CLOSE)
 })();
 
 
-const urlParamsForReset = new  URLSearchParams(window.location.search);
+const urlParamsForReset = new URLSearchParams(window.location.search);
 if (urlParamsForReset.get('reset') === 'true') {
     localStorage.removeItem('avalonflow_contract_signed');
     localStorage.removeItem('avalonflow_contract_signed_date');
@@ -2049,7 +2061,7 @@ if (localStorage.getItem('avalonflow_contract_signed') === 'true') {
     window.location.replace(getContraRedirectUrl());
 }
 
-        // ==========================================
+    // ==========================================
     // 2. PERSISTENT TIMELINE MANAGER (LOCALSTORAGE - 1 WEEK / 7-DAY SPRINT)
     // ==========================================
     function initializeOrLoadSchedule() {
@@ -2486,9 +2498,9 @@ const audioLibrary = [
   "assets/audio/Last Name - Future.mp3",
   "assets/audio/Long Journey - Rod Wave.mp3",
   "assets/audio/Spaceship - Rod Wave.mp3",
-"assets/audio/All I Ever Had - Rod Wave.mp3",
-"assets/audio/2017 (Streamer U) - Rod Wave.mp3",
-"assets/audio/2002 - Anne-Marie.mp3",
+  "assets/audio/All I Ever Had - Rod Wave.mp3",
+  "assets/audio/2017 (Streamer U) - Rod Wave.mp3",
+  "assets/audio/2002 - Anne-Marie.mp3",
   "assets/audio/End of the Road - Rylo Rodriguez.mp3",
   "assets/audio/alright - Gunna.mp3",
   "assets/audio/Keep It G - Rod Wave.mp3",
@@ -2621,6 +2633,7 @@ function restoreSavedTranscripts() {
     }
   });
 }
+
 
 // ====================================================================
 // KAIROS MASTER KNOWLEDGE REGISTRY (FAQ & SYSTEM ABILITIES)
