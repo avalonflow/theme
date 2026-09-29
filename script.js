@@ -1,7 +1,7 @@
 /**
  * AvalonFlow: Kairos Intelligent Voice & UI Controller
  * Comprehensive Master Core Edition (Flicker-Free Optimized)
- * * PATCH VERIFIED: Persistent LLM & Interactive Music State Integration
+ * * PATCH VERIFIED: Persistent LLM & Interactive Music State Integration + Option B Full Shuffle
  */
 
 // ==========================================
@@ -240,9 +240,9 @@ const audioLibrary = [
   "assets/audio/Last Name - Future.mp3",
   "assets/audio/Long Journey - Rod Wave.mp3",
   "assets/audio/Spaceship - Rod Wave.mp3",
-"assets/audio/All I Ever Had - Rod Wave.mp3",
-"assets/audio/2017 (Streamer U) - Rod Wave.mp3",
-"assets/audio/2002 - Anne-Marie.mp3",
+  "assets/audio/All I Ever Had - Rod Wave.mp3",
+  "assets/audio/2017 (Streamer U) - Rod Wave.mp3",
+  "assets/audio/2002 - Anne-Marie.mp3",
   "assets/audio/End of the Road - Rylo Rodriguez.mp3",
   "assets/audio/alright - Gunna.mp3",
   "assets/audio/Keep It G - Rod Wave.mp3",
@@ -309,6 +309,38 @@ let musicQueue = [];
 let currentTrackIndex = -1;
 let activeDeck = null;
 const crossfadeDuration = 10; 
+
+// ==========================================
+// OPTION B: FULL SHUFFLE QUEUE LOGIC
+// ==========================================
+function initializeOptionBQueue(libraryArray, initialTrackFile = null) {
+  // Clone the library array to avoid mutating the master list
+  let shuffledPool = [...libraryArray];
+  
+  // Fisher-Yates Shuffle Algorithm for true randomization
+  for (let i = shuffledPool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledPool[i], shuffledPool[j]] = [shuffledPool[j], shuffledPool[i]];
+  }
+
+  musicQueue = shuffledPool;
+
+  // If a specific track was requested, place it at the current index, 
+  // ensuring the rest of the randomized library loops before/after it.
+  if (initialTrackFile) {
+    const targetIdx = musicQueue.indexOf(initialTrackFile);
+    if (targetIdx !== -1) {
+      currentTrackIndex = targetIdx;
+    } else {
+      currentTrackIndex = 0;
+    }
+  } else {
+    currentTrackIndex = 0;
+  }
+
+  saveMusicState();
+  console.log("🔀 Option B (Full Shuffle) Queue Initialized. Total tracks:", musicQueue.length);
+}
 
 // Persistent Music Engine State Loader & Saver
 function saveMusicState() {
@@ -405,6 +437,7 @@ Your knowledge base includes the following official operational parameters and F
 3. INTERACTIVE MEDIA CAPABILITIES:
 - You have direct, programmatic control over a crossfading dual-deck, spatial panning media system.
 - When users ask to "play [song name]", "pause", "resume", "skip/next", or "go back", you must yield to the script's local media interceptors.
+- **INTELLIGENT MUSIC CURATION:** When a user asks for a mood, genre, or style of music (e.g., "play some chill music", "sad songs", "something upbeat"), scan the available library tracks below and respond with a JSON block in this exact format: \`{"action": "play_track", "filename": "exact_filename_from_library.mp3"}\` followed by a short friendly message.
 
 4. CONTRACTOR GUIDANCE & PROJECT BRIEF (VISUAL SYSTEM DESIGN):
 - Independent Contractor Agreement Overview: Commissioned for $8,350.00 USD under a 1-week execution schedule.
@@ -467,7 +500,7 @@ function formatTrackTitle(filePath) {
         let title = toTitleCase(parts[0].trim());
         let featuredArtist = toTitleCase(parts[1].trim());
         let leadArtist = parts[2] ? toTitleCase(parts[2].trim()) : "Rod Wave";
-        return `${title} by ${leadArtist} Ft ${featuredArtist}`;
+        return `${title} by ${leadArtist} Ft${featuredArtist}`;
     }
 
     if (name.includes('-')) {
@@ -478,8 +511,7 @@ function formatTrackTitle(filePath) {
 
         if (artist) {
             let title = (part1.toLowerCase().includes(artist.toLowerCase())) ? part2 : part1;
-            // FIXED: Added space between 'by' and '${toTitleCase(artist)}'
-            return `${toTitleCase(title)} by ${toTitleCase(artist)}`;
+            return `${toTitleCase(title)} by${toTitleCase(artist)}`;
         }
     }
 
@@ -620,11 +652,9 @@ function initProfilePhotoController() {
   let isProcessing = false;
 
   if (profilePhoto) {
-    // Restore profile picture from localStorage on DOM Ready
     const savedPhoto = localStorage.getItem('profilePhoto');
     profilePhoto.src = savedPhoto ? savedPhoto : DEFAULT_AVATAR;
 
-    // Toggle photo removal or trigger upload
     profilePhoto.addEventListener('click', () => {
       if (isProcessing) return;
       const hasPhoto = localStorage.getItem('profilePhoto');
@@ -668,7 +698,6 @@ function initProfilePhotoController() {
   }
 }
 
-// Call inside DOMContentLoaded to ensure elements exist before attaching listeners
 document.addEventListener('DOMContentLoaded', initProfilePhotoController);
 
 
@@ -680,7 +709,6 @@ function appendUserMessage(text, scroll = true) {
   const activeStream = canvas.querySelector('.streaming-text');
   if (activeStream) activeStream.classList.remove('streaming-text');
 
-  // Pull directly from localStorage or DOM element, fallback to default asset
   const savedPhoto = localStorage.getItem('profilePhoto');
   const profilePhotoEl = document.getElementById('profilePhoto');
   const profilePhotoSrc = savedPhoto || (profilePhotoEl ? profilePhotoEl.getAttribute('src') : DEFAULT_AVATAR);
@@ -873,8 +901,7 @@ async function processUserCommandLocally(commandText) {
   if (expectingMusicResponse) {
       expectingMusicResponse = false;
       if (/^(yes|yeah|yup|sure|ok|please)\b/.test(lowerCommand)) {
-          musicQueue = [...audioLibrary];
-          currentTrackIndex = Math.floor(Math.random() * audioLibrary.length);
+          initializeOptionBQueue(audioLibrary);
           const randomFile = musicQueue[currentTrackIndex];
           botMusicReply(randomFile);
       } else {
@@ -883,11 +910,10 @@ async function processUserCommandLocally(commandText) {
       return;
   }
 
-// --- QUEUE / ADD TRACK COMMANDS ---
-if (lowerCommand.startsWith("queue ") || lowerCommand.startsWith("add ") || lowerCommand.includes("to queue")) {
-  handleYouTubeMusicSearch(lowerCommand, true);
-  return;
-}
+  if (lowerCommand.startsWith("queue ") || lowerCommand.startsWith("add ") || lowerCommand.includes("to queue")) {
+    handleYouTubeMusicSearch(lowerCommand, true);
+    return;
+  }
 
   if (lowerCommand.startsWith("play ") || lowerCommand.includes("play me") || lowerCommand === "play") {
     const searchTarget = lowerCommand.replace("play me", "").replace("play", "").trim().replace(/[^a-z0-9]/g, "");
@@ -898,13 +924,12 @@ if (lowerCommand.startsWith("queue ") || lowerCommand.startsWith("add ") || lowe
     });
 
     if (matchedFile) {
-        const trackIdx = audioLibrary.indexOf(matchedFile);
-        musicQueue = audioLibrary.slice(trackIdx);
-        currentTrackIndex = 0;
+        // Option B Integration: Initialize full shuffle pool, positioning matched track in deck
+        initializeOptionBQueue(audioLibrary, matchedFile);
         botMusicReply(matchedFile);
     } else if (searchTarget === "") {
-        musicQueue = [...audioLibrary];
-        currentTrackIndex = Math.floor(Math.random() * audioLibrary.length);
+        // General play / shuffle request
+        initializeOptionBQueue(audioLibrary);
         const randomFile = musicQueue[currentTrackIndex];
         botMusicReply(randomFile);
     } else if (lowerCommand.includes("youtube") || lowerCommand.includes("yt") || lowerCommand.includes("stream") || lowerCommand.includes("cloud")) {
@@ -937,12 +962,21 @@ if (lowerCommand.startsWith("queue ") || lowerCommand.startsWith("add ") || lowe
     return;
   }
 
-    // Set typing indicator in chat window while model produces content
+  // Set typing indicator in chat window while model produces content
   setKairosMessageText("Thinking...");
 
-  // Build dynamic system instruction with user's actual name
   const userName = getUserDisplayName();
-  const dynamicSystemInstruction = `${KAIROS_MASTER_KNOWLEDGE}\n\nThe user's name is ${userName}. Address them naturally by name when appropriate.`;
+  
+  // Dynamically inject the complete audioLibrary catalog array into the system instructions
+  const liveCatalogList = audioLibrary.map(path => `- ${path}`).join('\n');
+  const dynamicSystemInstruction = `
+${KAIROS_MASTER_KNOWLEDGE}
+
+Live Library Catalog (Direct Array Access):
+${liveCatalogList}
+
+The user's name is ${userName}. Address them naturally by name when appropriate.
+`;
 
   // Fallback A: Chrome Gemini Nano
   if (window.ai && window.ai.languageModel) {
@@ -959,7 +993,7 @@ if (lowerCommand.startsWith("queue ") || lowerCommand.startsWith("add ") || lowe
         kairosChatHistory.push({ role: "model", parts: [{ text: aiReply.trim() }] });
         saveLLMHistory();
 
-        speakResponse(aiReply.trim());
+        handleLLMResponseOutput(aiReply.trim());
         return;
       }
     } catch (e) {
@@ -998,25 +1032,52 @@ if (lowerCommand.startsWith("queue ") || lowerCommand.startsWith("add ") || lowe
     }
   }
 
-
   try {
     const replyText = await sendWithRetry(PRIMARY_MODEL, 2);
     kairosChatHistory.push({ role: "user", parts: [{ text: commandText }] });
     kairosChatHistory.push({ role: "model", parts: [{ text: replyText }] });
     saveLLMHistory();
-    speakResponse(replyText);
+    handleLLMResponseOutput(replyText);
   } catch (primaryErr) {
     try {
       const replyText = await sendWithRetry(FALLBACK_MODEL, 2);
       kairosChatHistory.push({ role: "user", parts: [{ text: commandText }] });
       kairosChatHistory.push({ role: "model", parts: [{ text: replyText }] });
       saveLLMHistory();
-      speakResponse(replyText);
+      handleLLMResponseOutput(replyText);
     } catch (fallbackErr) {
       console.error("All retries failed across both models:", fallbackErr);
       speakResponse("I'm having trouble connecting right now. Please check your network and try again.");
     }
   }
+}
+
+// --- INTELLIGENT MUSIC ACTION PARSER ---
+function handleLLMResponseOutput(responseText) {
+  let cleanText = responseText;
+
+  if (responseText.includes('{"action": "play_track"')) {
+    try {
+      const jsonStart = responseText.indexOf('{');
+      const jsonEnd = responseText.lastIndexOf('}') + 1;
+      const jsonString = responseText.substring(jsonStart, jsonEnd);
+      const actionData = JSON.parse(jsonString);
+
+      if (actionData.action === "play_track" && actionData.filename) {
+        cleanText = responseText.replace(jsonString, "").trim();
+        
+        const targetFile = audioLibrary.find(file => file.includes(actionData.filename));
+        if (targetFile) {
+          initializeOptionBQueue(audioLibrary, targetFile);
+          botMusicReply(targetFile);
+        }
+      }
+    } catch (e) {
+      console.warn("Failed to parse intelligent music action payload:", e);
+    }
+  }
+
+  speakResponse(cleanText);
 }
 
 // ==========================================
@@ -1307,6 +1368,23 @@ function setupTrackEndMonitor(audioDeck) {
 
                 executeCrossfade(secondaryDeck, primaryDeck, nextFile);
                 setTimeout(() => setWaveAnimationSpeed(true), 200); 
+            } else if (musicQueue.length > 0 && currentTrackIndex >= musicQueue.length - 1) {
+                // Option B Continuous Full Loop: Reshuffle and restart seamlessly
+                console.log("🔄 Playlist stream ended. Reshuffling full library deck for continuous loop.");
+                initializeOptionBQueue(audioLibrary);
+                const nextFile = musicQueue[currentTrackIndex];
+                let trackTitle = formatTrackTitle(nextFile);
+
+                updateStatusDisplay(`Looping: ${trackTitle}...`);
+                blockNextMicActivation = true;
+
+                const deckA = document.getElementById('audioDeckA');
+                const deckB = document.getElementById('audioDeckB');
+                let primaryDeck = activeDeck === deckA ? deckB : deckA;
+                let secondaryDeck = activeDeck === deckA ? deckA : deckB;
+
+                executeCrossfade(secondaryDeck, primaryDeck, nextFile);
+                setTimeout(() => setWaveAnimationSpeed(true), 200);
             } else {
                 audioDeck.onended = () => {
                     setWaveAnimationSpeed(false);
@@ -1451,7 +1529,6 @@ function wakeUpKairosWithGreeting() {
 
   toggleDock(true);
 
-  // Retrieve user name dynamically
   const userName = getUserDisplayName();
   const displayName = userName !== "You" ? ` ${userName}` : "";
 
