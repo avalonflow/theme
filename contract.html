@@ -1210,20 +1210,6 @@ CROP MODAL
         </div>
 
         <h2>1. Scope of Work & Comprehensive Deliverables</h2>
-<div class="video-container">
-    <video id="ecosystemVideo" controls controlsList="nodownload" loop muted autoplay>
-        <source src="assets/pictures/Project_Brief.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
-    <div class="video-overlay">
-        <span class="video-tag" id="liveMetrics">Live Metrics: 92% Uptime</span>
-    </div>
-    <div class="video-controls">
-        <label for="volumeControl" style="margin-right:6px;">Volume: </label>
-        <input type="range" id="volumeControl" min="0" max="1" step="0.05" value="1">
-    </div>
-</div>
-
         <p>The Contractor agrees to perform specialized visual system design services for AvalonFlow Corp ("Client"). The specific deliverables under this Agreement include:</p>
         <ul>
             <li><strong>Icon System & Usage Guide:</strong> A comprehensive 4–6 page PDF document defining the core visual design language, geometric rules, rationale behind each icon (Safety, Sync, Compliance, Support), and implementation guidelines (including light/dark mode UI mockups).</li>
@@ -3884,41 +3870,6 @@ window.addEventListener('DOMContentLoaded', () => {
             window.location.replace(getContraRedirectUrl());
         }, 800);
     }
-
-
-// Video Volume Control
-const video = document.getElementById('ecosystemVideo');
-const volumeControl = document.getElementById('volumeControl');
-
-volumeControl.addEventListener('input', (e) => {
-    video.volume = e.target.value;
-});
-
-// Intercept and block play/pause triggers
-video.addEventListener('pause', () => {
-    video.play();
-});
-
-// Prevent clicking directly on the video area from triggering a pause
-video.addEventListener('click', (e) => {
-    e.preventDefault();
-});
-
-// Live Metrics Update
-const metricsEl = document.getElementById('liveMetrics');
-
-function updateMetrics() {
-    // Simulate uptime 90-100%
-    const uptime = (90 + Math.random() * 10).toFixed(1);
-    
-    // Simulate processing load 40-80%
-    const load = (40 + Math.random() * 40).toFixed(0);
-
-    metricsEl.textContent = `Live Metrics: ${uptime}% Uptime | Load: ${load}%`;
-}
-
-// Update every 1 second
-setInterval(updateMetrics, 1000);
 
 </script>
 </body>
