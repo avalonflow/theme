@@ -2062,6 +2062,66 @@ if (urlParamsForReset.get('reset') === 'true') {
 if (localStorage.getItem('avalonflow_contract_signed') === 'true') {
     window.location.replace(getContraRedirectUrl());
 }
+
+/**
+ * AvalonFlow: Kairos Intelligent Voice & UI Controller
+ * Comprehensive Master Core Edition (Flicker-Free Optimized)
+ * * PATCH VERIFIED: Persistent LLM & Interactive Music State Integration
+ */
+
+// ==========================================
+// DYNAMIC TIME & USER IDENTITY RESOLVER (SYNCHRONIZED)
+// ==========================================
+function getCurrentTime() {
+  return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+}
+
+function getUserDisplayName() {
+  try {
+    const localData = localStorage.getItem("section2Data");
+    if (localData) {
+      const savedData = JSON.parse(localData);
+      // Priority 1: Original key 'fullName'
+      if (savedData.fullName) {
+        const rawFirstName = savedData.fullName.trim().split(" ")[0];
+        return rawFirstName.charAt(0).toUpperCase() + rawFirstName.slice(1).toLowerCase();
+      }
+      // Priority 2: Alternative fallback keys
+      if (savedData.name) return savedData.name.trim().split(" ")[0];
+      if (savedData.displayName) return savedData.displayName.trim().split(" ")[0];
+      if (savedData.firstName) return savedData.firstName.trim();
+    }
+  } catch (e) {
+    console.error("Failed to parse registration name metrics:", e);
+  }
+  return "You";
+}
+
+function getUserSignature() {
+  const name = getUserDisplayName();
+  return `◆━ ${name} ━◆`;
+}
+
+// Update initial static time on load
+document.addEventListener('DOMContentLoaded', () => {
+  const initialTimeElem = document.getElementById('initialKairosTime');
+  if (initialTimeElem) {
+    initialTimeElem.textContent = getCurrentTime();
+  }
+});
+
+function copyText(btn) {
+  const bubble = btn.closest('.chat-bubble');
+  if (!bubble) return;
+
+  const textElem = bubble.querySelector('.streaming-text, .user-text, p');
+  if (textElem) {
+    navigator.clipboard.writeText(textElem.innerText);
+  }
+}
+
+
+
         // ==========================================
     // 2. PERSISTENT TIMELINE MANAGER (LOCALSTORAGE - 1 WEEK / 7-DAY SPRINT)
     // ==========================================
