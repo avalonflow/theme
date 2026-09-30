@@ -5,7 +5,7 @@
  */
 
 // ==========================================
-// DYNAMIC TIME & USER IDENTITY RESOLVER (SYNCHRONIZED)
+// DYNAMIC TIME & USER IDENTITY RESOLVER (MIRRORING SCRIPT A)
 // ==========================================
 function getCurrentTime() {
   return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
@@ -13,21 +13,17 @@ function getCurrentTime() {
 
 function getUserDisplayName() {
   try {
+    // Mirror the exact name synced by Script A into localStorage
     const localData = localStorage.getItem("section2Data");
     if (localData) {
       const savedData = JSON.parse(localData);
-      // Priority 1: Original key 'fullName'
-      if (savedData.fullName) {
+      if (savedData.fullName && savedData.fullName.trim() !== "") {
         const rawFirstName = savedData.fullName.trim().split(" ")[0];
         return rawFirstName.charAt(0).toUpperCase() + rawFirstName.slice(1).toLowerCase();
       }
-      // Priority 2: Alternative fallback keys
-      if (savedData.name) return savedData.name.trim().split(" ")[0];
-      if (savedData.displayName) return savedData.displayName.trim().split(" ")[0];
-      if (savedData.firstName) return savedData.firstName.trim();
     }
   } catch (e) {
-    console.error("Failed to parse registration name metrics:", e);
+    console.error("Failed to read synced contractor name:", e);
   }
   return "You";
 }
@@ -44,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initialTimeElem.textContent = getCurrentTime();
   }
 });
+
 
 function copyText(btn) {
   const bubble = btn.closest('.chat-bubble');
