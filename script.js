@@ -253,11 +253,18 @@ const audioLibrary = [
 "assets/audio/Nothing But You - Zoe Wees.mp3",
 "assets/audio/Not New To It - Rod Wave.mp3",
 "assets/audio/Never Mind - Rod Wave.mp3",
-"assets/audio/Sailor Song - Gigi Perez.mp3"
+"assets/audio/Sailor Song - Gigi Perez.mp3",
 "assets/audio/SNAP - Rosa Linn.mp3",
 "assets/audio/Rewrite The Stars - James Arthur.mp3",
 "assets/audio/Rest of My Life - Keenan Te.mp3",
+"assets/audio/War Wounds - Rod Wave.mp3",
+"assets/audio/Venusian - Rod Wave.mp3",
+"assets/audio/TP - Rod Wave.mp3",
+"assets/audio/The Inspo - Rod Wave.mp3",
+"assets/audio/Stay - Rihanna.mp3",
 "assets/audio/Piece Of Your Love - Rod Wave.mp3",
+"assets/audio/bloodstream - Alyssa Grace.mp3",
+"assets/audio/that way - Tate McRae.mp3",
   "assets/audio/Spaceship - Rod Wave.mp3",
   "assets/audio/All I Ever Had - Rod Wave.mp3",
   "assets/audio/2017 (Streamer U) - Rod Wave.mp3",
@@ -507,10 +514,10 @@ function formatTrackTitle(filePath) {
     const toTitleCase = (str) => str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 
     const knownArtists = [
-        "Adele", "Asake", "Anne Marie", "Central Cee", "Charlie Puth", "Christina Perri", "Drake", "Ed Sheeran", 
-        "Fridayy", "Fola", "Future", "Gigi Perez", "Gracie Abrams", "Gunna", "James Arthur", "Justin Bieber", "JP Saxe",
-        "Kate Bush", "Keenan Te", "Kodak Black", "Lewis Capaldi", "Lil Durk", "Migos", "Post Malone", 
-        "Quavo", "Rod Wave", "Rosa Linn", "Rylo Rodriguez", "Sasha Alex Sloan", "SZA", "Tatiana Manaois", "Tee Grizzley", "Toosii", 
+        "Adele", "Asake", "Alyssa Grace", "Anne Marie", "Arrdee", "Burna Boy", "Central Cee", "Charlie Puth", "Christina Perri", "Drake", "Ed Sheeran", "Eminem",
+        "Fridayy", "Fola", "Future", "Gigi Perez", "Gracie Abrams", "Gunna", "James Arthur", "Juice Wrld", "Justin Bieber", "JP Saxe",
+        "Kate Bush", "Keenan Te", "Kodak Black", "Lewis Capaldi", "Lil Durk", "Migos", "Maroon 5", "Nicki Minaj", "Post Malone", 
+        "Quavo", "Rihanna", "Rod Wave", "Rosa Linn", "Rylo Rodriguez", "Sasha Alex Sloan", "SZA", "Tate McRae", "Tatiana Manaois", "Tee Grizzley", "Toosii", 
         "Whitney Houston", "Wiz Khalifa", "Young Thug", "YoungBoy Never Broke Again", "ZAYN", "Zoe Wees" 
     ];
 
