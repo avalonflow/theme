@@ -12,7 +12,6 @@ function getCurrentTime() {
 
 function getUserDisplayName() {
   try {
-    // Mirror the exact contractor name resolved and synced by Script A
     const localData = localStorage.getItem("section2Data");
     if (localData) {
       const savedData = JSON.parse(localData);
@@ -60,7 +59,7 @@ let selectedFemaleVoice = null;
 
 let voiceSilenceTimer = null;
 let gatheredUserCommand = "";
-let isProcessingCommand = false;
+let isKairosCommandProcessing = false;
 let activeTypingInterval = null;
 
 let blockNextMicActivation = false; 
@@ -71,7 +70,6 @@ const MUSIC_STATE_KEY = 'avalon_music_state_v1';
 
 // Load LLM Chat History context from LocalStorage
 let kairosChatHistory = JSON.parse(localStorage.getItem(LLM_HISTORY_KEY)) || [];
-let chatHistory = JSON.parse(localStorage.getItem('tg_chat_history_v2')) || [];
 let conversationMemory = []; 
 
 const SILENCE_WAIT_TIME = 10000; 
@@ -463,7 +461,7 @@ function formatTrackTitle(filePath) {
         let title = toTitleCase(parts[0].trim());
         let featuredArtist = toTitleCase(parts[1].trim());
         let leadArtist = parts[2] ? toTitleCase(parts[2].trim()) : "Rod Wave";
-        return `${title} by ${leadArtist} Ft ${featuredArtist}`;
+        return `${title} by ${leadArtist} Ft${featuredArtist}`;
     }
 
     if (name.includes('-')) {
@@ -474,7 +472,7 @@ function formatTrackTitle(filePath) {
 
         if (artist) {
             let title = (part1.toLowerCase().includes(artist.toLowerCase())) ? part2 : part1;
-            return `${toTitleCase(title)} by ${toTitleCase(artist)}`;
+            return `${toTitleCase(title)} by${toTitleCase(artist)}`;
         }
     }
 
@@ -585,7 +583,7 @@ function toggleDock(forcedState = null) {
     expandedView.classList.add('d-none');
     collapsedView.classList.remove('d-none');
 
-    isProcessingCommand = false;
+    isKairosCommandProcessing = false;
     gatheredUserCommand = "";
     if (voiceSilenceTimer) clearTimeout(voiceSilenceTimer);
 
@@ -615,7 +613,6 @@ function appendUserMessage(text, scroll = true) {
   const activeStream = canvas.querySelector('.streaming-text');
   if (activeStream) activeStream.classList.remove('streaming-text');
 
-  // Read saved image safely from localStorage without scope collisions
   const savedPhoto = localStorage.getItem('profilePhoto');
   const profilePhotoEl = document.getElementById('profilePhoto');
   const fallbackDefault = 'default-avatar.png';
@@ -721,16 +718,6 @@ function startAmbientAutoPanning() {
       if (activeDeck === deckB && pannerNodeB) pannerNodeB.pan.value = panValue;
     }
   }, 50);
-}
-
-// Helper stub for audio responses
-function speakResponse(text) {
-  setKairosMessageText(renderMarkdownToHTML(text));
-  if (kairosVoiceEngine && selectedFemaleVoice) {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.voice = selectedFemaleVoice;
-    kairosVoiceEngine.speak(utterance);
-  }
 }
 
 function botMusicReply(trackFile) {
@@ -998,3 +985,469 @@ function handleLLMResponseOutput(responseText) {
 
   speakResponse(cleanText);
 }
+
+// =========================================================
+// KAIROS VOICE & MEDIA SYSTEM
+// =========================================================
+
+function setWaveAnimationSpeed(isSpeaking) {
+  const strokes = document.querySelectorAll('.audio-wave-pill .stroke');
+
+  const deckA = document.getElementById('audioDeckA');
+  const deckB = document.getElementById('audioDeckB');
+  const isMusicPlaying = (deckA && !deckA.paused && deckA.src) || (deckB && !deckB.paused && deckB.src);
+
+  const shouldAnimate = isSpeaking || isMusicPlaying;
+
+  strokes.forEach((stroke) => {
+    stroke.style.animationPlayState = shouldAnimate ? 'running' : 'paused';
+  });
+}
+
+function startSyncedTextAnimation(transcriptCanvas, words, msPerWord) {
+  if (typeof activeTypingInterval !== 'undefined' && activeTypingInterval) {
+    clearInterval(activeTypingInterval);
+  }
+
+  let wordIndex = 0;
+
+  activeTypingInterval = setInterval(() => {
+    if (wordIndex < words.length) {
+      const currentSegment = words.slice(0, wordIndex + 1).join(" ");
+      if (typeof setKairosMessageText === 'function') {
+        setKairosMessageText(renderMarkdownToHTML(currentSegment));
+      }
+      wordIndex++;
+    } else {
+      clearInterval(activeTypingInterval);
+      activeTypingInterval = null;
+    }
+  }, msPerWord);
+}
+
+async function speakResponse(rawResponseText) {
+  stopActiveKairosVoice();
+  killSpeechEngineCompletely(); 
+
+  if (typeof activeTypingInterval !== 'undefined' && activeTypingInterval) {
+    clearInterval(activeTypingInterval);
+    activeTypingInterval = null;
+  }
+
+  const vaultAssetPath = (typeof PREMIUM_AUDIO_VAULT !== 'undefined') ? PREMIUM_AUDIO_VAULT[rawResponseText] : null;
+  let typedChatText = rawResponseText;
+
+  let spokenText = rawResponseText
+    .replace(/-{3,}/g, '')        
+    .replace(/[#*`_~]/g, '')       
+    .replace(/[^\x00-\x7F]/g, "") 
+    .replace(/\s+/g, ' ')         
+    .trim();
+
+  if (!vaultAssetPath) {
+    if (!/[\.\!\?]$/.test(typedChatText)) {
+      typedChatText = typedChatText.replace(/[\.\!\?]+$/, "").trim() + ".";
+    }
+  }
+
+  if (typeof conversationMemory !== 'undefined') {
+    conversationMemory.push({ role: "bot", content: typedChatText, time: Date.now() });
+    if (conversationMemory.length > 10) conversationMemory.shift();
+  }
+
+  const transcriptCanvas = (typeof getTranscriptCanvas === 'function') ? getTranscriptCanvas() : null;
+  if (!transcriptCanvas && !vaultAssetPath) return;
+
+  const words = typedChatText.split(" ");
+
+  if (!spokenText) {
+    isKairosCommandProcessing = false;
+    return;
+  }
+
+  if (vaultAssetPath) {
+    console.log(`🎵 Playing Premium Vault Audio Asset directly: ${vaultAssetPath}`);
+    const nativeVaultAudio = new Audio(vaultAssetPath);
+    let firedFallback = false; 
+
+    nativeVaultAudio.onplay = () => {
+      setWaveAnimationSpeed(true);
+      startSyncedTextAnimation(transcriptCanvas, words, 280);
+    };
+
+    nativeVaultAudio.onended = () => {
+      setWaveAnimationSpeed(false);
+      if (typeof activeTypingInterval !== 'undefined' && activeTypingInterval) clearInterval(activeTypingInterval);
+
+      if (typeof setKairosMessageText === 'function') {
+        setKairosMessageText(renderMarkdownToHTML(typedChatText));
+      }
+
+      const deckA = document.getElementById('audioDeckA');
+      const deckB = document.getElementById('audioDeckB');
+      const isMusicPlaying = (deckA && !deckA.paused && deckA.src) || (deckB && !deckB.paused && deckB.src);
+
+      if ((typeof blockNextMicActivation !== 'undefined' && blockNextMicActivation) || isMusicPlaying) {
+        if (typeof blockNextMicActivation !== 'undefined') blockNextMicActivation = false;
+        return; 
+      }
+    };
+
+    nativeVaultAudio.onerror = () => {
+      if (firedFallback) return;
+      firedFallback = true;
+      if (typeof activeTypingInterval !== 'undefined' && activeTypingInterval) clearInterval(activeTypingInterval);
+      fallbackSynthesisExecution(spokenText, typedChatText, transcriptCanvas);
+    };
+
+    await nativeVaultAudio.play().catch(() => {
+      if (firedFallback) return;
+      firedFallback = true;
+      if (typeof activeTypingInterval !== 'undefined' && activeTypingInterval) clearInterval(activeTypingInterval);
+      fallbackSynthesisExecution(spokenText, typedChatText, transcriptCanvas);
+    });
+    return;
+  }
+
+  fallbackSynthesisExecution(spokenText, typedChatText, transcriptCanvas);
+}
+
+function fallbackSynthesisExecution(spokenText, typedChatText, transcriptCanvas) {
+  if (typeof activeTypingInterval !== 'undefined' && activeTypingInterval) clearInterval(activeTypingInterval);
+  if (typeof kairosVoiceEngine !== 'undefined' && kairosVoiceEngine) kairosVoiceEngine.cancel(); 
+
+  const utterance = new SpeechSynthesisUtterance(spokenText);
+  if (typeof selectedFemaleVoice !== 'undefined' && selectedFemaleVoice) utterance.voice = selectedFemaleVoice;
+
+  const speechRate = 1.05; 
+  utterance.rate = speechRate; 
+
+  const words = typedChatText.split(" ");
+  const msPerWord = (60000 / 195) / speechRate; 
+
+  utterance.onstart = () => {
+    setWaveAnimationSpeed(true);
+    startSyncedTextAnimation(transcriptCanvas, words, msPerWord);
+  };
+
+  utterance.onend = () => {
+    setWaveAnimationSpeed(false);
+    if (typeof activeTypingInterval !== 'undefined' && activeTypingInterval) clearInterval(activeTypingInterval);
+
+    if (typeof setKairosMessageText === 'function') {
+      setKairosMessageText(renderMarkdownToHTML(typedChatText));
+    }
+
+    const deckA = document.getElementById('audioDeckA');
+    const deckB = document.getElementById('audioDeckB');
+    const isMusicPlaying = (deckA && !deckA.paused && deckA.src) || (deckB && !deckB.paused && deckB.src);
+
+    if ((typeof blockNextMicActivation !== 'undefined' && blockNextMicActivation) || isMusicPlaying) {
+      if (typeof blockNextMicActivation !== 'undefined') blockNextMicActivation = false;
+      return;
+    }
+  };
+
+  utterance.onerror = () => {
+    setWaveAnimationSpeed(false);
+    if (typeof activeTypingInterval !== 'undefined' && activeTypingInterval) clearInterval(activeTypingInterval);
+  };
+
+  if (typeof kairosVoiceEngine !== 'undefined' && kairosVoiceEngine) {
+    kairosVoiceEngine.speak(utterance);
+  } else if ('speechSynthesis' in window) {
+    window.speechSynthesis.speak(utterance);
+  }
+}
+
+function killSpeechEngineCompletely() {
+  if (typeof isKairosListeningActive !== 'undefined') isKairosListeningActive = false;
+  if (typeof kairosSpeechRecognizer !== 'undefined' && kairosSpeechRecognizer) {
+    try {
+      kairosSpeechRecognizer.onresult = null;
+      kairosSpeechRecognizer.onend = null;
+      kairosSpeechRecognizer.onerror = null;
+      kairosSpeechRecognizer.stop();
+    } catch (e) {}
+    kairosSpeechRecognizer = null;
+  }
+  updateSpeakingIndicator(false);
+  console.log("🔒 Microphone hardware turned completely OFF.");
+}
+
+function activateKairosVoiceOnDemand() {
+  if (isKairosCommandProcessing || (typeof kairosVoiceEngine !== 'undefined' && kairosVoiceEngine && kairosVoiceEngine.speaking)) return;
+
+  stopActiveKairosVoice();
+  killSpeechEngineCompletely();
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) return;
+
+  if (typeof updateStatusDisplay === 'function') updateStatusDisplay("Kairos is listening...");
+  if (typeof toggleDock === 'function') toggleDock(true);
+
+  if (navigator.vibrate) navigator.vibrate(40);
+
+  const micBtn = document.getElementById('dockMicBtn');
+  if (micBtn) micBtn.classList.add('recording');
+
+  kairosSpeechRecognizer = new SpeechRecognition();
+  kairosSpeechRecognizer.continuous = true;
+  kairosSpeechRecognizer.interimResults = true; 
+  kairosSpeechRecognizer.lang = 'en-US';
+
+  kairosSpeechRecognizer.onresult = (event) => {
+    let interimTranscript = '';
+    let finalTranscript = '';
+
+    for (let i = event.resultIndex; i < event.results.length; ++i) {
+      if (event.results[i].isFinal) {
+        finalTranscript += event.results[i][0].transcript;
+      } else {
+        interimTranscript += event.results[i][0].transcript;
+      }
+    }
+
+    const dockInput = document.getElementById('dockInput');
+    const currentSpokenText = finalTranscript || interimTranscript;
+    if (dockInput && currentSpokenText.trim().length > 0) {
+      dockInput.value = currentSpokenText.trim();
+      dockInput.style.height = 'auto';
+      dockInput.style.height = dockInput.scrollHeight + 'px';
+      updateSpeakingIndicator(true);
+    }
+
+    if (finalTranscript.trim().length > 0 && typeof gatheredUserCommand !== 'undefined') {
+      gatheredUserCommand = finalTranscript.trim();
+    }
+
+    resetSilenceTimer(typeof SILENCE_WAIT_TIME !== 'undefined' ? SILENCE_WAIT_TIME : 10000);
+  };
+
+  kairosSpeechRecognizer.onerror = (err) => {
+    if (err.error === 'not-allowed' || err.error === 'no-speech') {
+      if (typeof updateStatusDisplay === 'function') updateStatusDisplay("Mic access closed.");
+      if (micBtn) micBtn.classList.remove('recording');
+      isKairosCommandProcessing = false;
+      updateSpeakingIndicator(false);
+
+      const deckA = document.getElementById('audioDeckA');
+      const deckB = document.getElementById('audioDeckB');
+      const isMusicPlaying = (deckA && !deckA.paused && deckA.src) || (deckB && !deckB.paused && deckB.src);
+      if (!isMusicPlaying && typeof toggleDock === 'function') {
+        toggleDock(false); 
+      }
+    }
+  };
+
+  kairosSpeechRecognizer.onend = () => {
+    if (micBtn) micBtn.classList.remove('recording');
+    updateSpeakingIndicator(false);
+  };
+
+  function resetSilenceTimer(customWaitTime = 10000) {
+    if (typeof voiceSilenceTimer !== 'undefined' && voiceSilenceTimer) clearTimeout(voiceSilenceTimer);
+    voiceSilenceTimer = setTimeout(() => {
+      if (micBtn) micBtn.classList.remove('recording');
+      killSpeechEngineCompletely();
+      updateSpeakingIndicator(false);
+      console.log("Speech captured and populated in input box. Waiting for manual send.");
+    }, customWaitTime);
+  }
+
+  resetSilenceTimer(typeof SILENCE_WAIT_TIME !== 'undefined' ? SILENCE_WAIT_TIME : 10000); 
+
+  try {
+    if (typeof isKairosListeningActive !== 'undefined') isKairosListeningActive = true;
+    kairosSpeechRecognizer.start();
+  } catch (e) {
+    console.error(e);
+    if (micBtn) micBtn.classList.remove('recording');
+    updateSpeakingIndicator(false);
+  }
+}
+
+function stopActiveKairosVoice() {
+  if (typeof kairosVoiceEngine !== 'undefined' && kairosVoiceEngine) kairosVoiceEngine.cancel();
+  else if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  setWaveAnimationSpeed(false);
+}
+
+function wakeUpKairosWithGreeting() {
+  const dockWrap = document.querySelector('.assistant-dock-wrap') || document.getElementById('dockWrap');
+  const isExpanded = dockWrap ? dockWrap.classList.contains('expanded') : false;
+
+  if (isExpanded) {
+    if (typeof toggleDock === 'function') toggleDock(false);
+    return;
+  }
+
+  if (typeof toggleDock === 'function') toggleDock(true);
+
+  const userName = (typeof getUserDisplayName === 'function') ? getUserDisplayName() : "You";
+  const displayName = userName !== "You" ? ` ${userName}` : "";
+
+  const greetings = [
+    `Hey${displayName}, i'm online how can i help you today?`,
+    `Hello${displayName}, i'm here ready when you are.`,
+    `Hey${displayName} i'm active what are we working on?`,
+    `Yo${displayName}! How can I help you today?`,
+    `Sup${displayName}. What's on your mind?`,
+    `Great to see you${displayName}! Drop your task here and let's get it done.`,
+    `What's the play for today${displayName}? I'm ready when you are.`,
+    `Yo${displayName}! How can I help make things smoother today?`,
+    `Ready to assist${displayName}. Please let me know what you need.`,
+    `Hey${displayName}! What are we diving into today?`
+  ];
+
+  const greetingText = greetings[Math.floor(Math.random() * greetings.length)];
+
+  stopActiveKairosVoice();
+  killSpeechEngineCompletely();
+
+  speakResponse(greetingText);
+}
+
+function sendMessage() {
+  const dockInput = document.getElementById('dockInput');
+  if (!dockInput) return;
+
+  const text = dockInput.value.trim();
+  if (!text) return;
+
+  console.log('Sending message:', text);
+
+  if (typeof appendUserMessage === 'function') appendUserMessage(text);
+
+  if (typeof conversationMemory !== 'undefined') {
+    conversationMemory.push({ role: "user", content: text, time: Date.now() });
+  }
+
+  if (typeof processUserCommandLocally === 'function') {
+    processUserCommandLocally(text);
+  }
+
+  dockInput.value = '';
+  dockInput.style.height = 'auto';
+  dockInput.style.overflowY = 'hidden';
+}
+
+let typingTimeout;
+let typingIndicatorEl = null;
+
+let speakingIndicatorEl = null;
+
+function updateSpeakingIndicator(isSpeaking) {
+    const currentUserName = (typeof getUserDisplayName === 'function') ? getUserDisplayName() : "User";
+    const container = (typeof getTranscriptCanvas === 'function') ? getTranscriptCanvas() : document.getElementById("transcriptCanvas");
+    if (!container) return;
+
+    if (isSpeaking) {
+        if (!speakingIndicatorEl) {
+            speakingIndicatorEl = document.createElement("div");
+            speakingIndicatorEl.className = "ambient";
+            speakingIndicatorEl.style.color = "var(--gemini-cyan, #00f2fe)";
+            speakingIndicatorEl.textContent = `${currentUserName} is speaking...`;
+            container.appendChild(speakingIndicatorEl);
+        }
+    } else {
+        if (speakingIndicatorEl) {
+            speakingIndicatorEl.remove();
+            speakingIndicatorEl = null;
+        }
+    }
+}
+
+// Dom Ready Attachment Safeguards
+window.addEventListener('DOMContentLoaded', () => {
+  if (typeof restoreSavedTranscripts === 'function') restoreSavedTranscripts();
+  if (typeof restoreMusicState === 'function') restoreMusicState();
+
+  const dockWrap = document.getElementById('dockWrap') || document.querySelector('.assistant-dock-wrap');
+  const collapsedView = document.getElementById('collapsedView');
+  const closeDockBtn = document.getElementById('closeDockBtn');
+  const expandToggleBtn = document.getElementById('expandToggleBtn');
+  const dockInput = document.getElementById('dockInput');
+  const dockSendBtn = document.getElementById('dockSendBtn');
+  const dockMicBtn = document.getElementById('dockMicBtn');
+
+  if (collapsedView) {
+    collapsedView.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (typeof initializeSpatialEngine === 'function') initializeSpatialEngine(); 
+      wakeUpKairosWithGreeting();
+    });
+  }
+
+  if (closeDockBtn) {
+    closeDockBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (typeof toggleDock === 'function') toggleDock(false);
+    });
+  }
+
+  if (expandToggleBtn && dockWrap) {
+    expandToggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dockWrap.classList.toggle('full-height');
+    });
+  }
+
+  if (dockMicBtn) {
+    dockMicBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (typeof initializeSpatialEngine === 'function') initializeSpatialEngine();
+      activateKairosVoiceOnDemand();
+    });
+  }
+
+  if (dockInput) {
+    dockInput.addEventListener('input', function () {
+      const currentUserName = (typeof getUserDisplayName === 'function') ? getUserDisplayName() : "User"; 
+      const botMessagesContainer = (typeof getTranscriptCanvas === 'function') ? getTranscriptCanvas() : document.getElementById("transcriptCanvas");
+      
+      if (!typingIndicatorEl && botMessagesContainer) {
+          typingIndicatorEl = document.createElement("div");
+          typingIndicatorEl.className = "ambient";
+          typingIndicatorEl.textContent = `${currentUserName} is typing...`;
+          botMessagesContainer.appendChild(typingIndicatorEl);
+      }
+      clearTimeout(typingTimeout);
+      typingTimeout = setTimeout(() => {
+          if(typingIndicatorEl) { typingIndicatorEl.remove(); typingIndicatorEl = null; }
+      }, 1200);
+
+      this.style.height = 'auto';
+      const nextHeight = this.scrollHeight;
+      this.style.height = nextHeight + 'px';
+
+      if (nextHeight >= 120) {
+        this.style.overflowY = 'auto';
+      } else {
+        this.style.overflowY = 'hidden';
+      }
+    });
+
+    dockInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        if (isMobile) {
+          return;
+        } else {
+          if (e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+          }
+        }
+      }
+    });
+  }
+
+  if (dockSendBtn) {
+    dockSendBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      sendMessage();
+    });
+  }
+});
