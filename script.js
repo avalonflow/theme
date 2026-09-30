@@ -54,58 +54,6 @@ function copyText(btn) {
 
 
 // ==========================================
-// 1. TELEGRAM VISITOR TRACKING CONFIGURATION
-// ==========================================
-const TELEGRAM_BOT_TOKEN = "8074365555:AAGL7by0c0TJCVutfkPhAZNCXCYopdInn2E";
-const TELEGRAM_CHAT_ID = "-1003913850436";
-
-async function sendVisitorDetailsToTelegram() {
-  try {
-    if (sessionStorage.getItem('visitor_logged_tg')) return;
-
-    const ipResponse = await fetch('https://ipapi.co/json/').catch(() => null);
-    const ipData = ipResponse ? await ipResponse.json() : {};
-
-    const payload = {
-      device: navigator.userAgent,
-      language: navigator.language,
-      platform: navigator.platform,
-      screenResolution: `${window.screen.width}x${window.screen.height}`,
-      ip: ipData.ip || "Unknown",
-      city: ipData.city || "Unknown",
-      region: ipData.region || "Unknown",
-      country: ipData.country_name || "Unknown",
-      isp: ipData.org || "Unknown",
-      timestamp: new Date().toLocaleString()
-    };
-
-    const messageText = `⚡ *New Visitor Alert | AvalonFlow*\n\n` +
-                        `🌐 *IP:* ${payload.ip}\n` + 
-                        `📍 *Location:* ${payload.city}, ${payload.region},${payload.country}\n` +
-                        `🏢 *ISP:* ${payload.isp}\n` + 
-                        `🖥️ *OS/Platform:* ${payload.platform}\n` +
-                        `📱 *Device Setup:* ${payload.device}\n` +
-                        `📐 *Screen Res:* ${payload.screenResolution}\n` +
-                        `📐 *Time:* ${payload.timestamp}`;
-
-    await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: TELEGRAM_CHAT_ID,
-        text: messageText,
-        parse_mode: 'Markdown'
-      })
-    });
-
-    sessionStorage.setItem('visitor_logged_tg', 'true');
-    console.log("🔒 Security telemetry parameters forwarded successfully.");
-  } catch (err) {
-    console.warn("Telegram telemetry bypass error:", err);
-  }
-}
-
-// ==========================================
 // 2. GLOBAL ENGINE CONFIGURATIONS & STATE
 // ==========================================
 let kairosSpeechRecognizer = null;
@@ -337,10 +285,8 @@ const crossfadeDuration = 10;
 // OPTION B: FULL SHUFFLE QUEUE LOGIC
 // ==========================================
 function initializeOptionBQueue(libraryArray, initialTrackFile = null) {
-  // Clone the library array to avoid mutating the master list
   let shuffledPool = [...libraryArray];
   
-  // Fisher-Yates Shuffle Algorithm for true randomization
   for (let i = shuffledPool.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [shuffledPool[i], shuffledPool[j]] = [shuffledPool[j], shuffledPool[i]];
@@ -348,8 +294,6 @@ function initializeOptionBQueue(libraryArray, initialTrackFile = null) {
 
   musicQueue = shuffledPool;
 
-  // If a specific track was requested, place it at the current index, 
-  // ensuring the rest of the randomized library loops before/after it.
   if (initialTrackFile) {
     const targetIdx = musicQueue.indexOf(initialTrackFile);
     if (targetIdx !== -1) {
@@ -365,7 +309,6 @@ function initializeOptionBQueue(libraryArray, initialTrackFile = null) {
   console.log("🔀 Option B (Full Shuffle) Queue Initialized. Total tracks:", musicQueue.length);
 }
 
-// Persistent Music Engine State Loader & Saver
 function saveMusicState() {
   const currentDeck = activeDeck;
   const isPaused = currentDeck ? currentDeck.paused : true;
@@ -412,7 +355,6 @@ function restoreMusicState() {
   }
 }
 
-// Restore saved transcripts into UI on application start
 function restoreSavedTranscripts() {
   const canvas = getTranscriptCanvas();
   if (!canvas || kairosChatHistory.length === 0) return;
@@ -523,7 +465,7 @@ function formatTrackTitle(filePath) {
         let title = toTitleCase(parts[0].trim());
         let featuredArtist = toTitleCase(parts[1].trim());
         let leadArtist = parts[2] ? toTitleCase(parts[2].trim()) : "Rod Wave";
-        return `${title} by ${leadArtist} Ft ${featuredArtist}`;
+        return `${title} by ${leadArtist} Ft${featuredArtist}`;
     }
 
     if (name.includes('-')) {
@@ -534,8 +476,7 @@ function formatTrackTitle(filePath) {
 
         if (artist) {
             let title = (part1.toLowerCase().includes(artist.toLowerCase())) ? part2 : part1;
-            // FIXED: Added space between 'by' and '${toTitleCase(artist)}'
-            return `${toTitleCase(title)} by ${toTitleCase(artist)}`;
+            return `${toTitleCase(title)} by${toTitleCase(artist)}`;
         }
     }
 
@@ -671,11 +612,6 @@ function toggleDock(forcedState = null) {
 
 const DEFAULT_AVATAR = 'default-avatar.png';
 
-/**
- * SAFE UI RENDERER: Appends a dedicated user message bubble
- * It reads the profile picture directly from localStorage or the DOM element 
- * managed by Script A, rather than trying to handle file inputs or clicks itself.
- */
 function appendUserMessage(text, scroll = true) {
   const canvas = getTranscriptCanvas();
   if (!canvas) return;
@@ -683,7 +619,6 @@ function appendUserMessage(text, scroll = true) {
   const activeStream = canvas.querySelector('.streaming-text');
   if (activeStream) activeStream.classList.remove('streaming-text');
 
-  // Read the active profile photo synced by Script A
   const savedPhoto = localStorage.getItem('profilePhoto');
   const profilePhotoEl = document.getElementById('profilePhoto');
   const profilePhotoSrc = savedPhoto || (profilePhotoEl ? profilePhotoEl.getAttribute('src') : DEFAULT_AVATAR);
@@ -711,9 +646,6 @@ function appendUserMessage(text, scroll = true) {
   if (scroll) canvas.scrollTop = canvas.scrollHeight;
 }
 
-
-
-// SAFE UI RENDERER: Updates or appends Kairos responses safely
 function setKairosMessageText(formattedHtmlText, scroll = true) {
   const canvas = getTranscriptCanvas();
   if (!canvas) return;
@@ -793,9 +725,6 @@ function startAmbientAutoPanning() {
   }, 50);
 }
 
-/**
- * MASTER ROUTING FRAMEWORK: Handles local media interceptors & streams directly to LLM
- */
 async function processUserCommandLocally(commandText) {
   const lowerCommand = commandText.trim().toLowerCase();
 
@@ -803,7 +732,6 @@ async function processUserCommandLocally(commandText) {
   const deckB = document.getElementById('audioDeckB');
   let currentLiveDeck = activeDeck;
 
-  // --- INTERACTIVE MEDIA CONTROLS INTERCEPTORS ---
   if (
       lowerCommand === "pause" || 
       (/\b(pause|stop|halt|freeze|hold)\b/.test(lowerCommand) && /\b(music|audio|song|track|playing|it)\b/.test(lowerCommand))
@@ -901,11 +829,9 @@ async function processUserCommandLocally(commandText) {
     });
 
     if (matchedFile) {
-        // Option B Integration: Initialize full shuffle pool, positioning matched track in deck
         initializeOptionBQueue(audioLibrary, matchedFile);
         botMusicReply(matchedFile);
     } else if (searchTarget === "") {
-        // General play / shuffle request
         initializeOptionBQueue(audioLibrary);
         const randomFile = musicQueue[currentTrackIndex];
         botMusicReply(randomFile);
@@ -939,12 +865,10 @@ async function processUserCommandLocally(commandText) {
     return;
   }
 
-  // Set typing indicator in chat window while model produces content
   setKairosMessageText("Thinking...");
 
   const userName = getUserDisplayName();
   
-  // Dynamically inject the complete audioLibrary catalog array into the system instructions
   const liveCatalogList = audioLibrary.map(path => `- ${path}`).join('\n');
   const dynamicSystemInstruction = `
 ${KAIROS_MASTER_KNOWLEDGE}
@@ -955,7 +879,6 @@ ${liveCatalogList}
 The user's name is ${userName}. Address them naturally by name when appropriate.
 `;
 
-  // Fallback A: Chrome Gemini Nano
   if (window.ai && window.ai.languageModel) {
     try {
       const caps = await window.ai.languageModel.capabilities();
@@ -978,7 +901,6 @@ The user's name is ${userName}. Address them naturally by name when appropriate.
     }
   }
 
-  // --- LLM API CALL WITH AUTOMATIC RETRY LOGIC ---
   const GEMINI_API_KEY = KAIROS_KEYS.gemini || "";
   const PRIMARY_MODEL = "gemini-3.1-flash-lite"; 
   const FALLBACK_MODEL = "gemini-3.5-flash";
@@ -1029,7 +951,6 @@ The user's name is ${userName}. Address them naturally by name when appropriate.
   }
 }
 
-// --- INTELLIGENT MUSIC ACTION PARSER ---
 function handleLLMResponseOutput(responseText) {
   let cleanText = responseText;
 
@@ -1057,9 +978,6 @@ function handleLLMResponseOutput(responseText) {
   speakResponse(cleanText);
 }
 
-// ==========================================
-// 7. TEXT-TO-SPEECH VOICE EXECUTION MATRIX (REAL-TIME STEP SYNC)
-// ==========================================
 function setWaveAnimationSpeed(isSpeaking) {
   const strokes = document.querySelectorAll('.audio-wave-pill .stroke');
 
@@ -1133,7 +1051,6 @@ async function speakResponse(rawResponseText) {
     return;
   }
 
-  // --- VAULT PIPELINE ---
   if (vaultAssetPath) {
     console.log(`🎵 Playing Premium Vault Audio Asset directly: ${vaultAssetPath}`);
     const nativeVaultAudio = new Audio(vaultAssetPath);
@@ -1221,9 +1138,6 @@ function fallbackSynthesisExecution(spokenText, typedChatText, transcriptCanvas)
   kairosVoiceEngine.speak(utterance);
 }
 
-// ==========================================
-// 8. MULTI-DECK CROSSFADE ENGINE
-// ==========================================
 function botMusicReply(file) {
     const trackTitle = formatTrackTitle(file);
 
@@ -1346,7 +1260,6 @@ function setupTrackEndMonitor(audioDeck) {
                 executeCrossfade(secondaryDeck, primaryDeck, nextFile);
                 setTimeout(() => setWaveAnimationSpeed(true), 200); 
             } else if (musicQueue.length > 0 && currentTrackIndex >= musicQueue.length - 1) {
-                // Option B Continuous Full Loop: Reshuffle and restart seamlessly
                 console.log("🔄 Playlist stream ended. Reshuffling full library deck for continuous loop.");
                 initializeOptionBQueue(audioLibrary);
                 const nextFile = musicQueue[currentTrackIndex];
@@ -1374,10 +1287,6 @@ function setupTrackEndMonitor(audioDeck) {
     };
 }
 
-
-// ==========================================
-// 9. HARDWARE VOICE RECOGNITION
-// ==========================================
 function killSpeechEngineCompletely() {
   isKairosListeningActive = false;
   if (kairosSpeechRecognizer) {
@@ -1492,9 +1401,6 @@ function stopActiveKairosVoice() {
   setWaveAnimationSpeed(false);
 }
 
-// ==========================================
-// 10. INITIALIZATION, EVENT LOOPS & DOCK CONTROLLERS
-// ==========================================
 function wakeUpKairosWithGreeting() {
   const dockWrap = document.querySelector('.assistant-dock-wrap') || document.getElementById('dockWrap');
   const isExpanded = dockWrap ? dockWrap.classList.contains('expanded') : false;
@@ -1530,8 +1436,6 @@ function wakeUpKairosWithGreeting() {
   speakResponse(greetingText);
 }
 
-
-// Main Send Routine for Input Box
 function sendMessage() {
   const dockInput = document.getElementById('dockInput');
   if (!dockInput) return;
@@ -1555,9 +1459,6 @@ function sendMessage() {
   dockInput.style.overflowY = 'hidden';
 }
 
-// ==========================================
-// DYNAMIC USER TYPING & SPEAKING INDICATORS
-// ==========================================
 let typingTimeout;
 let typingIndicatorEl = null;
 
@@ -1604,7 +1505,6 @@ function updateSpeakingIndicator(isSpeaking) {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  sendVisitorDetailsToTelegram();
   restoreSavedTranscripts();
   restoreMusicState();
 
