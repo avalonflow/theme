@@ -239,6 +239,20 @@ const audioLibrary = [
   "assets/audio/Went Thru It - Young Thug.mp3",
   "assets/audio/Last Name - Future.mp3",
   "assets/audio/Long Journey - Rod Wave.mp3",
+"assets/audio/Anyone - Justin Bieber.mp3",
+"assets/audio/Before You Go - Lewis Capaldi.mp3",
+"assets/audio/Favorite Song - Toosii.mp3",
+"assets/audio/Florida Boy - Rod Wave.mp3",
+"assets/audio/I Am - Rod Wave.mp3",
+"assets/audio/Hustle - Rod Wave.mp3",
+"assets/audio/If the World Was Ending - JP Saxe.mp3",
+"assets/audio/Lost and Insecure - Rod Wave.mp3",
+"assets/audio/Kiss Me Interlude - Rod Wave.mp3",
+"assets/audio/Look At Me Momma - Rod Wave.mp3",
+"assets/audio/Overrated - Rod Wave.mp3",
+"assets/audio/Nothing But You - Zoe Wees.mp3",
+"assets/audio/Not New To It - Rod Wave.mp3",
+"assets/audio/Never Mind - Rod Wave.mp3",
   "assets/audio/Spaceship - Rod Wave.mp3",
   "assets/audio/All I Ever Had - Rod Wave.mp3",
   "assets/audio/2017 (Streamer U) - Rod Wave.mp3",
@@ -489,10 +503,10 @@ function formatTrackTitle(filePath) {
 
     const knownArtists = [
         "Adele", "Asake", "Anne Marie", "Central Cee", "Charlie Puth", "Christina Perri", "Drake", "Ed Sheeran", 
-        "Fridayy", "Fola", "Future", "Gracie Abrams", "Gunna", "Justin Bieber", 
-        "Kate Bush", "Kodak Black", "Lil Durk", "Migos", "Post Malone", 
-        "Quavo", "Rod Wave", "Rylo Rodriguez", "Sasha Alex Sloan", "SZA", "Tatiana Manaois", "Tee Grizzley", 
-        "Whitney Houston", "Wiz Khalifa", "Young Thug", "YoungBoy Never Broke Again", "ZAYN" 
+        "Fridayy", "Fola", "Future", "Gracie Abrams", "Gunna", "Justin Bieber", "JP Saxe",
+        "Kate Bush", "Kodak Black", "Lewis Capaldi", "Lil Durk", "Migos", "Post Malone", 
+        "Quavo", "Rod Wave", "Rylo Rodriguez", "Sasha Alex Sloan", "SZA", "Tatiana Manaois", "Tee Grizzley", "Toosii", 
+        "Whitney Houston", "Wiz Khalifa", "Young Thug", "YoungBoy Never Broke Again", "ZAYN", "Zoe Wees" 
     ];
 
     if (name.toLowerCase().includes(' ft ') || name.toLowerCase().includes(' feat ')) {
