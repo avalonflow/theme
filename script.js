@@ -669,66 +669,16 @@ function toggleDock(forcedState = null) {
 }
 
 // ==========================================
-// PROFILE PICTURE CONTROLLER (SYNCHRONIZED)
+// SCRIPT B: CHAT TRANSCRIPT RENDERER (MIRROR ONLY)
 // ==========================================
+
 const DEFAULT_AVATAR = 'default-avatar.png';
 
-function initProfilePhotoController() {
-  const photoInput = document.getElementById('photoInput');
-  const profilePhoto = document.getElementById('profilePhoto');
-  let isProcessing = false;
-
-  if (profilePhoto) {
-    const savedPhoto = localStorage.getItem('profilePhoto');
-    profilePhoto.src = savedPhoto ? savedPhoto : DEFAULT_AVATAR;
-
-    profilePhoto.addEventListener('click', () => {
-      if (isProcessing) return;
-      const hasPhoto = localStorage.getItem('profilePhoto');
-      if (hasPhoto) {
-        localStorage.removeItem('profilePhoto');
-        profilePhoto.src = DEFAULT_AVATAR;
-      } else if (photoInput) {
-        photoInput.click();
-      }
-    });
-  }
-
-  if (photoInput && profilePhoto) {
-    photoInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file || isProcessing) return;
-      isProcessing = true;
-
-      const reader = new FileReader();
-      reader.onload = function (event) {
-        const img = new Image();
-        img.src = event.target.result;
-        img.onload = function () {
-          const canvas = document.createElement('canvas');
-          const size = Math.min(img.width, img.height);
-          canvas.width = size;
-          canvas.height = size;
-
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, (img.width - size) / 2, (img.height - size) / 2, size, size, 0, 0, size, size);
-
-          const finalImage = canvas.toDataURL('image/png');
-          profilePhoto.src = finalImage;
-          localStorage.setItem('profilePhoto', finalImage);
-          photoInput.value = '';
-          setTimeout(() => { isProcessing = false; }, 300);
-        };
-      };
-      reader.readAsDataURL(file);
-    });
-  }
-}
-
-document.addEventListener('DOMContentLoaded', initProfilePhotoController);
-
-
-// SAFE UI RENDERER: Appends a dedicated user message bubble
+/**
+ * SAFE UI RENDERER: Appends a dedicated user message bubble
+ * It reads the profile picture directly from localStorage or the DOM element 
+ * managed by Script A, rather than trying to handle file inputs or clicks itself.
+ */
 function appendUserMessage(text, scroll = true) {
   const canvas = getTranscriptCanvas();
   if (!canvas) return;
@@ -736,6 +686,7 @@ function appendUserMessage(text, scroll = true) {
   const activeStream = canvas.querySelector('.streaming-text');
   if (activeStream) activeStream.classList.remove('streaming-text');
 
+  // Read the active profile photo synced by Script A
   const savedPhoto = localStorage.getItem('profilePhoto');
   const profilePhotoEl = document.getElementById('profilePhoto');
   const profilePhotoSrc = savedPhoto || (profilePhotoEl ? profilePhotoEl.getAttribute('src') : DEFAULT_AVATAR);
@@ -758,9 +709,11 @@ function appendUserMessage(text, scroll = true) {
     </div>
     <img src="${profilePhotoSrc}" class="chat-bubble-avatar" alt="User Avatar" style="margin-left: 8px;">
   `;
+  
   canvas.appendChild(msgWrap);
   if (scroll) canvas.scrollTop = canvas.scrollHeight;
 }
+
 
 
 // SAFE UI RENDERER: Updates or appends Kairos responses safely
