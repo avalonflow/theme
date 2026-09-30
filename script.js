@@ -437,7 +437,7 @@ Your knowledge base includes the following official operational parameters and F
 3. INTERACTIVE MEDIA CAPABILITIES:
 - You have direct, programmatic control over a crossfading dual-deck, spatial panning media system.
 - When users ask to "play [song name]", "pause", "resume", "skip/next", or "go back", you must yield to the script's local media interceptors.
-- **INTELLIGENT MUSIC CURATION:** When a user asks for a mood, genre, or style of music (e.g., "play some chill music", "sad songs", "something upbeat"), scan the available library tracks below and respond with a JSON block in this exact format: \`{"action": "play_track", "filename": "exact_filename_from_library.mp3"}\` followed by a short friendly message.
+- INTELLIGENT MUSIC CURATION: When a user asks for a mood, genre, or style of music (e.g., "play some chill music", "sad songs", "something upbeat"), scan the available library tracks below and respond with a JSON block in this exact format: \`{"action": "play_track", "filename": "exact_filename_from_library.mp3"}\` followed by a short friendly message.
 
 4. CONTRACTOR GUIDANCE & PROJECT BRIEF (VISUAL SYSTEM DESIGN):
 - Independent Contractor Agreement Overview: Commissioned for $8,350.00 USD under a 1-week execution schedule.
@@ -500,7 +500,7 @@ function formatTrackTitle(filePath) {
         let title = toTitleCase(parts[0].trim());
         let featuredArtist = toTitleCase(parts[1].trim());
         let leadArtist = parts[2] ? toTitleCase(parts[2].trim()) : "Rod Wave";
-        return `${title} by ${leadArtist} Ft${featuredArtist}`;
+        return `${title} by ${leadArtist} Ft ${featuredArtist}`;
     }
 
     if (name.includes('-')) {
@@ -511,7 +511,8 @@ function formatTrackTitle(filePath) {
 
         if (artist) {
             let title = (part1.toLowerCase().includes(artist.toLowerCase())) ? part2 : part1;
-            return `${toTitleCase(title)} by${toTitleCase(artist)}`;
+            // FIXED: Added space between 'by' and '${toTitleCase(artist)}'
+            return `${toTitleCase(title)} by ${toTitleCase(artist)}`;
         }
     }
 
