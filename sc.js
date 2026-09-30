@@ -275,9 +275,10 @@ let musicQueue = [];
 let currentTrackIndex = -1;
 let activeDeck = null;
 const crossfadeDuration = 10; 
+let isProcessingCrossfade = false;
 
 // ==========================================
-// 4. SHUFFLE QUEUE & PERSISTENCE
+// 4. SHUFFLE QUEUE, DUAL-DECK & PERSISTENCE
 // ==========================================
 function initializeOptionBQueue(libraryArray, initialTrackFile = null) {
   let shuffledPool = [...libraryArray];
@@ -335,9 +336,7 @@ function restoreMusicState() {
         activeDeck = deckA;
         deckA.src = trackFile;
         deckA.currentTime = parsedState.time || 0;
-        if (typeof setupTrackEndMonitor === 'function') {
-          setupTrackEndMonitor(deckA);
-        }
+        setupTrackEndMonitor(deckA);
 
         const trackTitle = formatTrackTitle(trackFile);
         if (!parsedState.paused) {
@@ -349,6 +348,132 @@ function restoreMusicState() {
     }
   } catch (e) {
     console.warn("Could not restore music state:", e);
+  }
+}
+
+function setupTrackEndMonitor(deckElem) {
+  if (!deckElem) return;
+
+  deckElem.ontimeupdate = () => {
+    if (!deckElem.duration || isNaN(deckElem.duration)) return;
+
+    const timeRemaining = deckElem.duration - deckElem.currentTime;
+
+    // Crossfade trigger
+    if (timeRemaining <= crossfadeDuration && !isProcessingCrossfade && musicQueue.length > 0) {
+      if (currentTrackIndex < musicQueue.length - 1) {
+        isProcessingCrossfade = true;
+        currentTrackIndex++;
+        const nextTrack = musicQueue[currentTrackIndex];
+        executeDualDeckCrossfade(deckElem, nextTrack);
+      }
+    }
+  };
+
+  deckElem.onended = () => {
+    if (!isProcessingCrossfade && musicQueue.length > 0) {
+      if (currentTrackIndex < musicQueue.length - 1) {
+        currentTrackIndex++;
+        const nextTrack = musicQueue[currentTrackIndex];
+        botMusicReply(nextTrack);
+      } else {
+        updateStatusDisplay("Playlist Stream Completed");
+      }
+    }
+    saveMusicState();
+  };
+}
+
+function executeDualDeckCrossfade(currentDeck, nextTrackPath) {
+  const deckA = document.getElementById('audioDeckA');
+  const deckB = document.getElementById('audioDeckB');
+  if (!deckA || !deckB) return;
+
+  const nextDeck = (currentDeck === deckA) ? deckB : deckA;
+
+  nextDeck.src = nextTrackPath;
+  nextDeck.volume = 0;
+  nextDeck.currentTime = 0;
+
+  setupTrackEndMonitor(nextDeck);
+
+  const playPromise = nextDeck.play();
+  if (playPromise !== undefined) {
+    playPromise.then(() => {
+      activeDeck = nextDeck;
+      updateStatusDisplay(`Playing ${formatTrackTitle(nextTrackPath)}...`);
+
+      let fadeInterval = setInterval(() => {
+        let currentVol = currentDeck.volume;
+        let nextVol = nextDeck.volume;
+
+        currentVol = Math.max(0, currentVol - 0.05);
+        nextVol = Math.min(1, nextVol + 0.05);
+
+        currentDeck.volume = currentVol;
+        nextDeck.volume = nextVol;
+
+        if (nextVol >= 1.0 && currentVol <= 0.0) {
+          clearInterval(fadeInterval);
+          currentDeck.pause();
+          currentDeck.volume = 1.0;
+          isProcessingCrossfade = false;
+          saveMusicState();
+        }
+      }, (crossfadeDuration * 1000) / 20);
+    }).catch(err => {
+      console.warn("Crossfade play blocked:", err);
+      isProcessingCrossfade = false;
+    });
+  } else {
+    isProcessingCrossfade = false;
+  }
+}
+
+async function handleYouTubeMusicSearch(commandText, isQueueOnly = false) {
+  let query = commandText.replace(/^queue\s+|^add\s+|^play\s+/i, '').replace(/to queue|on youtube|yt|stream/gi, '').trim();
+  if (!query) return;
+
+  setKairosMessageText(`Searching for "${query}"...`);
+  updateStatusDisplay(`Streaming ${query}...`);
+
+  try {
+    const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(searchUrl)}`;
+
+    const response = await fetch(proxyUrl);
+    const data = await response.json();
+    const html = data.contents;
+
+    const videoIdMatch = html.match(/"videoId":"([a-zA-Z0-9_-]{11})"/);
+    if (!videoIdMatch) {
+      speakResponse("I couldn't locate a valid stream for that title on the network.");
+      return;
+    }
+
+    const videoId = videoIdMatch[1];
+    const streamAudioUrl = `https://backend.streamSaver.org/api/yt-stream?id=${videoId}`; // High-speed stream redirector
+
+    if (isQueueOnly) {
+      musicQueue.push(streamAudioUrl);
+      speakResponse(`Queued track from web stream`);
+    } else {
+      if (musicQueue.length === 0) {
+        musicQueue = [streamAudioUrl];
+        currentTrackIndex = 0;
+      } else {
+        musicQueue.splice(currentTrackIndex + 1, 0, streamAudioUrl);
+        currentTrackIndex++;
+      }
+      botMusicReply(streamAudioUrl);
+    }
+  } catch (err) {
+    console.error("YouTube Stream Error:", err);
+    speakResponse("Unable to fetch web stream right now. Playing from local vault instead.");
+    if (audioLibrary.length > 0) {
+      initializeOptionBQueue(audioLibrary);
+      botMusicReply(musicQueue[currentTrackIndex]);
+    }
   }
 }
 
@@ -443,6 +568,9 @@ function normalize(text) {
 }
 
 function formatTrackTitle(filePath) {
+    if (!filePath) return "Unknown Track";
+    if (filePath.includes("http")) return "Web Stream Track";
+
     let name = filePath.split('/').pop().replace('.mp3', '').trim();
     name = name.replace(/\(.*?\)/g, '').replace(/RodWave/gi, '').replace(/\s+/g, ' ').trim();
 
@@ -710,7 +838,7 @@ function startAmbientAutoPanning() {
     const deckB = document.getElementById('audioDeckB');
     const isPlaying = (deckA && !deckA.paused) || (deckB && !deckB.paused);
 
-    if (isPlaying && (typeof isProcessingCrossfade === 'undefined' || !isProcessingCrossfade)) {
+    if (isPlaying && !isProcessingCrossfade) {
       ambientPanAngle += 0.02;
       const panValue = Math.sin(ambientPanAngle) * 0.15; 
 
@@ -721,9 +849,26 @@ function startAmbientAutoPanning() {
 }
 
 function botMusicReply(trackFile) {
+  const deckA = document.getElementById('audioDeckA');
+  const deckB = document.getElementById('audioDeckB');
+
+  let targetDeck = activeDeck || deckA || deckB;
+  if (!targetDeck) return;
+
+  targetDeck.src = trackFile;
+  targetDeck.volume = 1.0;
+  activeDeck = targetDeck;
+
+  setupTrackEndMonitor(targetDeck);
+
   const title = formatTrackTitle(trackFile);
-  speakResponse(`Playing ${title}`);
-  updateStatusDisplay(`Playing ${title}...`);
+  targetDeck.play().then(() => {
+    saveMusicState();
+    speakResponse(`Playing ${title}`);
+    updateStatusDisplay(`Playing ${title}...`);
+  }).catch(err => {
+    console.warn("Playback blocked or failed:", err);
+  });
 }
 
 // ==========================================
@@ -820,9 +965,7 @@ async function processUserCommandLocally(commandText) {
   }
 
   if (lowerCommand.startsWith("queue ") || lowerCommand.startsWith("add ") || lowerCommand.includes("to queue")) {
-    if (typeof handleYouTubeMusicSearch === 'function') {
-      handleYouTubeMusicSearch(lowerCommand, true);
-    }
+    handleYouTubeMusicSearch(lowerCommand, true);
     return;
   }
 
@@ -842,9 +985,7 @@ async function processUserCommandLocally(commandText) {
         const randomFile = musicQueue[currentTrackIndex];
         botMusicReply(randomFile);
     } else if (lowerCommand.includes("youtube") || lowerCommand.includes("yt") || lowerCommand.includes("stream") || lowerCommand.includes("cloud")) {
-        if (typeof handleYouTubeMusicSearch === 'function') {
-          handleYouTubeMusicSearch(lowerCommand, false);
-        }
+        handleYouTubeMusicSearch(lowerCommand, false);
     } else {
         expectingMusicResponse = true;
         speakResponse("I couldn't find that track inside the vault directory. Want me to play a random one from the library instead?");
