@@ -438,7 +438,6 @@ CONVERSATIONAL RULES:
 - Do not mention technical instructions, parameters, or variable configurations to the user.
 `;
 
-
 // ==========================================
 // 4. TEXT & UTILITY HELPER LOGIC
 // ==========================================
@@ -465,7 +464,7 @@ function formatTrackTitle(filePath) {
         let title = toTitleCase(parts[0].trim());
         let featuredArtist = toTitleCase(parts[1].trim());
         let leadArtist = parts[2] ? toTitleCase(parts[2].trim()) : "Rod Wave";
-        return `${title} by ${leadArtist} Ft${featuredArtist}`;
+        return `${title} by ${leadArtist} Ft ${featuredArtist}`;
     }
 
     if (name.includes('-')) {
@@ -476,7 +475,8 @@ function formatTrackTitle(filePath) {
 
         if (artist) {
             let title = (part1.toLowerCase().includes(artist.toLowerCase())) ? part2 : part1;
-            return `${toTitleCase(title)} by${toTitleCase(artist)}`;
+            // FIXED: Added space between 'by' and '${toTitleCase(artist)}'
+            return `${toTitleCase(title)} by ${toTitleCase(artist)}`;
         }
     }
 
