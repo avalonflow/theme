@@ -253,6 +253,11 @@ const audioLibrary = [
 "assets/audio/Nothing But You - Zoe Wees.mp3",
 "assets/audio/Not New To It - Rod Wave.mp3",
 "assets/audio/Never Mind - Rod Wave.mp3",
+"assets/audio/Sailor Song - Gigi Perez.mp3"
+"assets/audio/SNAP - Rosa Linn.mp3",
+"assets/audio/Rewrite The Stars - James Arthur.mp3",
+"assets/audio/Rest of My Life - Keenan Te.mp3",
+"assets/audio/Piece Of Your Love - Rod Wave.mp3",
   "assets/audio/Spaceship - Rod Wave.mp3",
   "assets/audio/All I Ever Had - Rod Wave.mp3",
   "assets/audio/2017 (Streamer U) - Rod Wave.mp3",
@@ -503,9 +508,9 @@ function formatTrackTitle(filePath) {
 
     const knownArtists = [
         "Adele", "Asake", "Anne Marie", "Central Cee", "Charlie Puth", "Christina Perri", "Drake", "Ed Sheeran", 
-        "Fridayy", "Fola", "Future", "Gracie Abrams", "Gunna", "Justin Bieber", "JP Saxe",
-        "Kate Bush", "Kodak Black", "Lewis Capaldi", "Lil Durk", "Migos", "Post Malone", 
-        "Quavo", "Rod Wave", "Rylo Rodriguez", "Sasha Alex Sloan", "SZA", "Tatiana Manaois", "Tee Grizzley", "Toosii", 
+        "Fridayy", "Fola", "Future", "Gigi Perez", "Gracie Abrams", "Gunna", "James Arthur", "Justin Bieber", "JP Saxe",
+        "Kate Bush", "Keenan Te", "Kodak Black", "Lewis Capaldi", "Lil Durk", "Migos", "Post Malone", 
+        "Quavo", "Rod Wave", "Rosa Linn", "Rylo Rodriguez", "Sasha Alex Sloan", "SZA", "Tatiana Manaois", "Tee Grizzley", "Toosii", 
         "Whitney Houston", "Wiz Khalifa", "Young Thug", "YoungBoy Never Broke Again", "ZAYN", "Zoe Wees" 
     ];
 
