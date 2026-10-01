@@ -681,7 +681,6 @@ function formatTrackTitle(filePath) {
 
         if (artist) {
             let title = (part1.toLowerCase().includes(artist.toLowerCase())) ? part2 : part1;
-            // FIXED: Added space between 'by' and '${toTitleCase(artist)}'
             return `${toTitleCase(title)} by ${toTitleCase(artist)}`;
         }
     }
@@ -1120,7 +1119,7 @@ async function processUserCommandLocally(commandText) {
 
   setKairosMessageText("Thinking...");
 
-      // Extract Live Environmental & State Matrices
+  // Extract Live Environmental & State Matrices
   const userName = getUserDisplayName();
   const liveDateTime = getCurrentFullDateTime();
   const livePageContext = getCurrentPageContext();
@@ -1182,7 +1181,7 @@ async function processUserCommandLocally(commandText) {
     livePageContext.pageTitle?.toLowerCase().includes('notification')
   );
 
-      // Generate catalog list safely from audioLibrary
+  // Generate catalog list safely from audioLibrary
   const liveCatalogList = audioLibrary.map((track, idx) => `${idx + 1}. ${formatTrackTitle(track)}`).join('\n');
 
   const dynamicSystemInstruction = `
@@ -1260,9 +1259,6 @@ ${isStage3Active ? `
 
 Instructions: Utilize the current date, time, page location, active playing song details, and stored data to give accurate, hyper-contextual responses. Address the Strategic Partner naturally while strictly upholding KAIROS_MASTER_KNOWLEDGE verbatim.
 `;
-
-
-
 
   if (window.ai && window.ai.languageModel) {
     try {
@@ -1828,4 +1824,3 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
-
