@@ -1182,7 +1182,10 @@ async function processUserCommandLocally(commandText) {
     livePageContext.pageTitle?.toLowerCase().includes('notification')
   );
 
-    const dynamicSystemInstruction = `
+      // Generate catalog list safely from audioLibrary
+  const liveCatalogList = audioLibrary.map((track, idx) => `${idx + 1}. ${formatTrackTitle(track)}`).join('\n');
+
+  const dynamicSystemInstruction = `
 ${KAIROS_MASTER_KNOWLEDGE}
 
 REAL-TIME SYSTEM STATE & CONTEXTUAL MATRIX:
@@ -1257,6 +1260,7 @@ ${isStage3Active ? `
 
 Instructions: Utilize the current date, time, page location, active playing song details, and stored data to give accurate, hyper-contextual responses. Address the Strategic Partner naturally while strictly upholding KAIROS_MASTER_KNOWLEDGE verbatim.
 `;
+
 
 
 
