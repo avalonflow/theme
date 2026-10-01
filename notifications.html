@@ -1559,6 +1559,97 @@ CROP MODAL
     </div>
   </div>
 
+    <!-- Hidden Storage Nodes for User Photos, Files & Audio Decks -->
+    <div style="display:none;">
+        <img id="profilePhoto" src="default-avatar.png" alt="Profile Node">
+        <input type="file" id="photoInput" accept="image/*">
+        <audio id="audioDeckA"></audio>
+        <audio id="audioDeckB"></audio>
+    </div>
+
+    <!-- Floating Assistant Glass Dock Container -->
+    <div class="assistant-dock-wrap" id="dockWrap">
+        <div class="glass-dock" id="glassDock">
+
+            <!-- Collapsed State View -->
+            <div class="dock-collapsed-view" id="collapsedView">
+                <span class="status-indicator active"></span>
+                <span class="dock-text">Kairos Intelligence</span>
+                <div class="audio-wave-pill">
+                    <span class="stroke"></span>
+                    <span class="stroke"></span>
+                    <span class="stroke"></span>
+                    <span class="stroke"></span>
+                    <span class="stroke"></span>
+                </div>
+            </div>
+
+            <!-- Expanded State View -->
+            <div class="dock-expanded-view d-none" id="expandedView">
+                <div class="dock-header">
+                    <h4>Kairos Intelligence</h4>
+                    <div class="header-actions">
+                        <button class="icon-btn" id="expandToggleBtn" aria-label="Toggle Fullscreen">⤢</button>
+                        <button class="icon-btn close-btn" id="closeDockBtn" aria-label="Close Assistant">✕</button>
+                    </div>
+                </div>
+
+                <!-- Chat Canvas with Avatar Rows -->
+                <div class="voice-transcript-canvas" id="transcriptCanvas">
+                    <div id="status-text" class="ambient">Synchronization online.</div>
+
+                    <!-- Kairos Message Bubble -->
+                    <div class="msgWrap">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Kairos&backgroundColor=6b2cd8" class="chat-bubble-avatar" alt="Kairos Avatar">
+                        <div class="chat-bubble kairos">
+                            <div class="chat-bubble-header">
+                                <div class="speaker-label">KAIROS INTELLIGENCE</div>
+                                <button class="copy-btn" onclick="copyText(this)" aria-label="Copy message">
+                                    <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                                </button>
+                            </div>
+                            <p class="streaming-text">How can I assist you today?</p>
+                            <div class="meta">
+                                <span class="timestamp" id="initialKairosTime">10:00 AM</span>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Component Bar -->
+                <div class="dock-input-bar">
+                    <!-- Hidden File Input Trigger -->
+                    <input type="file" id="dockFileInput" style="display: none;">
+
+
+
+                    <!-- Typing Pipe Cursor -->
+                    <span id="idleCursor" class="typing-cursor" style="display: none;">|</span>
+
+                    <!-- Auto-Expanding Textarea with Mobile Return Key Hint -->
+                    <textarea id="dockInput" rows="1" placeholder="Message..." enterkeyhint="enter" autocomplete="off"></textarea>
+
+                    <!-- Microphone Button with Pulse Animation Ring -->
+                    <button class="action-icon-btn" id="dockMicBtn" aria-label="Voice Input">
+                        <span class="recording-pulse"></span>
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                            <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                        </svg>
+                    </button>
+
+                    <!-- Send Button -->
+                    <button class="action-icon-btn" id="dockSendBtn" aria-label="Send Message">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
      <!-- Sticky Footer -->
     <footer>
        © 2026 AvalonFlow Corp • All Rights Reserved
