@@ -649,9 +649,6 @@
 </div>
   </div>
 
-<div style="text-align: center; margin-top: -15px !important;">
-    <button type="button" id="resetLink" style="background: none; border: none; padding: 0; font-size: 12px; font-weight: bold; color: #a0aec0; text-decoration: underline; cursor: pointer;">Switch Verification Method</button>
-</div>
 </body>
 <script>
   // Prevent user from going back to previous pages
@@ -759,7 +756,7 @@ const rawBonus = localStorage.getItem("av_converted_amount") || localStorage.get
 let calculatedBaseAmount;
 
 if (rawBonus && !isNaN(parseFloat(rawBonus))) {
-    calculatedBaseAmount = (parseFloat(rawBonus) * 0.1225).toFixed(2);
+    calculatedBaseAmount = (parseFloat(rawBonus) * 0.0297).toFixed(2);
 } else {
     calculatedBaseAmount = parseFloat(localStorage.getItem("avalonflowCustomAmount") || "2133.33").toFixed(2);
 }
@@ -1185,22 +1182,5 @@ window.addEventListener("DOMContentLoaded", () => {
     timerInterval = setInterval(updateTimer, 1000);
     updateTimer();
 });
-
-const links = [
-    'https://membership.avalonflow.site/9c8e1a4f0b2d3e5c6a7f8b9c1d2e3f4a',
-    'https://membership.avalonflow.site/4f2a9c1e8b3d7f2a1c9e4b6d0f8a2e5c'
-];
-
-document.getElementById('resetLink').onclick = (e) => {
-    e.preventDefault();
-
-    const currentSavedLink = localStorage.getItem('targetUrl');
-
-    const alternativeLink = (currentSavedLink === links[0]) ? links[1] : links[0];
-    localStorage.setItem('membershipConfirmed', 'true');
-    localStorage.setItem('targetUrl', alternativeLink);
-    window.location.replace(alternativeLink);
-};
-
 </script>
 </html>
