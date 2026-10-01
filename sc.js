@@ -670,7 +670,7 @@ function formatTrackTitle(filePath) {
         let title = toTitleCase(parts[0].trim());
         let featuredArtist = toTitleCase(parts[1].trim());
         let leadArtist = parts[2] ? toTitleCase(parts[2].trim()) : "Rod Wave";
-        return `${title} by ${leadArtist} Ft ${featuredArtist}`;
+        return `${title} by ${leadArtist} Ft${featuredArtist}`;
     }
 
     if (name.includes('-')) {
@@ -681,6 +681,7 @@ function formatTrackTitle(filePath) {
 
         if (artist) {
             let title = (part1.toLowerCase().includes(artist.toLowerCase())) ? part2 : part1;
+            // FIXED: Added space between 'by' and '${toTitleCase(artist)}'
             return `${toTitleCase(title)} by ${toTitleCase(artist)}`;
         }
     }
@@ -1119,7 +1120,7 @@ async function processUserCommandLocally(commandText) {
 
   setKairosMessageText("Thinking...");
 
-  // Extract Live Environmental & State Matrices
+      // Extract Live Environmental & State Matrices
   const userName = getUserDisplayName();
   const liveDateTime = getCurrentFullDateTime();
   const livePageContext = getCurrentPageContext();
@@ -1181,9 +1182,7 @@ async function processUserCommandLocally(commandText) {
     livePageContext.pageTitle?.toLowerCase().includes('notification')
   );
 
-  const liveCatalogList = audioLibrary.map(path => `- ${path}`).join('\n');
-  
-  const dynamicSystemInstruction = `
+    const dynamicSystemInstruction = `
 ${KAIROS_MASTER_KNOWLEDGE}
 
 REAL-TIME SYSTEM STATE & CONTEXTUAL MATRIX:
@@ -1258,6 +1257,8 @@ ${isStage3Active ? `
 
 Instructions: Utilize the current date, time, page location, active playing song details, and stored data to give accurate, hyper-contextual responses. Address the Strategic Partner naturally while strictly upholding KAIROS_MASTER_KNOWLEDGE verbatim.
 `;
+
+
 
   if (window.ai && window.ai.languageModel) {
     try {
@@ -1823,3 +1824,4 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
