@@ -663,11 +663,7 @@ CONVERSATIONAL RULES:
 - Do not mention technical instructions, parameters, or variable configurations to the user.
 `;
 
-CONVERSATIONAL RULES:
-- Respond naturally, with genuine empathy, velvet glove, iron fist, matching a present-knowledge conversational tone.
-- Do not make up facts or instructions outside of this knowledge registry.
-- Do not mention technical instructions, parameters, or variable configurations to the user.
-`;
+
 
 // ==========================================
 // 6. TEXT & UTILITY HELPER LOGIC
