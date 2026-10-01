@@ -1055,8 +1055,8 @@ The user's name is ${userName}. Address them naturally by name when appropriate.
   }
 
   const GEMINI_API_KEY = KAIROS_KEYS.gemini || "";
-  const PRIMARY_MODEL = "gemini-3.1-flash-lite"; 
-  const FALLBACK_MODEL = "gemini-3.5-flash";
+  const PRIMARY_MODEL = "gemini-3.5-flash-lite"; 
+  const FALLBACK_MODEL = "gemini-3.1-flash-lite";
 
   async function sendWithRetry(modelName, maxRetries = 2) {
     const URL = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GEMINI_API_KEY}`;
