@@ -566,7 +566,7 @@
 })();
 </script>
 
-  <style>
+   <style>
         /* ================ Theme Variables (Foundation Palette) ============== */
         :root {
             --glass-bg: rgba(15, 23, 42, 0.35);
@@ -582,6 +582,11 @@
             --kairos-bubble-bg: rgba(255, 255, 255, 0.06);
         }
 
+        /* Global Georgia Font Integration */
+        body {
+            font-family: Georgia, serif;
+        }
+
         /* 1. Master Container & Unified Sizing Controllers */
         .assistant-dock-wrap {
             position: fixed;
@@ -594,6 +599,7 @@
             padding: 0 16px;
             box-sizing: border-box;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-family: Georgia, serif;
         }
 
         .assistant-dock-wrap.expanded {
@@ -1026,7 +1032,7 @@
             outline: none;
             color: #ffffff;
             font-size: 13px;
-            font-family: inherit;
+            font-family: Georgia, serif;
             padding: 4px 0;
             resize: none; /* Disables manual drag handle */
             max-height: 120px; /* Limits maximum expansion height */
@@ -1123,7 +1129,7 @@
         /* Utilities & Footer */
         .d-none { display: none !important; }
 
-        
+
 
         /* ================= Desktop Responsiveness Overrides ================= */
         @media (min-width: 1024px) {
@@ -1211,6 +1217,7 @@
     padding: 25px;
     transform: translateX(-100%);
     transition: transform 0.3s ease;
+    font-family: Georgia, serif;
 }
 
         #sidebar.open { transform: translateX(0); }
@@ -1229,6 +1236,7 @@ color:#a78bfa;
             background: rgba(255,255,255,0.1);
             color: #fff;
             font-size: 16px;
+            font-family: Georgia, serif;
         }
 
 /* ---------- Menu Button ---------- */
@@ -1244,6 +1252,7 @@ color:#a78bfa;
             color: #fff;
             padding: 12px 14px;
             border-radius: 10px;
+            font-family: Georgia, serif;
 }
 
 /* move button when sidebar opens */
@@ -1432,8 +1441,10 @@ footer {
     backdrop-filter: blur(12px);
     box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.08);
     z-index: 6;
+    font-family: Georgia, serif;
 }
   </style>
+
 </head>
 <body class="min-h-screen font-sans antialiased text-slate-800">
 
