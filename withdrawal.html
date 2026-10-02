@@ -504,6 +504,15 @@
 
 <script>
 
+(function authGuard() {
+    const isLoggedIn = localStorage.getItem("avalon_logged_in") === "true";
+
+    if (!isLoggedIn) {
+        // Redirect immediately to the sign-in page
+        window.location.replace("/signin"); 
+    }
+})();
+
 
 (async function () {
     if (localStorage.getItem('profilePhoto')) {
