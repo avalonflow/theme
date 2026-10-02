@@ -502,14 +502,7 @@
 <link rel="manifest" href="/manifest.json?v=3">
 
 <script>
-(function authGuard() {
-    const isLoggedIn = localStorage.getItem("avalon_logged_in") === "true";
 
-    if (!isLoggedIn) {
-        // Redirect immediately to the sign-in page
-        window.location.replace("/signin"); 
-    }
-})();
 
 
 (async function () {
