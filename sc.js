@@ -1361,6 +1361,7 @@ Instructions: Utilize the current date, time, page location, active playing song
 function handleLLMResponseOutput(responseText) {
   let cleanText = responseText;
 
+  // Check if the response contains the JSON action payload
   if (responseText.includes('{"action": "play_track"')) {
     try {
       const jsonStart = responseText.indexOf('{');
@@ -1369,8 +1370,10 @@ function handleLLMResponseOutput(responseText) {
       const actionData = JSON.parse(jsonString);
 
       if (actionData.action === "play_track" && actionData.filename) {
+        // 1. Completely strip the raw JSON string out of the text the user sees/hears
         cleanText = responseText.replace(jsonString, "").trim();
         
+        // 2. Locate and trigger the track playback immediately
         const targetFile = audioLibrary.find(file => file.includes(actionData.filename));
         if (targetFile) {
           initializeOptionBQueue(audioLibrary, targetFile);
@@ -1382,8 +1385,10 @@ function handleLLMResponseOutput(responseText) {
     }
   }
 
+  // 3. Pass only the clean, conversational text to speech and the chat UI
   speakResponse(cleanText);
 }
+
 
 // =========================================================
 // KAIROS VOICE & MEDIA SYSTEM
