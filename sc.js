@@ -136,14 +136,7 @@ const COPY_BTN_HTML = `
 // =================================================================
 // 3. DATA STRUCTURES & PREMIUM AUDIO VAULT DIRECTORY
 // =================================================================
-const quotes = [ 
-  "Believe in yourself and all that you are.", "Small steps each day lead to big results.", 
-  "Life is about moments, not things.", "Consistency is the key to success.", "Every day is a fresh start.", 
-  "Faith is the compass that guides you through life’s storms.", "Pray not just for what you want, but for the strength to receive it.", 
-  "Trust God’s timing; He never runs late.", "Your faith can move mountains, but your actions must build the path.", 
-  "God doesn’t call the equipped; He equips the called.", "Gratitude turns what we have into enough.", 
-  "Serve with love, and blessings will follow silently.", "When you focus on God, life focuses for you"
-];
+const quotes=[ "Believe in yourself and all that you are.", "Small steps each day lead to big results.", "Life is about moments, not things.", "Consistency is the key to success.", "Every day is a fresh start.", "Faith is the compass that guides you through life’s storms.", "Pray not just for what you want, but   for the strength to receive it.", "Trust God’s timing; He never runs late.", "Your faith can move mountains, but your actions must build the path.", "God doesn’t call the equipped; He equips the called.", "Gratitude turns what we have into enough.", "Serve with love, and blessings will follow silently.", "When you focus on God, life focuses for you.", "Don’t chase money; build systems that make money chase you.", "Financial freedom begins when you learn to control your money, not your lifestyle.", "Save like a pessimist, invest like an optimist.", "Wealth grows when patience waters it daily.", "Your income is limited only by your imagination and action.", "Make your money work harder than you do.", "Life rewards those who act, not those who wait.", "Every setback is a setup for a stronger comeback.", "Your comfort zone is a beautiful place, but nothing ever grows there.", "Consistency beats talent when talent doesn’t show up.", "The storms of life shape the strongest sailors.", "Dream big, start small, move consistently." ];
 
 const PREMIUM_AUDIO_VAULT = {
   "Hey there, i'm online how can i help you today?": "assets/audio/vault/greeting_2.mp3",
