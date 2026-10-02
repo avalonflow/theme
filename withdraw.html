@@ -5,16 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transaction Review</title>
 
-<script>
-(function authGuard() {
-    const isLoggedIn = localStorage.getItem("avalon_logged_in") === "true";
 
-    if (!isLoggedIn) {
-        // Redirect immediately to the sign-in page
-        window.location.replace("/signin"); 
-    }
-})();
-</script>
 
     <style>
         :root {
@@ -604,7 +595,7 @@ margin-bottom: 30;
   
     <div class="container">
         <div class="transaction-card" id="main-card">
-            
+
             <!-- STEP 1: REVIEW TRANSACTION STATE -->
             <div id="review-state">
                 <div class="card-header">
@@ -701,7 +692,7 @@ margin-bottom: 30;
                 </div>
                 <h3 class="status-title">Disbursement Sent</h3>
                 <p class="status-desc">Liquidity successfully arrived into the terminal queue under regional intercompany gateway....</p>
-                
+
                 <div class="receipt-mini">
                     <div class="receipt-row">
                         <span class="detail-label">Recipient Account</span>
@@ -959,7 +950,6 @@ function getCapturedDetails() {
 }
 
 function getLiveLocalStorageBalance() {
-    // Standardized to clear/check baseACU
     const rawVal = localStorage.getItem("baseACU") ?? localStorage.getItem("totalACU");
     if (rawVal === null) return 0.00;
     const parsed = parseFloat(rawVal);
@@ -967,7 +957,6 @@ function getLiveLocalStorageBalance() {
 }
 
 function getLiveRetentionBonus() {
-    // Falls back to saved backup key if active key has been zeroed out by withdrawal script
     const rawBonus = localStorage.getItem("av_retention_bonus") 
                   ?? localStorage.getItem("retentionBonus") 
                   ?? localStorage.getItem("av_bonus")
@@ -1001,15 +990,12 @@ const regionConfig = {
 };
 
 const globalBankLogos = {
-    // Payment Methods & E-Wallets
     "PayPal": "https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg",
     "PayPal Transfer": "https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg",
     "Interac": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/980ec2577fa19bf58d7ca687805b52c3.jpg",
     "Interac e-Transfer": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/980ec2577fa19bf58d7ca687805b52c3.jpg",
     "Venmo": "assets/pictures/5f33cd7cd34531a65477de41742743d3.jpg",
     "Revolut": "assets/pictures/WA_1783361545224.jpeg",
-
-    // Canadian Banks
     "RBC Royal Bank": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/4889b91421334f04992dbd75abd44c94.jpg",
     "TD Canada Trust": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/e90fc5400809adf33e281d9f876d5485.jpg",
     "Scotiabank": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/839782492ccfda0e5f616798c2646804.jpg",
@@ -1018,8 +1004,6 @@ const globalBankLogos = {
     "National Bank": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/fb34b722f69d354bf24dd585444a6cee.jpg",
     "Tangerine": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/Tangerine_Bank-Logo.wine.png",
     "Simplii Financial": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/Simplii_Financial_branding.jpg",
-
-    // US Banks
     "Chase Bank": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/dcaa7faba74f565af7efbf1135c2e144.jpg",
     "Bank of America": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/7826c02a5b48ea41e801cafcb0bba674.jpg",
     "Wells Fargo": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/Wells_Fargo_Logo_(2020).png",
@@ -1028,8 +1012,6 @@ const globalBankLogos = {
     "PNC Bank": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/PNClogo.svg.png",
     "Capital One": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/Capital_One_logo.svg.png",
     "Fifth Third Bank": "https://raw.githubusercontent.com/avalonflow/AvalonFlow/main/assets/pictures/logo-stacked-primary-full-thumb.png",
-
-    // UK Banks
     "Barclays": "assets/pictures/Barclays-Logo-768x432.png",
     "HSBC UK": "assets/pictures/HSBC-Logo-768x432.png",
     "Lloyds Bank": "assets/pictures/Lloyds-Bank-Logo-500x281.webp",
@@ -1061,23 +1043,17 @@ async function initiateLiveTransaction(sessionData) {
     const config = regionConfig[sessionData.region];
     if (!config) return;
 
-    // --- BRAND LOGO RESOLUTION & PRELOAD LOGIC ---
     const logoContainer = document.getElementById("brand-logo-container");
     const brandLogoImage = document.getElementById("dynamic-brand-logo");
     const selectedName = (sessionData.selectedAssetOrBank || "").toLowerCase();
 
-    // 1. Check if selection is Crypto or Digital Tokens
     const isCrypto = selectedName.includes("usdc") || selectedName.includes("usdt") || selectedName.includes("crypto") || selectedName.includes("acu") || selectedName.includes("wallet");
 
-    // 2. Resolve target logo URL
     let matchedLogoUrl;
-
     if (isCrypto) {
-        matchedLogoUrl = defaultLogo; // Explicitly use default logo for crypto
+        matchedLogoUrl = defaultLogo;
     } else {
         matchedLogoUrl = globalBankLogos[sessionData.selectedAssetOrBank];
-
-        // Fuzzy fallbacks for e-wallets if key isn't exact
         if (!matchedLogoUrl) {
             if (selectedName.includes("paypal")) {
                 matchedLogoUrl = globalBankLogos["PayPal"];
@@ -1093,51 +1069,50 @@ async function initiateLiveTransaction(sessionData) {
         }
     }
 
-    // 3. Ensure container is visible and preload image
     if (logoContainer && brandLogoImage) {
-        logoContainer.style.display = ""; // Ensure container is visible
+        logoContainer.style.display = ""; 
         logoContainer.classList.add("is-hidden");
 
         const imgPreloader = new Image();
         imgPreloader.onload = () => {
             brandLogoImage.src = matchedLogoUrl;
-            void logoContainer.offsetWidth; // Force reflow for smooth transition
+            void logoContainer.offsetWidth; 
             logoContainer.classList.remove("is-hidden");
         };
         imgPreloader.src = matchedLogoUrl;
     }
-    // ---------------------------------------------
 
     const paymentType = selectedName;
     const userDetails = getCapturedDetails();
     const region = sessionData.region;
 
+    // --- EXACT UNIFIED NAME & ACCOUNT MAPPING FROM SCRIPT 2 ---
     let holderName = "";
     if (region === "US") {
-        holderName = userDetails.accountNameUs || userDetails.fullName || "";
+        holderName = userDetails.accountNameUs || userDetails.paypalNameUs || userDetails.cryptoNameUs || userDetails.venmoName || userDetails.fullName || "";
     } else if (region === "UK") {
-        holderName = userDetails.accountNameUk || userDetails.fullName || "";
+        holderName = userDetails.accountNameUk || userDetails.paypalNameUk || userDetails.cryptoNameUk || userDetails.revolutName || userDetails.fullName || "";
     } else {
-        holderName = userDetails.accountName || userDetails.fullName || "";
+        holderName = userDetails.accountName || userDetails.paypalName || userDetails.cryptoName || userDetails.interacName || userDetails.fullName || "";
     }
 
     let rawAccountNumber = "";
     if (region === "US") {
-        rawAccountNumber = userDetails.accountNumberUs || userDetails.accountNumber || "";
+        rawAccountNumber = userDetails.accountNumberUs || userDetails.acuAccountUs || userDetails.venmo || "";
     } else if (region === "UK") {
-        rawAccountNumber = userDetails.accountNumberUk || userDetails.accountNumber || "";
+        rawAccountNumber = userDetails.accountNumberUk || userDetails.acuAccountUk || userDetails.revolut || "";
     } else {
-        rawAccountNumber = userDetails.accountNumber || "";
+        rawAccountNumber = userDetails.accountNumber || userDetails.acuAccount || userDetails.interac || "";
     }
-    const accountNumber = rawAccountNumber ? `•••• ${rawAccountNumber.slice(-4)}` : "";
+    const accountNumber = rawAccountNumber ? (rawAccountNumber.length > 6 && !rawAccountNumber.includes('@') ? `•••• ${rawAccountNumber.slice(-4)}` : rawAccountNumber) : "";
 
     let routingOrTransit = "";
     if (region === "US") {
-        routingOrTransit = userDetails.transitNumberUs || userDetails.routingNumber || "";
+        routingOrTransit = userDetails.transitNumberUs || "";
     } else if (region === "UK") {
-        routingOrTransit = userDetails.transitNumberUk || userDetails.transitNo || "";
+        routingOrTransit = userDetails.transitNumberUk || "";
     } else {
-        routingOrTransit = userDetails.transitNumber || userDetails.transitNo || "";
+        routingOrTransit = userDetails.transitNumber || "";
     }
 
     let displayLabelName = "Beneficiary Name";
@@ -1148,37 +1123,37 @@ async function initiateLiveTransaction(sessionData) {
     if (paymentType.includes("paypal")) {
         displayLabelName = "PayPal Receiver";
         displayLabelDetails = "Linked Email";
-        renderedName = userDetails.paypalUs || userDetails.paypalUk || userDetails.paypal || userDetails.paypalName || "";
-        renderedDetails = userDetails.paypalEmail || (renderedName.includes("@") ? renderedName : "");
+        renderedName = userDetails.paypalNameUs || userDetails.paypalNameUk || userDetails.paypalName || userDetails.accountName || "";
+        renderedDetails = userDetails.paypalUs || userDetails.paypalUk || userDetails.paypal || "";
     } else if (paymentType.includes("venmo")) {
         displayLabelName = "Venmo User";
         displayLabelDetails = "Venmo Handle";
-        renderedName = userDetails.venmo || userDetails.venmoName || "";
-        renderedDetails = userDetails.venmoHandle || userDetails.venmoTag || userDetails.venmoPhone || "";
+        renderedName = userDetails.venmoName || "";
+        renderedDetails = userDetails.venmo || "";
     } else if (paymentType.includes("revolut")) {
         displayLabelName = "Revolut Account";
         displayLabelDetails = "Revtag / Phone";
-        renderedName = userDetails.revolutName || userDetails.revolut || "";
-        renderedDetails = userDetails.revolutTag || userDetails.revolutRevtag || userDetails.revolutPhone || "";
+        renderedName = userDetails.revolutName || "";
+        renderedDetails = userDetails.revolut || "";
     } else if (paymentType.includes("e-transfer") || paymentType.includes("e transfer") || paymentType.includes("interac")) {
         displayLabelName = "Interac Registered";
         displayLabelDetails = "Transfer Target";
-        renderedName = userDetails.interac || userDetails.interacName || "";
-        renderedDetails = userDetails.interacEmail || (renderedName.includes("@") ? renderedName : "");
+        renderedName = userDetails.interacName || "";
+        renderedDetails = userDetails.interac || "";
     } else if (paymentType.includes("usdc") || paymentType.includes("crypto") || paymentType.includes("wallet")) {
         displayLabelName = "Network Protocol";
         displayLabelDetails = "Destination Address";
-        renderedName = userDetails.tokenName || "";
-        const rawCrypto = userDetails.acuAccountUs || userDetails.acuAccountUk || userDetails.acuAccount || userDetails.cryptoAddress || "";
+        renderedName = userDetails.cryptoNameUs || userDetails.cryptoNameUk || userDetails.cryptoName || "";
+        const rawCrypto = userDetails.acuAccountUs || userDetails.acuAccountUk || userDetails.acuAccount || "";
         renderedDetails = rawCrypto ? `${rawCrypto.slice(0, 6)}...${rawCrypto.slice(-4)}` : ""; 
     }
 
     document.getElementById("recipient-name-label").innerText = displayLabelName;
-    document.getElementById("recipient-name-val").innerText = renderedName;
+    document.getElementById("recipient-name-val").innerText = renderedName || "Not Provided";
     document.getElementById("recipient-account-label").innerText = displayLabelDetails;
-    document.getElementById("recipient-account-val").innerText = renderedDetails;
+    document.getElementById("recipient-account-val").innerText = renderedDetails || "Not Provided";
 
-    document.getElementById("receipt-beneficiary").innerText = renderedDetails ? `${renderedName} (${renderedDetails})` : renderedName;
+    document.getElementById("receipt-beneficiary").innerText = renderedDetails ? `${renderedName} (${renderedDetails})` : (renderedName || "-");
 
     let liveRate = 1.0; 
     if (config.currency === "CAD") liveRate = 1.38;
@@ -1216,7 +1191,6 @@ async function initiateLiveTransaction(sessionData) {
 
     document.getElementById("payout-method").innerText = `${sessionData.selectedAssetOrBank}`;
     document.getElementById("arrival-time").innerText = config.eta;
-
     document.getElementById("receipt-hash").innerText = sessionActiveHash;
 
     const targetAmountUSD = isSecurityOpen ? sessionData.availableBalanceUSD : sessionData.baseAmountUSD;
@@ -1344,7 +1318,6 @@ function setupEventHandlers() {
                 status: "Processing"
             };
             localStorage.setItem("av_withdrawal_tx", JSON.stringify(txData));
-
             localStorage.removeItem("av_temp_session_hash");
 
             if (sourceType === "available") {
@@ -1374,6 +1347,6 @@ function setupEventHandlers() {
         window.location.replace("https://membership.avalonflow.site/dashboard");
     });
 }
-</script>
+   </script>
 </body>
 </html>
