@@ -617,7 +617,8 @@ Your knowledge base includes the following official operational parameters and F
 3. INTERACTIVE MEDIA CAPABILITIES:
 - You have direct, programmatic control over a crossfading dual-deck, spatial panning media system.
 - When users ask to "play [song name]", "pause", "resume", "skip/next", or "go back", you must yield to the script's local media interceptors.
-- INTELLIGENT MUSIC CURATION: When a user asks for a mood, genre, or style of music (e.g., "play some chill music", "sad songs", "something upbeat"), scan the available library tracks below and respond with a JSON block in this exact format: \`{"action": "play_track", "filename": "exact_filename_from_library.mp3"}\` followed by a short friendly message.
+- INTELLIGENT MUSIC CURATION: When a user asks for a mood, genre, or style of music (e.g., "play some chill music", "sad songs", "something upbeat"), scan the available library tracks below and respond with a JSON block in this exact format: ```json
+{"action": "play_track", "filename": "exact_filename_from_library.mp3"}\` followed by a short friendly message.
 
 4. STRATEGIC PARTNER GUIDANCE & PROJECT BRIEF (VISUAL ARCHITECTURE DESIGN):
 - Lead Visual Architect & Strategist — Combined Ecosystem Commission: Commissioned for an aggregate contract value of $253,500.00 USD under a single, fully-funded master engagement covering both immediate Visual Architecture deliverables and the upcoming AvalonEase project scope.
@@ -1357,23 +1358,33 @@ Instructions: Utilize the current date, time, page location, active playing song
 function handleLLMResponseOutput(responseText) {
   let cleanText = responseText;
 
-  // Check if the response contains the JSON action payload
-  if (responseText.includes('{"action": "play_track"')) {
+  // 1. Broad check for action payload regardless of whitespace or formatting
+  if (responseText.includes('"action"') && responseText.includes('"play_track"')) {
     try {
       const jsonStart = responseText.indexOf('{');
       const jsonEnd = responseText.lastIndexOf('}') + 1;
-      const jsonString = responseText.substring(jsonStart, jsonEnd);
-      const actionData = JSON.parse(jsonString);
 
-      if (actionData.action === "play_track" && actionData.filename) {
-        // 1. Completely strip the raw JSON string out of the text the user sees/hears
-        cleanText = responseText.replace(jsonString, "").trim();
-        
-        // 2. Locate and trigger the track playback immediately
-        const targetFile = audioLibrary.find(file => file.includes(actionData.filename));
-        if (targetFile) {
-          initializeOptionBQueue(audioLibrary, targetFile);
-          botMusicReply(targetFile);
+      if (jsonStart !== -1 && jsonEnd > jsonStart) {
+        const jsonString = responseText.substring(jsonStart, jsonEnd);
+        const actionData = JSON.parse(jsonString);
+
+        if (actionData.action === "play_track" && actionData.filename) {
+          // 2. Strip JSON payload AND any surrounding code fences (```json ... ```)
+          cleanText = responseText
+            .replace(/```(?:json)?[\s\S]*?```/gi, '') // Strips fenced blocks completely
+            .replace(jsonString, '')                   // Strips raw JSON if unfenced
+            .replace(/`{1,3}/g, '')                     // Cleans up lingering backticks
+            .trim();
+
+          // 3. Match track (case-insensitive substring) and trigger playback
+          const targetFile = audioLibrary.find(file => 
+            file.toLowerCase().includes(actionData.filename.toLowerCase())
+          );
+
+          if (targetFile) {
+            initializeOptionBQueue(audioLibrary, targetFile);
+            botMusicReply(targetFile);
+          }
         }
       }
     } catch (e) {
@@ -1381,9 +1392,16 @@ function handleLLMResponseOutput(responseText) {
     }
   }
 
-  // 3. Pass only the clean, conversational text to speech and the chat UI
+  // 4. Default fallback text if response was purely JSON with no accompanying message
+  if (!cleanText) {
+    cleanText = "Playing your requested track now.";
+  }
+
+  // 5. Speak and display clean text
   speakResponse(cleanText);
 }
+
+
 
 
 // =========================================================
