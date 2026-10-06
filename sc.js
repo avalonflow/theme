@@ -1357,9 +1357,10 @@ Instructions: Utilize the current date, time, page location, active playing song
 function handleLLMResponseOutput(responseText) {
   let cleanText = responseText;
 
-  // 1. Broad check for action payload regardless of whitespace or formatting
+  // 1. Check if response contains a JSON payload (or markdown code block with JSON)
   if (responseText.includes('"action"') && responseText.includes('"play_track"')) {
     try {
+      // Find JSON block boundaries
       const jsonStart = responseText.indexOf('{');
       const jsonEnd = responseText.lastIndexOf('}') + 1;
 
@@ -1368,14 +1369,14 @@ function handleLLMResponseOutput(responseText) {
         const actionData = JSON.parse(jsonString);
 
         if (actionData.action === "play_track" && actionData.filename) {
-          // 2. Strip JSON payload AND any surrounding code fences (```json ... ```)
+          // 2. Strip JSON payload AND any surrounding ``` or ```json code blocks from spoken text
           cleanText = responseText
-            .replace(/```(?:json)?[\s\S]*?```/gi, '') // Strips fenced blocks completely
-            .replace(jsonString, '')                   // Strips raw JSON if unfenced
-            .replace(/`{1,3}/g, '')                     // Cleans up lingering backticks
+            .replace(/```(?:json)?[\s\S]*?```/gi, '') // Remove markdown code blocks
+            .replace(jsonString, '')                   // Remove raw JSON if unformatted
+            .replace(/`{1,3}/g, '')                     // Remove remaining backticks
             .trim();
 
-          // 3. Match track (case-insensitive substring) and trigger playback
+          // 3. Locate and trigger track playback
           const targetFile = audioLibrary.find(file => 
             file.toLowerCase().includes(actionData.filename.toLowerCase())
           );
@@ -1391,14 +1392,15 @@ function handleLLMResponseOutput(responseText) {
     }
   }
 
-  // 4. Default fallback text if response was purely JSON with no accompanying message
-  if (!cleanText) {
+  // 4. Fallback default text if response was purely a JSON string with no accompanying message
+  if (!cleanText || cleanText.length === 0) {
     cleanText = "Playing your requested track now.";
   }
 
-  // 5. Speak and display clean text
+  // 5. Pass only clean, conversational text to speech synthesis and chat UI
   speakResponse(cleanText);
 }
+
 
 
 
