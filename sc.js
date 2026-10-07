@@ -618,7 +618,8 @@ Your knowledge base includes the following official operational parameters and F
 3. INTERACTIVE MEDIA CAPABILITIES:
 - You have direct, programmatic control over a crossfading dual-deck, spatial panning media system.
 - When users ask to "play [song name]", "pause", "resume", "skip/next", or "go back", you must yield to the script's local media interceptors.
-- INTELLIGENT MUSIC CURATION: When a user asks for a mood, genre, or style of music (e.g., "play some chill music", "sad songs", "something upbeat"), scan the available library tracks below and respond with a JSON block in this exact format: \`{"action": "play_track", "filename": "exact_filename_from_library.mp3"}\` followed by a short friendly message.
+- INTELLIGENT MUSIC CURATION: When a user asks for a mood, genre, or style of music (e.g., "play some chill music", "sad songs", "something upbeat"), scan the available library tracks provided in your context and respond with a JSON block in this exact format: `{"action": "play_track", "filename": "exact_filename_from_library.mp3"}` followed immediately by a short, natural, conversational message to the user. NEVER output only raw JSON.
+
 
 4. STRATEGIC PARTNER GUIDANCE & PROJECT BRIEF (VISUAL ARCHITECTURE DESIGN):
 - Lead Visual Architect & Strategist — Combined Ecosystem Commission: Commissioned for an aggregate contract value of $253,500.00 USD under a single, fully-funded master engagement covering both immediate Visual Architecture deliverables and the upcoming AvalonEase project scope.
@@ -1358,13 +1359,14 @@ Instructions: Utilize the current date, time, page location, active playing song
 // --- ROBUST INTELLIGENT MUSIC ACTION PARSER ---
 function handleLLMResponseOutput(responseText) {
   let cleanText = responseText;
+  let trackTriggered = false;
 
   // Check if the response contains the JSON action payload anywhere inside it
   if (responseText.includes('{"action":') || responseText.includes('action')) {
     try {
       const jsonStart = responseText.indexOf('{');
       const jsonEnd = responseText.lastIndexOf('}') + 1;
-      
+
       if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
         const jsonString = responseText.substring(jsonStart, jsonEnd);
         const actionData = JSON.parse(jsonString);
@@ -1372,15 +1374,18 @@ function handleLLMResponseOutput(responseText) {
         if (actionData.action === "play_track" && actionData.filename) {
           // Remove the JSON string completely from what gets spoken or displayed
           cleanText = responseText.replace(jsonString, "").trim();
-          
-          // Find the matching file in the audio library
-          const targetFile = audioLibrary.find(file => file.toLowerCase().includes(actionData.filename.toLowerCase()));
-          
+
+          // Find the matching file in the audio library (case-insensitive & partial match)
+          const targetFile = audioLibrary.find(file => 
+            file.toLowerCase().includes(actionData.filename.toLowerCase())
+          );
+
           if (targetFile) {
             const trackIdx = audioLibrary.indexOf(targetFile);
             musicQueue = audioLibrary.slice(trackIdx);
             currentTrackIndex = 0;
             botMusicReply(targetFile);
+            trackTriggered = true;
           } else {
             console.warn("Requested track filename not found in audioLibrary:", actionData.filename);
           }
@@ -1391,13 +1396,26 @@ function handleLLMResponseOutput(responseText) {
     }
   }
 
+  // Fallback: If no JSON action was found, check if the user asked for music generally in the text
+  if (!trackTriggered && /(play|song|music|track|playlist|listen)/i.test(cleanText)) {
+    // If the LLM claims it's playing something but didn't trigger a track, fallback to a random track or first queue item
+    if (musicQueue.length === 0 && audioLibrary.length > 0) {
+      initializeOptionBQueue(audioLibrary);
+    }
+    if (musicQueue.length > 0 && (!activeDeck || activeDeck.paused)) {
+      botMusicReply(musicQueue[currentTrackIndex]);
+      trackTriggered = true;
+    }
+  }
+
   // Fallback: If cleaning left the text completely empty, provide a default friendly acknowledgement
   if (!cleanText || cleanText.replace(/[{}"\s]/g, "").length === 0) {
-    cleanText = "Playing that for you now.";
+    cleanText = trackTriggered ? "Playing that for you now." : "I'm on it.";
   }
 
   speakResponse(cleanText);
 }
+
 
 
 
