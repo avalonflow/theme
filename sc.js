@@ -1355,35 +1355,50 @@ Instructions: Utilize the current date, time, page location, active playing song
   }
 }
 
-// --- INTELLIGENT MUSIC ACTION PARSER ---
+// --- ROBUST INTELLIGENT MUSIC ACTION PARSER ---
 function handleLLMResponseOutput(responseText) {
   let cleanText = responseText;
 
-  if (responseText.includes('{"action": "play_track"')) {
+  // Check if the response contains the JSON action payload anywhere inside it
+  if (responseText.includes('{"action":') || responseText.includes('action')) {
     try {
       const jsonStart = responseText.indexOf('{');
       const jsonEnd = responseText.lastIndexOf('}') + 1;
-      const jsonString = responseText.substring(jsonStart, jsonEnd);
-      const actionData = JSON.parse(jsonString);
+      
+      if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
+        const jsonString = responseText.substring(jsonStart, jsonEnd);
+        const actionData = JSON.parse(jsonString);
 
-      if (actionData.action === "play_track" && actionData.filename) {
-        cleanText = responseText.replace(jsonString, "").trim();
-        
-        const targetFile = audioLibrary.find(file => file.includes(actionData.filename));
-        if (targetFile) {
-          const trackIdx = audioLibrary.indexOf(targetFile);
-          musicQueue = audioLibrary.slice(trackIdx);
-          currentTrackIndex = 0;
-          botMusicReply(targetFile);
+        if (actionData.action === "play_track" && actionData.filename) {
+          // Remove the JSON string completely from what gets spoken or displayed
+          cleanText = responseText.replace(jsonString, "").trim();
+          
+          // Find the matching file in the audio library
+          const targetFile = audioLibrary.find(file => file.toLowerCase().includes(actionData.filename.toLowerCase()));
+          
+          if (targetFile) {
+            const trackIdx = audioLibrary.indexOf(targetFile);
+            musicQueue = audioLibrary.slice(trackIdx);
+            currentTrackIndex = 0;
+            botMusicReply(targetFile);
+          } else {
+            console.warn("Requested track filename not found in audioLibrary:", actionData.filename);
+          }
         }
       }
     } catch (e) {
-      console.warn("Failed to parse intelligent music action payload:", e);
+      console.warn("Failed to parse intelligent music action payload JSON:", e);
     }
+  }
+
+  // Fallback: If cleaning left the text completely empty, provide a default friendly acknowledgement
+  if (!cleanText || cleanText.replace(/[{}"\s]/g, "").length === 0) {
+    cleanText = "Playing that for you now.";
   }
 
   speakResponse(cleanText);
 }
+
 
 
 
