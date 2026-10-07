@@ -1,5 +1,3 @@
-
-
 /**
  * AvalonFlow: Kairos Intelligent Voice & UI Controller
  * Master Core Edition (Collision-Free & Unified Engine + Live Context Enhancements)
@@ -1356,26 +1354,39 @@ Instructions: Utilize the current date, time, page location, active playing song
   }
 }
 
+// ==========================================
+// REFACTORED LLM RESPONSE HANDLER (WITH FALLBACK SCANNER)
+// ==========================================
 function handleLLMResponseOutput(responseText) {
   let cleanText = responseText;
+  let playedViaJson = false;
 
-  // Check if the response contains the JSON action payload
-  if (responseText.includes('{"action": "play_track"')) {
+  // 1. Primary: Regex pattern matching JSON objects even if wrapped in markdown blocks
+  const jsonRegex = /```(?:json)?\s*(\{[\s\S]*?"action"\s*:\s*"play_track"[\s\S]*?\})\s*```|(\{[\s\S]*?"action"\s*:\s*"play_track"[\s\S]*?\})/;
+  const match = responseText.match(jsonRegex);
+
+  if (match) {
+    const rawJsonStr = match[1] || match[2];
+    const fullMatchedBlock = match[0];
+
     try {
-      const jsonStart = responseText.indexOf('{');
-      const jsonEnd = responseText.lastIndexOf('}') + 1;
-      const jsonString = responseText.substring(jsonStart, jsonEnd);
-      const actionData = JSON.parse(jsonString);
+      const actionData = JSON.parse(rawJsonStr);
 
       if (actionData.action === "play_track" && actionData.filename) {
-        // 1. Completely strip the raw JSON string out of the text the user sees/hears
-        cleanText = responseText.replace(jsonString, "").trim();
-        
-        // 2. Locate and trigger the track playback immediately
-        const targetFile = audioLibrary.find(file => file.includes(actionData.filename));
+        // Strip out the JSON block completely from the display/spoken text
+        cleanText = responseText.replace(fullMatchedBlock, "").trim();
+
+        // Locate target file in audioLibrary (case-insensitive substring match)
+        const targetFile = audioLibrary.find(file => 
+          file.toLowerCase().includes(actionData.filename.toLowerCase())
+        );
+
         if (targetFile) {
           initializeOptionBQueue(audioLibrary, targetFile);
           botMusicReply(targetFile);
+          playedViaJson = true;
+        } else {
+          console.warn("LLM recommended track not found in local library:", actionData.filename);
         }
       }
     } catch (e) {
@@ -1383,9 +1394,38 @@ function handleLLMResponseOutput(responseText) {
     }
   }
 
-  // 3. Pass only the clean, conversational text to speech and the chat UI
-  speakResponse(cleanText);
+  // 2. Fallback: If JSON wasn't present/valid, scan response text for playback keywords and library tracks
+  if (!playedViaJson && /\b(playing|play|streaming)\b/i.test(cleanText)) {
+    const matchedFile = audioLibrary.find(file => {
+      const formattedTitle = typeof formatTrackTitle === "function" ? formatTrackTitle(file).toLowerCase() : "";
+      const rawFileName = file.toLowerCase().split('/').pop().replace('.mp3', '');
+      const responseLower = cleanText.toLowerCase();
+
+      // Guard against false positives on ultra-short titles (length > 2)
+      const validFormatted = formattedTitle.length > 2 && responseLower.includes(formattedTitle);
+      const validRaw = rawFileName.length > 2 && responseLower.includes(rawFileName);
+
+      return validFormatted || validRaw;
+    });
+
+    if (matchedFile) {
+      initializeOptionBQueue(audioLibrary, matchedFile);
+      botMusicReply(matchedFile);
+    }
+  }
+
+  // Fallback check if cleaning left the string empty or containing leftover syntax symbols
+  if (!cleanText || cleanText.replace(/[{}"\s]/g, "").length === 0) {
+    cleanText = "Playing that for you now.";
+  }
+
+  // Pass clean, human-readable text to voice synthesis and transcript UI
+  if (cleanText.length > 0) {
+    speakResponse(cleanText);
+  }
 }
+
+
 
 
 // =========================================================
