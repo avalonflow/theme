@@ -617,7 +617,8 @@ Your knowledge base includes the following official operational parameters and F
 3. INTERACTIVE MEDIA CAPABILITIES:
 - You have direct, programmatic control over a crossfading dual-deck, spatial panning media system.
 - When users ask to "play [song name]", "pause", "resume", "skip/next", or "go back", you must yield to the script's local media interceptors.
-- INTELLIGENT MUSIC CURATION: When a user asks for a mood, genre, or style of music (e.g., "play some chill music", "sad songs", "something upbeat"), scan the available library tracks below and respond with a JSON block in this exact format: \`{"action": "play_track", "filename": "exact_filename_from_library.mp3"}\` followed by a short friendly message.
+- INTELLIGENT MUSIC CURATION: When a user asks for a mood, genre, or style of music (e.g., "play some chill music", "sad songs"), choose the best matching track filename from the library catalog and format your internal command cleanly at the very end of your response as: {"action": "play_track", "filename": "exact_filename.mp3"}.
+
 
 4. STRATEGIC PARTNER GUIDANCE & PROJECT BRIEF (VISUAL ARCHITECTURE DESIGN):
 - Lead Visual Architect & Strategist — Combined Ecosystem Commission: Commissioned for an aggregate contract value of $253,500.00 USD under a single, fully-funded master engagement covering both immediate Visual Architecture deliverables and the upcoming AvalonEase project scope.
@@ -1357,49 +1358,48 @@ Instructions: Utilize the current date, time, page location, active playing song
 function handleLLMResponseOutput(responseText) {
   let cleanText = responseText;
 
-  // 1. Check if response contains a JSON payload (or markdown code block with JSON)
-  if (responseText.includes('"action"') && responseText.includes('"play_track"')) {
+  // Regex pattern to capture {"action": "play_track", "filename": "..."} inside codeblocks or plain text
+  const jsonRegex = /\{[\s\S]*?"action"\s*:\s*"play_track"[\s\S]*?\}/i;
+  const match = responseText.match(jsonRegex);
+
+  if (match) {
     try {
-      // Find JSON block boundaries
-      const jsonStart = responseText.indexOf('{');
-      const jsonEnd = responseText.lastIndexOf('}') + 1;
+      const rawJson = match[0];
+      const actionData = JSON.parse(rawJson);
 
-      if (jsonStart !== -1 && jsonEnd > jsonStart) {
-        const jsonString = responseText.substring(jsonStart, jsonEnd);
-        const actionData = JSON.parse(jsonString);
+      if (actionData.action === "play_track" && actionData.filename) {
+        // 1. Remove the JSON snippet AND any surrounding markdown code fences ``` or ```json
+        cleanText = responseText
+          .replace(/```(?:json)?[\s\S]*?```/gi, '')
+          .replace(rawJson, '')
+          .trim();
 
-        if (actionData.action === "play_track" && actionData.filename) {
-          // 2. Strip JSON payload AND any surrounding ``` or ```json code blocks from spoken text
-          cleanText = responseText
-            .replace(/```(?:json)?[\s\S]*?```/gi, '') // Remove markdown code blocks
-            .replace(jsonString, '')                   // Remove raw JSON if unformatted
-            .replace(/`{1,3}/g, '')                     // Remove remaining backticks
-            .trim();
+        // 2. Locate and trigger track playback
+        const targetFile = audioLibrary.find(file => 
+          file.toLowerCase().includes(actionData.filename.toLowerCase())
+        );
 
-          // 3. Locate and trigger track playback
-          const targetFile = audioLibrary.find(file => 
-            file.toLowerCase().includes(actionData.filename.toLowerCase())
-          );
-
-          if (targetFile) {
-            initializeOptionBQueue(audioLibrary, targetFile);
-            botMusicReply(targetFile);
-          }
+        if (targetFile) {
+          initializeOptionBQueue(audioLibrary, targetFile);
+          botMusicReply(targetFile);
         }
       }
     } catch (e) {
       console.warn("Failed to parse intelligent music action payload:", e);
+      // Clean up markdown code blocks as a fallback if JSON parsing failed
+      cleanText = responseText.replace(/```(?:json)?[\s\S]*?```/gi, '').trim();
     }
   }
 
-  // 4. Fallback default text if response was purely a JSON string with no accompanying message
-  if (!cleanText || cleanText.length === 0) {
-    cleanText = "Playing your requested track now.";
+  // 3. Fallback check: if cleanText is empty after stripping JSON, provide a default friendly message
+  if (!cleanText) {
+    cleanText = "Sure! Playing that track for you now.";
   }
 
-  // 5. Pass only clean, conversational text to speech synthesis and chat UI
+  // 4. Send clean conversational text to the voice engine and chat window
   speakResponse(cleanText);
 }
+
 
 
 
