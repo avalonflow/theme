@@ -1428,20 +1428,11 @@ CROP MODAL
 
         const userVal = config.users[currentUser];
 
-        // Extract both array paths
+        // Extract profile image path
         const profileImgPath = Array.isArray(userVal) ? userVal[0] : userVal;
-        const contractImgPath = Array.isArray(userVal) ? userVal[1] : userVal;
 
         // ----------------------------------------------------
-        // FEATURE 1: Direct DOM Injection for Contract Image (Index 1)
-        // ----------------------------------------------------
-        const targetImg = document.getElementById('contract-section-img');
-        if (targetImg && contractImgPath) {
-            targetImg.src = contractImgPath;
-        }
-
-        // ----------------------------------------------------
-        // FEATURE 2: Canvas Base64 Cache for Profile Picture (Index 0)
+        // Canvas Base64 Cache for Profile Picture (Index 0)
         // ----------------------------------------------------
         if (!localStorage.getItem('profilePhoto') && profileImgPath) {
             const img = new Image();
@@ -1593,6 +1584,7 @@ if (typeof cancelCrop !== 'undefined' && cancelCrop) {
         if (cropModal) cropModal.classList.add('hidden');
     });
 }
+
 
 /* --------------------------
 NOTIFICATION SYSTEM
