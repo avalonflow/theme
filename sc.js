@@ -1,3 +1,4 @@
+
 /**
  * AvalonFlow: Kairos Intelligent Voice & UI Controller
  * Master Core Edition (Collision-Free & Unified Engine + Live Context Enhancements)
@@ -617,8 +618,7 @@ Your knowledge base includes the following official operational parameters and F
 3. INTERACTIVE MEDIA CAPABILITIES:
 - You have direct, programmatic control over a crossfading dual-deck, spatial panning media system.
 - When users ask to "play [song name]", "pause", "resume", "skip/next", or "go back", you must yield to the script's local media interceptors.
-- INTELLIGENT MUSIC CURATION: When a user asks for a mood, genre, or style of music (e.g., "play some chill music", "sad songs"), choose the best matching track filename from the library catalog and format your internal command cleanly at the very end of your response as: {"action": "play_track", "filename": "exact_filename.mp3"}.
-
+- INTELLIGENT MUSIC CURATION: When a user asks for a mood, genre, or style of music (e.g., "play some chill music", "sad songs", "something upbeat"), scan the available library tracks below and respond with a JSON block in this exact format: \`{"action": "play_track", "filename": "exact_filename_from_library.mp3"}\` followed by a short friendly message.
 
 4. STRATEGIC PARTNER GUIDANCE & PROJECT BRIEF (VISUAL ARCHITECTURE DESIGN):
 - Lead Visual Architect & Strategist — Combined Ecosystem Commission: Commissioned for an aggregate contract value of $253,500.00 USD under a single, fully-funded master engagement covering both immediate Visual Architecture deliverables and the upcoming AvalonEase project scope.
@@ -1358,27 +1358,20 @@ Instructions: Utilize the current date, time, page location, active playing song
 function handleLLMResponseOutput(responseText) {
   let cleanText = responseText;
 
-  // Regex pattern to capture {"action": "play_track", "filename": "..."} inside codeblocks or plain text
-  const jsonRegex = /\{[\s\S]*?"action"\s*:\s*"play_track"[\s\S]*?\}/i;
-  const match = responseText.match(jsonRegex);
-
-  if (match) {
+  // Check if the response contains the JSON action payload
+  if (responseText.includes('{"action": "play_track"')) {
     try {
-      const rawJson = match[0];
-      const actionData = JSON.parse(rawJson);
+      const jsonStart = responseText.indexOf('{');
+      const jsonEnd = responseText.lastIndexOf('}') + 1;
+      const jsonString = responseText.substring(jsonStart, jsonEnd);
+      const actionData = JSON.parse(jsonString);
 
       if (actionData.action === "play_track" && actionData.filename) {
-        // 1. Remove the JSON snippet AND any surrounding markdown code fences ``` or ```json
-        cleanText = responseText
-          .replace(/```(?:json)?[\s\S]*?```/gi, '')
-          .replace(rawJson, '')
-          .trim();
-
-        // 2. Locate and trigger track playback
-        const targetFile = audioLibrary.find(file => 
-          file.toLowerCase().includes(actionData.filename.toLowerCase())
-        );
-
+        // 1. Completely strip the raw JSON string out of the text the user sees/hears
+        cleanText = responseText.replace(jsonString, "").trim();
+        
+        // 2. Locate and trigger the track playback immediately
+        const targetFile = audioLibrary.find(file => file.includes(actionData.filename));
         if (targetFile) {
           initializeOptionBQueue(audioLibrary, targetFile);
           botMusicReply(targetFile);
@@ -1386,23 +1379,12 @@ function handleLLMResponseOutput(responseText) {
       }
     } catch (e) {
       console.warn("Failed to parse intelligent music action payload:", e);
-      // Clean up markdown code blocks as a fallback if JSON parsing failed
-      cleanText = responseText.replace(/```(?:json)?[\s\S]*?```/gi, '').trim();
     }
   }
 
-  // 3. Fallback check: if cleanText is empty after stripping JSON, provide a default friendly message
-  if (!cleanText) {
-    cleanText = "Sure! Playing that track for you now.";
-  }
-
-  // 4. Send clean conversational text to the voice engine and chat window
+  // 3. Pass only the clean, conversational text to speech and the chat UI
   speakResponse(cleanText);
 }
-
-
-
-
 
 
 // =========================================================
