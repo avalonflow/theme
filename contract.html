@@ -552,11 +552,73 @@ ANIMATIONS
     display: none;
 }
 
-        
+                            /* ---------- Sidebar ---------- */
+#sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+
+    /* FIX 1: Make height end exactly before the footer starts */
+    height: calc(100% - 102px); 
+
+    background: rgba(40, 75, 135, 0.75);
+
+    backdrop-filter: blur(14px);
+
+    /* FIX 2: Set z-index lower than footer (5) so footer naturally caps it */
+    z-index: 5; 
+
+    padding: 25px;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+        #sidebar.open { transform: translateX(0); }
+        #sidebar h2{
+font-size:22px;
+margin-bottom:20px;
+color:#a78bfa;
+}
+        #sidebar button {
+            width: 100%;
+            margin: 12px 0;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 16px;
+        }
+
+/* ---------- Menu Button ---------- */
+
+        /* ---------- Menu Button ---------- */
+        #menuBtn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 6;
+            background: #6b2cd8;
+            border: none;
+            color: #fff;
+            padding: 12px 14px;
+            border-radius: 10px;
+}
+
+/* move button when sidebar opens */
+#menuBtn.shift{
+left:250px;
+}       
 
     </style>
 </head>
 <body>
+    <button id="menuBtn" onclick="toggleSidebar()">☰
+
+<div style="position: absolute; top: 54px; left: 50%; transform: translateX(-50%); white-space: nowrap; pointer-events: none; text-align: center;">
+        <span id="sidebarLabel" style="font-family: sans-serif; font-size: 10px; font-weight: 500; color: #c0a9ff; letter-spacing: 0.3px; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);">Sidebar</span>
+    </div>
+</button>
 
 <!-- =========================
 TOP RIGHT PROFILE AVATAR
@@ -598,7 +660,14 @@ CROP MODAL
 
 </div>
 
-
+<div id="sidebar">
+       <h2>AvalonFlow</h2>
+    <button onclick="window.location.href='/dashboard'">Dashboard</button>
+<button onclick="window.location.href='/notifications'">My Notifications</button>
+    <button onclick="window.location.href='/withdrawal'">Withdrawal</button>
+<button onclick="window.location.href='/contract'">Partner Agreement</button>
+    <button onclick="logout()">Logout</button>
+</div>
 
 
 <div id="planNotification" class="notification-bar"></div>
@@ -721,6 +790,24 @@ CROP MODAL
     </footer>
 
 <script>
+/* Sidebar toggle */
+        const sidebar = document.getElementById('sidebar');
+const content = document.getElementById('content');
+
+const menuBtn = document.getElementById('menuBtn');
+
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const menuBtn = document.getElementById('menuBtn');
+
+    sidebar.classList.toggle('open');
+    menuBtn.classList.toggle('shift');
+}
+
+function navigateTo(page){
+    window.location.href = page;
+}
+
 (function authGuard() {
     const isLoggedIn = localStorage.getItem("avalon_logged_in") === "true";
 
