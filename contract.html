@@ -552,31 +552,27 @@ ANIMATIONS
     display: none;
 }
 
-                            /* ---------- Sidebar (Fixed & Blurred) ---------- */
+                                                        /* ---------- Sidebar ---------- */
 #sidebar {
     position: fixed;
     top: 0;
     left: 0;
-    width: 280px;
+    width: 340px;
 
-    /* Use dynamic viewport height (dvh) so mobile URL bars don't break positioning */
-    height: calc(100dvh - 102px); 
+    /* FIX 1: Make height end exactly before the footer starts */
+    height: calc(100% - 52px); 
 
-    background: rgba(40, 75, 135, 0.65);
+    background: rgba(40, 75, 135, 0.75);
 
-    /* Webkit prefix for Safari/Mobile Chrome support */
-    -webkit-backdrop-filter: blur(14px);
     backdrop-filter: blur(14px);
 
-    /* Forces GPU hardware acceleration to ensure blur renders consistently */
-    transform: translateX(-100%) translateZ(0);
-    will-change: transform;
-
+    /* FIX 2: Set z-index lower than footer (5) so footer naturally caps it */
     z-index: 5; 
+
     padding: 25px;
+    transform: translateX(-100%);
     transition: transform 0.3s ease;
 }
-
         #sidebar.open { transform: translateX(0); }
         #sidebar h2{
 font-size:22px;
@@ -612,7 +608,7 @@ color:#a78bfa;
 /* move button when sidebar opens */
 #menuBtn.shift{
 left:250px;
-}       
+}
 
     </style>
 </head>
