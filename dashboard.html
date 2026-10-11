@@ -1974,18 +1974,19 @@ function updateRetentionBonusUI() {
         </div>
     `;
 
-    // Bonus Card UI Update
+        // Bonus Card UI Update
     if (bonusCardStat) {
         if ((isWithdrawn && withdrawalSource === "bonus") || liveBonus <= 0) {
-            bonusCardStat.textContent = "$0.00 ~ $0.00 ACU";
+            bonusCardStat.textContent = "$0.00 ~ 0.00 ACU";
             bonusCardStat.style.animation = "none";
             bonusCardStat.style.webkitTextFillColor = "#555";
         } else {
-            bonusCardStat.textContent = `${liveBonus.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ACU ~ ${formatCurrency(liveBonus)}`;
+            bonusCardStat.textContent = `${formatCurrency(liveBonus)} ~ ${liveBonus.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ACU`;
             bonusCardStat.style.animation = "";
             bonusCardStat.style.webkitTextFillColor = "";
         }
     }
+
 
     let rowsHTML = "";
 
