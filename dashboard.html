@@ -1277,7 +1277,7 @@ CROP MODAL
 
     <div class="glass-card stat-card">
       <h3>Retention Bonus</h3>
-      <div class="stat">0.00 ACU ~ $0.00</div>
+      <div class="stat">$0.00 ~ 0.00 ACU</div>
     </div>
   </div>
 
@@ -1977,7 +1977,7 @@ function updateRetentionBonusUI() {
     // Bonus Card UI Update
     if (bonusCardStat) {
         if ((isWithdrawn && withdrawalSource === "bonus") || liveBonus <= 0) {
-            bonusCardStat.textContent = "0.00 ACU ~ $0.00";
+            bonusCardStat.textContent = "$0.00 ~ $0.00 ACU";
             bonusCardStat.style.animation = "none";
             bonusCardStat.style.webkitTextFillColor = "#555";
         } else {
