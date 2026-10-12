@@ -1942,7 +1942,7 @@ function updateRetentionBonusUI() {
         ? formatCurrency(withdrawnVal, storedSymbol, storedCurrency)
         : formatCurrency(withdrawnVal, "$", "USD");
 
-    const bonusCardStat = document.querySelector(".stat-card:nth-child(3) .stat");
+    const bonusCardStat = document.querySelector(".hero-card .stat");
     const historyTableBody = document.getElementById("transactionHistoryRows");
 
     if (!historyTableBody) return;
