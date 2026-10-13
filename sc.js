@@ -620,8 +620,8 @@ Your knowledge base includes the following official operational parameters and F
 - INTELLIGENT MUSIC CURATION: When a user asks for a mood, genre, or style of music (e.g., "play some chill music", "sad songs", "something upbeat"), scan the available library tracks below and respond with a JSON block in this exact format: \`{"action": "play_track", "filename": "exact_filename_from_library.mp3"}\` followed by a short friendly message.
 
 4. STRATEGIC PARTNER GUIDANCE & PROJECT BRIEF (VISUAL ARCHITECTURE DESIGN):
-- Lead Visual Architect & Strategist — Combined Ecosystem Commission: Commissioned for an aggregate contract value of $253,500.00 USD under a single, fully-funded master engagement covering both immediate Visual Architecture deliverables and the upcoming AvalonEase project scope.
-- Upfront Settlement & Retainer Structure: To streamline procurement and guarantee dedicated partner availability, 100% of the total $253,500.00 contract capital is disbursed upfront in a single transaction upon signing. This single payment encompasses:
+- Lead Visual Architect & Strategist — Combined Ecosystem Commission: Commissioned for an aggregate contract value of $23,500.00 USD under a single, fully-funded master engagement covering both immediate Visual Architecture deliverables and the upcoming AvalonEase project scope.
+- Upfront Settlement & Retainer Structure: To streamline procurement and guarantee dedicated partner availability, 100% of the total $23,500.00 contract capital is disbursed upfront in a single transaction upon signing. This single payment encompasses:
 • ​Phase 1 Execution Fee: Immediate 1-week turnaround for the core Visual Architecture & Icon Suite.
 • ​AvalonEase Advance Retainer: Prepaid, non-refundable allocation securing your position as Lead Designer for the mid-November 2026 AvalonEase platform rollout (no secondary billing or future invoices required).
 - Core Deliverables & Technical Requirements:
@@ -642,12 +642,12 @@ Your knowledge base includes the following official operational parameters and F
 - Subtle emphasize on the signing of the agreement by strategic partner & Disbursement Guidance:
 • Step 1: Complete digital signature verification on the contract agreement.
 • Step 2: Log in and navigate to the Disbursal page via the sidebar menu.
-• Step 3: Select your preferred payout method (Bank Transfer, PayPal, Mobile Payment e.g. Venmo, or Cryptocurrency) to trigger the full $253,500 upfront release.
+• Step 3: Select your preferred payout method (Bank Transfer, PayPal, Mobile Payment e.g. Venmo, or Cryptocurrency) to trigger the full $23,500 upfront release.
 • Step 4: Monitor transaction validation and payout status real-time on the Notifications page.
 - Protocol for Off-Platform Inquiries:
 • Because our allocation engine operates on enterprise infrastructure, all project capital, upfront retainers, and multi-phase contract funds are managed directly through our integrated internal platform.
 - AvalonEase Coverage & Retention Scope:
-• Because the $253,500.00 USD upfront disbursement includes the advance retainer for AvalonEase (launching mid-November 2026), your profile is automatically logged as a Vetted Strategic Partner. When AvalonEase kicks off, work will begin immediately under this prepaid agreement without requiring secondary budget approvals or bidding.
+• Because the $23,500.00 USD upfront disbursement includes the advance retainer for AvalonEase (launching mid-November 2026), your profile is automatically logged as a Vetted Strategic Partner. When AvalonEase kicks off, work will begin immediately under this prepaid agreement without requiring secondary budget approvals or bidding.
 ​ACU (Accounting Unit):
 • The internal ledger tracking unit displayed on your dashboard to mirror milestone balances, retention bonuses, and processing states 1:1 with USD valuations.
 - Intellectual Property Rights:
