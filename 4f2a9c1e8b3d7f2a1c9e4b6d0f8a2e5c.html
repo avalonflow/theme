@@ -678,7 +678,7 @@ let paymentMode = "manual"; // "manual" | "paymento"
 let paymentDone = false;
 
 // Shared timer key used across the flow
-const SOURCE_TIMER_KEY = "avb_expiry_time";
+const SOURCE_TIMER_KEY = "avb_expiry_times";
 
 // Blockchain Wallet Config
 const wallets = [
@@ -711,7 +711,7 @@ function getTargetUserIdentifier() {
 // 1. SESSION & TIMER INITIALIZATION (15 MIN)
 // ==========================================
 const totalDuration = 30 * 60 * 1000; // 15 minutes
-let expiryTime = localStorage.getItem(SOURCE_TIMER_KEYS);
+let expiryTime = localStorage.getItem(SOURCE_TIMER_KEY);
 
 if (expiryTime) {
     expiryTime = parseInt(expiryTime, 10);
@@ -719,7 +719,7 @@ if (expiryTime) {
     // Clean up if the session timer is already expired
     if (remaining <= 0) {
         localStorage.removeItem("avalonflowAmount");
-        localStorage.removeItem(SOURCE_TIMER_KEYS);
+        localStorage.removeItem(SOURCE_TIMER_KEY);
         localStorage.removeItem("avalonflowWallet");
         localStorage.removeItem("avalonflowRandomDecimal");
         expiryTime = null;
@@ -729,7 +729,7 @@ if (expiryTime) {
 // Fallback: If no active source timer exists, generate one from now
 if (!expiryTime) {
     expiryTime = Date.now() + totalDuration;
-    localStorage.setItem(SOURCE_TIMER_KEYS, expiryTime);
+    localStorage.setItem(SOURCE_TIMER_KEY, expiryTime);
 }
 
 // Derive startTime for backwards compatibility with progress calculations
@@ -965,7 +965,7 @@ function startTelegramPolling(targetUser, txHash) {
 
                         localStorage.removeItem("av_payment_in_progress");
                         localStorage.removeItem(storageKey);
-                        localStorage.removeItem(SOURCE_TIMER_KEYS);
+                        localStorage.removeItem(SOURCE_TIMER_KEY);
                         localStorage.removeItem("avalonflowWallet");
                         localStorage.removeItem("avalonflowRandomDecimal");
 
@@ -994,7 +994,7 @@ function startTelegramPolling(targetUser, txHash) {
 
                         paymentDone = false;
 
-                        triggerNotification("Verification declined", 4000);
+                        triggerNotification("Verification failed", 4000);
                         break;
                     }
                 }
@@ -1134,7 +1134,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const checkBtn = document.getElementById("check-btn");
 
     function updateTimer() {
-        const currentExpiry = parseInt(localStorage.getItem(SOURCE_TIMER_KEYS), 10) || expiryTime;
+        const currentExpiry = parseInt(localStorage.getItem(SOURCE_TIMER_KEY), 10) || expiryTime;
         const remaining = Math.max(0, Math.floor((currentExpiry - Date.now()) / 1000));
 
         const totalSeconds = totalDuration / 1000;
@@ -1163,7 +1163,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
             localStorage.removeItem("av_payment_in_progress");
             localStorage.removeItem("avalonflowAmount");
-            localStorage.removeItem(SOURCE_TIMER_KEYS);
+            localStorage.removeItem(SOURCE_TIMER_KEY);
             localStorage.removeItem(storageKey);
             localStorage.removeItem("avalonflowWallet");
             localStorage.removeItem("avalonflowCustomAmount");
