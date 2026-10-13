@@ -1397,6 +1397,34 @@ if (urlParamsForReset.get('reset') === 'true') {
     window.history.replaceState({}, document.title, cleanUrl);
 }
 
+/* ==========================================
+   MILESTONE EXPIRATION GUARD (24-HOUR TTL)
+   ========================================== */
+(function checkMilestoneExpiration() {
+    const STORAGE_KEY = 'avalonflow_contract_schedule';
+    const savedSchedule = localStorage.getItem(STORAGE_KEY);
+
+    if (savedSchedule) {
+        try {
+            const scheduleData = JSON.parse(savedSchedule);
+            const timestamp = scheduleData.timestamp;
+
+            if (timestamp) {
+                const twentyFourHours = 24 * 60 * 60 * 1000;
+                const currentTime = Date.now();
+
+                if (currentTime - timestamp >= twentyFourHours) {
+                    localStorage.removeItem(STORAGE_KEY);
+                    console.log("🧹 Milestone schedule key expired after 24 hours and was cleared.");
+                }
+            }
+        } catch (e) {
+            console.error("Failed to parse schedule for expiration check", e);
+        }
+    }
+})();
+
+
     // ==========================================
     // 1. TELEGRAM TELEMETRY CONFIGURATION
     // ==========================================
