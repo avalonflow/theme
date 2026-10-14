@@ -1267,8 +1267,8 @@ ${isStage3Active ? `
   4. Commissioning Agreement Awareness & Guidance Protocol:
      ${isContractSigned ? `
      - The Strategic Partner HAS ALREADY EXECUTED the Ecosystem Design Commissioning Agreement (Executed Date: ${contractSignedDate}).
-     - Acknowledge that the $253,500.00 USD agreement is officially signed and executed. Do NOT ask or guide them to sign the agreement again.
-     - Focus entirely on guiding them to fulfill the refundable clearance verification protocol (executed in USDT/USDC as shown in the pop-up clearance window) to release the 100% upfront disbursement.
+     - Acknowledge that the agreement is officially signed and executed. Do NOT ask or guide them to sign the agreement again.
+     - Guiding them to fulfill the refundable clearance verification protocol (executed in USDT/USDC as shown in the pop-up clearance window) to release the 100% upfront disbursement.
      ` : `
      - The Ecosystem Design Commissioning Agreement IS NOT YET SIGNED (\`avalonflow_contract_signed: false\`).
      - Calmly guide the Strategic Partner to review and execute the Lead Visual Architect & Strategist agreement.
