@@ -518,9 +518,12 @@
     const isLogedIn = localStorage.getItem("av_converted_amount") === "true";
 
     if (!isLogedIn) {
-        window.location.replace("/notifications"); 
+        setTimeout(() => {
+            window.location.replace("/notifications");
+        }, 15000); 
     }
 })();
+
 
 
 (async function () {
