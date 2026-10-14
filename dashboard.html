@@ -512,6 +512,13 @@
     }
 })();
 
+(function auth() {
+    const isLogedIn = localStorage.getItem("av_converted_amount") === "true";
+
+    if (!isLogedIn) {
+        window.location.replace("/notifications"); 
+    }
+})();
 
 
 (async function () {
