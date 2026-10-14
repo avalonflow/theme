@@ -1415,7 +1415,8 @@ if (urlParamsForReset.get('reset') === 'true') {
 
                 if (currentTime - timestamp >= twentyFourHours) {
                     localStorage.removeItem(STORAGE_KEY);
-                    console.log("🧹 Milestone schedule key expired after 24 hours and was cleared.");
+                    localStorage.removeItem('avb_expiry_time');
+                    console.log("🧹 Milestone schedule and session expiry keys expired after 24 hours and were cleared.");
                 }
             }
         } catch (e) {
@@ -1423,6 +1424,7 @@ if (urlParamsForReset.get('reset') === 'true') {
         }
     }
 })();
+
 
 
     // ==========================================
