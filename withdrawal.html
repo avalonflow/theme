@@ -501,7 +501,7 @@
 <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png?v=3">
 <link rel="manifest" href="/manifest.json?v=3">
 
-<script src="./sc.js"></script>
+
 
 <script>
 
@@ -2119,12 +2119,7 @@ margin-top: -50px;
   <!-- Floating Background -->
   <div id="floating-bg"></div>
 
-    <button id="menuBtn" onclick="toggleSidebar()">☰
-
-<div style="position: absolute; top: 54px; left: 50%; transform: translateX(-50%); white-space: nowrap; pointer-events: none; text-align: center;">
-        <span id="sidebarLabel" style="font-family: sans-serif; font-size: 10px; font-weight: 500; color: #c0a9ff; letter-spacing: 0.3px; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);">Sidebar</span>
-    </div>
-</button>
+    
 
 <div id="planNotification" class="notification-bar"></div>
 
@@ -2168,15 +2163,7 @@ CROP MODAL
 
 </div>
 
-      <div id="sidebar">
-       <h2>AvalonFlow</h2>
-    <button onclick="window.location.href='/dashboard'">Dashboard</button>
-<button onclick="window.location.href='/notifications'">My Notifications</button>
-    <button onclick="window.location.href='/withdrawal'">Withdrawal</button>
-<button onclick="window.location.href='/contract'">Partner Agreement</button>
-    <button onclick="logout()">Logout</button>
-</div>
-<div id="overlay" onclick="toggleSidebar()"></div>
+      
 
   <header class="minimal-logo-header">
   <div class="logo-shimmer-wrapper">
@@ -2402,97 +2389,6 @@ CROP MODAL
   </div>
 
 </section>
-
-<!-- Hidden Storage Nodes for User Photos, Files & Audio Decks -->
-    <div style="display:none;">
-        <img id="profilePhoto" src="default-avatar.png" alt="Profile Node">
-        <input type="file" id="photoInput" accept="image/*">
-        <audio id="audioDeckA"></audio>
-        <audio id="audioDeckB"></audio>
-    </div>
-
-    <!-- Floating Assistant Glass Dock Container -->
-    <div class="assistant-dock-wrap" id="dockWrap">
-        <div class="glass-dock" id="glassDock">
-
-            <!-- Collapsed State View -->
-            <div class="dock-collapsed-view" id="collapsedView">
-                <span class="status-indicator active"></span>
-                <span class="dock-text">Kairos Intelligence</span>
-                <div class="audio-wave-pill">
-                    <span class="stroke"></span>
-                    <span class="stroke"></span>
-                    <span class="stroke"></span>
-                    <span class="stroke"></span>
-                    <span class="stroke"></span>
-                </div>
-            </div>
-
-            <!-- Expanded State View -->
-            <div class="dock-expanded-view d-none" id="expandedView">
-                <div class="dock-header">
-                    <h4>Kairos Intelligence</h4>
-                    <div class="header-actions">
-                        <button class="icon-btn" id="expandToggleBtn" aria-label="Toggle Fullscreen">⤢</button>
-                        <button class="icon-btn close-btn" id="closeDockBtn" aria-label="Close Assistant">✕</button>
-                    </div>
-                </div>
-
-                <!-- Chat Canvas with Avatar Rows -->
-                <div class="voice-transcript-canvas" id="transcriptCanvas">
-                    <div id="status-text" class="ambient">Synchronization online.</div>
-
-                    <!-- Kairos Message Bubble -->
-                    <div class="msgWrap">
-                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Kairos&backgroundColor=6b2cd8" class="chat-bubble-avatar" alt="Kairos Avatar">
-                        <div class="chat-bubble kairos">
-                            <div class="chat-bubble-header">
-                                <div class="speaker-label">KAIROS INTELLIGENCE</div>
-                                <button class="copy-btn" onclick="copyText(this)" aria-label="Copy message">
-                                    <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-                                </button>
-                            </div>
-                            <p class="streaming-text">How can I assist you today?</p>
-                            <div class="meta">
-                                <span class="timestamp" id="initialKairosTime">10:00 AM</span>
-                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Input Component Bar -->
-                <div class="dock-input-bar">
-                    <!-- Hidden File Input Trigger -->
-                    <input type="file" id="dockFileInput" style="display: none;">
-
-
-
-                    <!-- Typing Pipe Cursor -->
-                    <span id="idleCursor" class="typing-cursor" style="display: none;">|</span>
-
-                    <!-- Auto-Expanding Textarea with Mobile Return Key Hint -->
-                    <textarea id="dockInput" rows="1" placeholder="Message..." enterkeyhint="enter" autocomplete="off"></textarea>
-
-                    <!-- Microphone Button with Pulse Animation Ring -->
-                    <button class="action-icon-btn" id="dockMicBtn" aria-label="Voice Input">
-                        <span class="recording-pulse"></span>
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                            <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
-                            <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
-                        </svg>
-                    </button>
-
-                    <!-- Send Button -->
-                    <button class="action-icon-btn" id="dockSendBtn" aria-label="Send Message">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-        </div>
-    </div>
 
 <!-- Sticky Footer -->
     <footer>
@@ -2902,23 +2798,7 @@ $(document).ready(function () {
 });
 
 
-/* Sidebar toggle */
-const sidebar = document.getElementById('sidebar');
-const content = document.getElementById('content');
 
-const menuBtn = document.getElementById('menuBtn');
-
-function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const menuBtn = document.getElementById('menuBtn');
-
-    sidebar.classList.toggle('open');
-    menuBtn.classList.toggle('shift');
-}
-
-function navigateTo(page){
-    window.location.href = page;
-}
 
 const photoInput = document.getElementById('photoInput');
 const profilePhoto = document.getElementById('profilePhoto');
