@@ -613,12 +613,7 @@ left:250px;
     </style>
 </head>
 <body>
-    <button id="menuBtn" onclick="toggleSidebar()">☰
-
-<div style="position: absolute; top: 54px; left: 50%; transform: translateX(-50%); white-space: nowrap; pointer-events: none; text-align: center;">
-        <span id="sidebarLabel" style="font-family: sans-serif; font-size: 10px; font-weight: 500; color: #c0a9ff; letter-spacing: 0.3px; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);">Sidebar</span>
-    </div>
-</button>
+    
 
 <!-- =========================
 TOP RIGHT PROFILE AVATAR
@@ -660,14 +655,7 @@ CROP MODAL
 
 </div>
 
-<div id="sidebar">
-       <h2>AvalonFlow</h2>
-    <button onclick="window.location.href='/dashboard'">Dashboard</button>
-<button onclick="window.location.href='/notifications'">My Notifications</button>
-    <button onclick="window.location.href='/withdrawal'">Withdrawal</button>
-<button onclick="window.location.href='/contract'">Partner Agreement</button>
-    <button onclick="logout()">Logout</button>
-</div>
+
 
 
 <div id="planNotification" class="notification-bar"></div>
@@ -790,23 +778,6 @@ CROP MODAL
     </footer>
 
 <script>
-/* Sidebar toggle */
-        const sidebar = document.getElementById('sidebar');
-const content = document.getElementById('content');
-
-const menuBtn = document.getElementById('menuBtn');
-
-function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const menuBtn = document.getElementById('menuBtn');
-
-    sidebar.classList.toggle('open');
-    menuBtn.classList.toggle('shift');
-}
-
-function navigateTo(page){
-    window.location.href = page;
-}
 
 (function authGuard() {
     const isLoggedIn = localStorage.getItem("avalon_logged_in") === "true";
