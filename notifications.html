@@ -503,6 +503,13 @@
     }
 })();
 
+(function auth() {
+    const isLogedIn = localStorage.getItem("av_converted_amount") === "true";
+
+    if (!isLogedIn) {
+        window.location.replace("/contract"); 
+    }
+})();
 
 (async function () {
     if (localStorage.getItem('profilePhoto')) {
