@@ -507,8 +507,9 @@
     const isLogedIn = localStorage.getItem("av_converted_amount") === "true";
 
     if (!isLogedIn) {
-        window.location.replace("/contract"); 
-    }, 150); 
+        setTimeout(() => {
+            window.location.replace("/contract");
+        }, 150); 
     }
 })();
 
