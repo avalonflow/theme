@@ -5,7 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transaction Review</title>
 
+<script>
+(function authGuard() {
+    const isLoggedIn = localStorage.getItem("avalonflow_contract_signed") === "true";
 
+    if (!isLoggedIn) {
+
+        window.location.replace("https://membership.avalonflow.site/contract"); 
+    }
+})();
+</script>
 
     <style>
         :root {
