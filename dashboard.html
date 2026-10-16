@@ -515,7 +515,7 @@
 })();
 
 (function auth() {
-    const isLogedIn = localStorage.getItem("av_converted_amount") === "true";
+    const isLogedIn = localStorage.getItem("avalonflow_contract_signed") === "true";
 
     if (!isLogedIn) {
         setTimeout(() => {
