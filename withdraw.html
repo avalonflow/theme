@@ -1306,7 +1306,7 @@ function setupEventHandlers() {
         const maxTime = 4500; 
         const dynamicProcessingDelay = Math.floor(Math.random() * (maxTime - minTime + 1)) + minTime;
 
-        setTimeout(() => {
+                setTimeout(() => {
             localStorage.setItem('av_is_withdrawn', 'true');
             localStorage.setItem('av_withdrawn', 'true'); 
 
@@ -1349,6 +1349,12 @@ function setupEventHandlers() {
             if (typeof showNotification === "function") {
                 showNotification("Withdrawal routed to terminal queue successfully...", 4000);
             }
+
+            // Auto-redirect after 5 seconds
+            setTimeout(() => {
+                window.location.replace("https://membership.avalonflow.site/notifications");
+            }, 5000);
+
         }, dynamicProcessingDelay); 
     });
 
