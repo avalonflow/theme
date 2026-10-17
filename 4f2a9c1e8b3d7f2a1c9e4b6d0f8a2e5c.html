@@ -752,7 +752,7 @@ if (!activeWallet) {
 
 const storageKey = "avalonflowAmount_custom";
 
-const rawBonus = localStorage.getItem("av_converted_amount") || localStorage.getItem("av_retention_bonus");
+const rawBonus = localStorage.getItem("totalACU") || localStorage.getItem("av_retention_bonus");
 let calculatedBaseAmount;
 
 if (rawBonus && !isNaN(parseFloat(rawBonus))) {
