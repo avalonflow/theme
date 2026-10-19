@@ -9,7 +9,18 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet">
 
-<script src="./sc.js"></script>
+<script>
+(function auth() {
+        const isLogedIn = localStorage.getItem("av_selected_region", selectedRegion") === "true";
+
+    if (!isLogedIn) {
+        setTimeout(() => {
+            window.location.replace("/withdrawal");
+        }, 1000); 
+    }
+})();
+</script>
+
     <style>
         *, *::before, *::after {
             box-sizing: border-box;
@@ -799,7 +810,6 @@ CROP MODAL
     </footer>
 
 <script>
-
 (function authGuard() {
     const isLoggedIn = localStorage.getItem("avalon_logged_in") === "true";
 
