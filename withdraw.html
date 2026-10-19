@@ -602,7 +602,7 @@ margin-bottom: 30;
     <div id="planNotification" class="notification-bar"></div>
     <div id="floating-bg"></div>
   
-        <div class="container">
+            <div class="container">
         <div class="transaction-card" id="main-card">
 
             <!-- STEP 1: REVIEW TRANSACTION STATE -->
@@ -1132,7 +1132,7 @@ async function initiateLiveTransaction(sessionData) {
     if (paymentType.includes("paypal")) {
         displayLabelName = "PayPal Receiver";
         displayLabelDetails = "Linked Email";
-        renderedName = userDetails.paypalNameUs || userDetails.paypalNameUk || userDetails.paypal || userDetails.accountName || "";
+        renderedName = userDetails.paypalNameUs || userDetails.paypalNameUk || userDetails.paypalName || userDetails.accountName || "";
         renderedDetails = userDetails.paypalUs || userDetails.paypalUk || userDetails.paypal || "";
     } else if (paymentType.includes("venmo")) {
         displayLabelName = "Venmo User";
