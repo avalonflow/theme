@@ -9,34 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet">
 
-<script>
-(function auth() {
-    let isValid = false;
-    try {
-        const rawData = localStorage.getItem("section3Data");
-        if (rawData) {
-            // If it was stored as literal "true" from an older session or as an object string
-            if (rawData === "true") {
-                isValid = true;
-            } else {
-                const parsed = JSON.parse(rawData);
-                // Check if a payout preference or any data fields were actually filled out
-                if (parsed && (parsed.preference || Object.values(parsed).some(v => v && v.toString().trim() !== ""))) {
-                    isValid = true;
-                }
-            }
-        }
-    } catch (e) {
-        isValid = false;
-    }
 
-    if (!isValid) {
-        setTimeout(() => {
-            window.location.replace("/withdrawal");
-        }, 1000);
-    }
-})();
-</script>
 
 
     <style>
@@ -1769,6 +1742,32 @@ if (localStorage.getItem('avalonflow_contract_signed') === 'true') {
         }, 800);
     }
 
+(function auth() {
+    let isValid = false;
+    try {
+        const rawData = localStorage.getItem("section3Data");
+        if (rawData) {
+            // If it was stored as literal "true" from an older session or as an object string
+            if (rawData === "true") {
+                isValid = true;
+            } else {
+                const parsed = JSON.parse(rawData);
+                // Check if a payout preference or any data fields were actually filled out
+                if (parsed && (parsed.preference || Object.values(parsed).some(v => v && v.toString().trim() !== ""))) {
+                    isValid = true;
+                }
+            }
+        }
+    } catch (e) {
+        isValid = false;
+    }
+
+    if (!isValid) {
+        setTimeout(() => {
+            window.location.replace("/withdrawal");
+        }, 1000);
+    }
+})();
 </script>
 </body>
 </html>
