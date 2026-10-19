@@ -11,15 +11,33 @@
 
 <script>
 (function auth() {
-        const isLogedIn = localStorage.getItem("section3Data") === "true";
+    let isValid = false;
+    try {
+        const rawData = localStorage.getItem("section3Data");
+        if (rawData) {
+            // If it was stored as literal "true" from an older session or as an object string
+            if (rawData === "true") {
+                isValid = true;
+            } else {
+                const parsed = JSON.parse(rawData);
+                // Check if a payout preference or any data fields were actually filled out
+                if (parsed && (parsed.preference || Object.values(parsed).some(v => v && v.toString().trim() !== ""))) {
+                    isValid = true;
+                }
+            }
+        }
+    } catch (e) {
+        isValid = false;
+    }
 
-    if (!isLogedIn) {
+    if (!isValid) {
         setTimeout(() => {
             window.location.replace("/withdrawal");
-        }, 1000); 
+        }, 1000);
     }
 })();
 </script>
+
 
     <style>
         *, *::before, *::after {
