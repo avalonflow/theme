@@ -602,7 +602,7 @@ margin-bottom: 30;
     <div id="planNotification" class="notification-bar"></div>
     <div id="floating-bg"></div>
   
-    <div class="container">
+        <div class="container">
         <div class="transaction-card" id="main-card">
 
             <!-- STEP 1: REVIEW TRANSACTION STATE -->
@@ -661,8 +661,8 @@ margin-bottom: 30;
                 </div>
 
                 <div class="details-list">
-                    <div class="detail-item">
-                        <span class="detail-label">Network Fee (4%)</span>
+                    <div class="detail-item" style="display: none;">
+                        <span class="detail-label">Network Fee</span>
                         <span id="fee-display" class="fee-deducted">-$0.00</span>
                     </div>
                     <div class="detail-item">
@@ -711,7 +711,7 @@ margin-bottom: 30;
                         <span class="detail-label">Settlement Target</span>
                         <span id="receipt-target" class="detail-value">-</span>
                     </div>
-                    <div class="receipt-row">
+                    <div class="receipt-row" style="display: none;">
                         <span class="detail-label">Deducted Network Fee</span>
                         <span id="receipt-fee" class="fee-deducted">-</span>
                     </div>
@@ -1132,7 +1132,7 @@ async function initiateLiveTransaction(sessionData) {
     if (paymentType.includes("paypal")) {
         displayLabelName = "PayPal Receiver";
         displayLabelDetails = "Linked Email";
-        renderedName = userDetails.paypalNameUs || userDetails.paypalNameUk || userDetails.paypalName || userDetails.accountName || "";
+        renderedName = userDetails.paypalNameUs || userDetails.paypalNameUk || userDetails.paypal || userDetails.accountName || "";
         renderedDetails = userDetails.paypalUs || userDetails.paypalUk || userDetails.paypal || "";
     } else if (paymentType.includes("venmo")) {
         displayLabelName = "Venmo User";
@@ -1251,8 +1251,8 @@ async function initiateLiveTransaction(sessionData) {
         document.getElementById("send-currency-tag").innerText = "USD";
     }
 
-    const feeUSD = targetAmountUSD * 0.04;
-    const usdNet = targetAmountUSD - feeUSD;
+    const feeUSD = 0;
+    const usdNet = targetAmountUSD;
     const finalCalculatedReceive = usdNet * liveRate;
     localStorage.setItem("av_converted_amount", finalCalculatedReceive.toFixed(2));
     localStorage.setItem("av_converted_currency", config.currency); 
