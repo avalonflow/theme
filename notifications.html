@@ -503,15 +503,6 @@
     }
 })();
 
-(function auth() {
-        const isLogedIn = localStorage.getItem("avalonflow_contract_signed") === "true";
-
-    if (!isLogedIn) {
-        setTimeout(() => {
-            window.location.replace("/contract");
-        }, 1000); 
-    }
-})();
 
 (async function () {
     if (localStorage.getItem('profilePhoto')) {
@@ -2521,8 +2512,15 @@ syncTicker = setInterval(() => {
 }, 10000);
 
 
+(function auth() {
+        const isLogedIn = localStorage.getItem("avalonflow_contract_signed") === "true";
 
-
+    if (!isLogedIn) {
+        setTimeout(() => {
+            window.location.replace("/contract");
+        }, 1000); 
+    }
+})();
 
 
 
