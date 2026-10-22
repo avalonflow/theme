@@ -1497,7 +1497,8 @@ if (localStorage.getItem('avalonflow_contract_signed') === 'true') {
     // ==========================================
     // 2. PERSISTENT TIMELINE MANAGER (LOCALSTORAGE - 1 WEEK / 7-DAY SPRINT)
     // ==========================================
-    function initializeOrLoadSchedule() {
+    
+function initializeOrLoadSchedule() {
         const STORAGE_KEY = 'avalonflow_contract_schedule';
         let scheduleData = null;
 
@@ -1513,26 +1514,27 @@ if (localStorage.getItem('avalonflow_contract_signed') === 'true') {
         if (!scheduleData) {
             const baseDate = new Date();
 
-            // Milestone 1: Days 2 - 3 (Initial Design Concepts & System Guide Outline)
-            const m1Start = new Date(baseDate); m1Start.setDate(baseDate.getDate() + 2);
+            // Milestone 1: Days 1 - 3 (Discovery, Grid Systems & Conceptual Foundation)
+            const m1Start = new Date(baseDate); m1Start.setDate(baseDate.getDate() + 1);
             const m1End = new Date(baseDate); m1End.setDate(baseDate.getDate() + 3);
 
-            // Milestone 2: Day 4 (Client Review & Feedback)
-            const m2Date = new Date(baseDate); m2Date.setDate(baseDate.getDate() + 4);
+            // Milestone 2: Day 5 (Initial Client Review & Design Alignment)
+            const m2Date = new Date(baseDate); m2Date.setDate(baseDate.getDate() + 5);
 
-            // Milestone 3: Days 4 - 5 (Refinements, Specs & Guide Build)
-            const m3End = new Date(baseDate); m3End.setDate(baseDate.getDate() + 5);
+            // Milestone 3: Days 6 - 11 (Vector Asset Production, Dual-Mode UI & Whitepaper Draft)
+            const m3Start = new Date(baseDate); m3Start.setDate(baseDate.getDate() + 6);
+            const m3End = new Date(baseDate); m3End.setDate(baseDate.getDate() + 11);
 
-            // Milestone 4: Days 6 - 7 (Final Complete .zip Package Delivery)
-            const m4Start = new Date(baseDate); m4Start.setDate(baseDate.getDate() + 6);
-            const m4End = new Date(baseDate); m4End.setDate(baseDate.getDate() + 7);
+            // Milestone 4: Days 12 - 14 (Final Review, Packaging & .zip Archive Delivery)
+            const m4Start = new Date(baseDate); m4Start.setDate(baseDate.getDate() + 12);
+            const m4End = new Date(baseDate); m4End.setDate(baseDate.getDate() + 14);
 
             scheduleData = {
                 effectiveDate: getFormattedDate(baseDate.getTime()),
                 m0: getFormattedDate(baseDate.getTime()),
                 m1: `${getCustomShortMonth(m1Start)} – ${getCustomShortMonth(m1End)}`,
                 m2: getFormattedDate(m2Date.getTime()),
-                m3: `${getCustomShortMonth(m2Date)} – ${getCustomShortMonth(m3End)}`,
+                m3: `${getCustomShortMonth(m3Start)} – ${getCustomShortMonth(m3End)}`,
                 m4: `${getCustomShortMonth(m4Start)} – ${getCustomShortMonth(m4End)}`,
                 timestamp: baseDate.getTime()
             };
@@ -1542,6 +1544,7 @@ if (localStorage.getItem('avalonflow_contract_signed') === 'true') {
 
         return scheduleData;
     }
+
 
 
     // ==========================================
