@@ -1965,25 +1965,7 @@ if (typeof cancelCrop !== 'undefined' && cancelCrop) {
 }
 
 
-    /* Floating particles */
-const bg = document.getElementById('floating-bg');
-
-function particle() {
-    const p = document.createElement('div');
-    p.className = 'particle';
     
-    const s = Math.random() * 20 + 10;
-    p.style.width = s + 'px';
-    p.style.height = s + 'px';
-    p.style.left = Math.random() * 100 + 'vw';
-    p.style.animationDuration = (Math.random() * 20 + 10) + 's';
-    
-    bg.appendChild(p);
-    
-    setTimeout(() => p.remove(), 30000);
-}
-
-setInterval(particle, 800);
 
 
                                                         function logout(){
@@ -2274,7 +2256,27 @@ async function initDynamicNotifications() {
         description: `Core available deposit of <strong>$${formattedAcu} USD</strong> settled to wallet account.`,
         timestamp: coreDepositTime, isRead: true, txRef: coreDepTxRef
       });
+
+        // Check if contract has been signed
+    const isContractSigned = localStorage.getItem('avalonflow_contract_signed') === 'true';
+    const contractSignedDate = localStorage.getItem('avalonflow_contract_signed_date');
+    const contractTxRef = getPersistentTxRef("av_contract_tx_ref", "AGMT-EXEC-");
+
+    if (isContractSigned) {
+      let formattedContractTime = contractSignedDate ? contractSignedDate + " • Executed" : currentSignInTime;
+      
+      generatedNotifications.push({
+        id: 6, // Unique ID for contract notification
+        type: "contract", // Or a custom type if you want a specific icon
+        category: "success",
+        title: "Contract Agreement",
+        description: `Officially signed and legally bound.`,
+        timestamp: formattedContractTime,
+        isRead: false, 
+        txRef: contractTxRef
+      });
     }
+
 
     const deletedIds = JSON.parse(localStorage.getItem('av_deleted_notifs') || '[]');
     const readIds = JSON.parse(localStorage.getItem('av_read_notifs') || '[]');
@@ -2313,6 +2315,9 @@ let currentFilter = 'all';
 function getIcon(type, category) {
   if (type === 'deposit') {
     return { icon: 'fa-arrow-up-right-from-square fa-rotate-180', bg: 'bg-emerald-50 text-emerald-600 border-emerald-200' };
+  }
+  if (type === 'contract') {
+    return { icon: 'fa-file-signature', bg: 'bg-purple-50 text-purple-600 border-purple-200' };
   }
   if (type === 'withdrawal') {
     if (category === 'success') return { icon: 'fa-arrow-up-right-from-square', bg: 'bg-emerald-50 text-emerald-600 border-emerald-200' };
