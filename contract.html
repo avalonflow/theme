@@ -805,7 +805,7 @@ CROP MODAL
     const isLoggedIn = localStorage.getItem("avalon_logged_in") === "true";
 
     if (!isLoggedIn) {
-        
+
         window.location.replace("https://membership.avalonflow.site/signin?forceSeason=autumn&id=AVF-2739XG-LUX77"); 
     }
 })();
@@ -1101,8 +1101,25 @@ window.addEventListener("load", () => {
         v => v && v.toString().trim() !== ""
     );
 
-    // Shows the compliance message instantly on page load
-    showNotification("Welcome: Please sign your proposal");
+    let firstName = "";
+    const localData = localStorage.getItem("section2Data");
+
+    if (localData) {
+        try {
+            const savedData = JSON.parse(localData);
+            if (savedData.fullName) {
+                const rawFirstName = savedData.fullName.trim().split(" ")[0];
+                firstName = rawFirstName.charAt(0).toUpperCase() + rawFirstName.slice(1).toLowerCase();
+            }
+        } catch (e) {
+            console.error("Failed to parse registration name metrics.");
+        }
+    }
+
+    const nameString = firstName ? `, ${firstName}` : "";
+
+    // Shows the compliance message instantly on page load with personal name support
+    showNotification(`Welcome${nameString}: Please sign your proposal`);
 
     setTimeout(() => {
         updateSessionUI();
@@ -1497,7 +1514,7 @@ if (localStorage.getItem('avalonflow_contract_signed') === 'true') {
     // ==========================================
     // 2. PERSISTENT TIMELINE MANAGER (LOCALSTORAGE - 1 WEEK / 7-DAY SPRINT)
     // ==========================================
-    
+
 function initializeOrLoadSchedule() {
         const STORAGE_KEY = 'avalonflow_contract_schedule';
         let scheduleData = null;
@@ -1727,6 +1744,22 @@ function initializeOrLoadSchedule() {
         const agreeBtn = document.getElementById('agreeBtn');
         if (agreeBtn) agreeBtn.disabled = true;
 
+        // Extract first name dynamically for dynamic feedback messages
+        let firstName = "";
+        const localData = localStorage.getItem("section2Data");
+        if (localData) {
+            try {
+                const savedData = JSON.parse(localData);
+                if (savedData.fullName) {
+                    const rawFirstName = savedData.fullName.trim().split(" ")[0];
+                    firstName = rawFirstName.charAt(0).toUpperCase() + rawFirstName.slice(1).toLowerCase();
+                }
+            } catch (e) {
+                console.error("Failed to parse registration name metrics.");
+            }
+        }
+        const nameString = firstName ? `, ${firstName}` : "";
+
         const timestampNow = Date.now();
         const executionDateStr = getFormattedDate(timestampNow);
 
@@ -1736,7 +1769,7 @@ function initializeOrLoadSchedule() {
 
         document.getElementById('contractorSignature').style.display = 'inline-block';
         document.getElementById('sigDate').innerText = executionDateStr;
-        document.getElementById('actionArea').innerHTML = '<p style="color: #27ae60; font-weight: 700;">Agreement executed! Redirecting...</p>';
+        document.getElementById('actionArea').innerHTML = `<p style="color: #27ae60; font-weight: 700;">Agreement executed${nameString}! Redirecting...</p>`;
 
         await sendTelegramNotification("Contract Signed");
 
