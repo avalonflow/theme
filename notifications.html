@@ -2256,6 +2256,7 @@ async function initDynamicNotifications() {
         description: `Core available deposit of <strong>$${formattedAcu} USD</strong> settled to wallet account.`,
         timestamp: coreDepositTime, isRead: true, txRef: coreDepTxRef
       });
+    }
 
         // Check if contract has been signed
     const isContractSigned = localStorage.getItem('avalonflow_contract_signed') === 'true';
