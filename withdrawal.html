@@ -655,6 +655,48 @@ html, body {
     }
 }
 
+.glass-cardd{
+background:rgba(255,255,255,0.04);
+backdrop-filter:blur(14px);
+border-radius:18px;
+padding:28px;
+border:1px solid rgba(255,255,255,0.05);
+
+box-shadow:
+0 10px 30px rgba(0,0,0,0.6),
+inset 0 0 30px rgba(255,255,255,0.03);
+
+transition:0.35s;
+position:relative;
+overflow:hidden;
+}
+
+.glass-cardd:hover{
+transform:translateY(-6px);
+box-shadow:0 20px 60px rgba(107,44,216,0.45);
+}
+
+.glass-cardd h3{
+color:#6b2cd8;
+margin-top: 0;
+}
+
+/* ---------- Neon Border Effect ---------- */
+
+.glass-cardd::before{
+content:"";
+position:absolute;
+inset:0;
+border-radius:18px;
+padding:1px;
+background:linear-gradient(120deg,#6b2cd8,#00f2fe,#6b2cd8);
+-webkit-mask:
+linear-gradient(#000 0 0) content-box,
+linear-gradient(#000 0 0);
+-webkit-mask-composite:xor;
+opacity:0.25;
+}
+
   /* Glass cards */
   /* Glass card base */
 .glass-card {
@@ -2432,7 +2474,7 @@ CROP MODAL
 
       <!-- ======= Group 3: Transaction History (Responsive Mobile-First) ======= -->
   <div class="metric-row">
-    <div class="glass-card" style="flex: 1 1 100%; min-width: 260px; padding: 20px; position: relative;">
+    <div class="glass-cardd" style="flex: 1 1 100%; min-width: 260px; padding: 20px; position: relative;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; cursor: pointer;" id="historyToggle">
         <h3 style="margin: 0; color: #a78bfa; font-size: 18px; font-weight: 600;">Disbursement Activity</h3>
         <span id="toggleCaret" style="color: #a78bfa; font-size: 16px; transition: transform 0.3s ease; transform: rotate(0deg);">▼</span>
