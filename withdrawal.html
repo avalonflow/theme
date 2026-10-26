@@ -2384,12 +2384,277 @@ CROP MODAL
 
 </section>
 
+      <!-- ======= Group 3: Transaction History (Responsive Mobile-First) ======= -->
+  <div class="metric-row">
+    <div class="glass-card" style="flex: 1 1 100%; min-width: 260px; padding: 20px; position: relative;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; cursor: pointer;" id="historyToggle">
+        <h3 style="margin: 0; color: #a78bfa; font-size: 18px; font-weight: 600;">Disbursement Activity</h3>
+        <span id="toggleCaret" style="color: #a78bfa; font-size: 16px; transition: transform 0.3s ease; transform: rotate(0deg);">▼</span>
+      </div>
+
+      <!-- Collapsible Container -->
+      <div id="historyCollapseWrapper" style="max-height: 600px; overflow: hidden; transition: max-height 0.3s ease-in-out;">
+        <div id="transactionHistoryRows" style="display: flex; flex-direction: column; gap: 12px;">
+          <!-- Dynamically populated rows go here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
 <!-- Sticky Footer -->
     <footer>
        © 2026 AvalonFlow Corp • All Rights Reserved
     </footer>
 
 <script>
+// ==========================================
+// PERSISTENT TEMPORAL REALISM & ANCHORS
+// ==========================================
+let savedVisitTime = localStorage.getItem("av_initial_visit");
+
+if (!savedVisitTime) {
+    savedVisitTime = new Date().getTime().toString();
+    localStorage.setItem("av_initial_visit", savedVisitTime);
+}
+
+const visitDate = new Date(parseInt(savedVisitTime, 10));
+
+const formatTxDate = (dateOffsetMs) => {
+    const txDate = new Date(visitDate.getTime() - dateOffsetMs);
+    return txDate.toLocaleDateString('en-US', {
+        month: 'short',
+        day: '2-digit',
+        year: 'numeric'
+    }) + `, ` + txDate.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+    });
+};
+
+const txTimes = {
+    balance: formatTxDate(24 * 60 * 60 * 1000),
+    bonusReceived: formatTxDate(2 * 60 * 60 * 1000)
+};
+
+// ==========================================
+// RETENTION BONUS & DYNAMIC TRANSACTIONS
+// ==========================================
+
+if (localStorage.getItem("av_retention_bonus") === null && localStorage.getItem("av_is_withdrawn") !== "true") {
+    localStorage.setItem("av_retention_bonus", DEFAULT_RETENTION_BONUS.toFixed(2));
+}
+
+if (localStorage.getItem("baseACU") === null) {
+    localStorage.setItem("baseACU", BASE_ACU.toFixed(2));
+}
+
+function getNumericStorageItem(key, defaultValue) {
+    const value = localStorage.getItem(key);
+    return value !== null ? parseFloat(value) : defaultValue;
+}
+
+function formatCurrency(amount, symbol = "$", currencyCode = "") {
+    const formatted = amount.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+    const suffix = currencyCode ? ` ${currencyCode}` : "";
+    return `${symbol}${formatted}${suffix}`;
+}
+
+function updateRetentionBonusUI() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const isWithdrawn = localStorage.getItem("av_withdrawn") === "true" || 
+                        localStorage.getItem("av_is_withdrawn") === "true" || 
+                        urlParams.get("av_withdrawn") === "true";
+
+    // 1. Fetch live raw values
+    const rawAcu = localStorage.getItem("totalACU") || localStorage.getItem("baseACU");
+    const liveAcu = rawAcu !== null ? parseFloat(rawAcu) : 0;
+
+    const rawBonus = localStorage.getItem("av_retention_bonus");
+    const liveBonus = rawBonus !== null ? parseFloat(rawBonus) : 0;
+
+    // 2. Preserve snapshot values before withdrawal clears them
+    if (liveAcu > 0) {
+        localStorage.setItem("av_snap_core_dep", liveAcu.toString());
+    }
+    if (liveBonus > 0) {
+        localStorage.setItem("av_snap_retention_bonus", liveBonus.toString());
+    }
+
+    // 3. Parse withdrawal transaction metadata
+    let savedTx = {};
+    try {
+        savedTx = JSON.parse(localStorage.getItem("av_withdrawal_tx") || "{}");
+    } catch(e) {}
+
+    const withdrawalSource = savedTx.sourceType || "available";
+
+    // 4. Resolve exact historical amounts using snapshot hierarchy (Snapshot -> Live -> Tx Amount -> Default)
+    const snapAcu = localStorage.getItem("av_snap_core_dep");
+    const snapBonus = localStorage.getItem("av_snap_retention_bonus");
+
+    const defaultBonusVal = typeof DEFAULT_RETENTION_BONUS !== 'undefined' ? DEFAULT_RETENTION_BONUS : 1349.08;
+    const defaultBaseVal = typeof BASE_ACU !== 'undefined' ? BASE_ACU : 0.00;
+
+    const historicalDepositVal = snapAcu !== null ? parseFloat(snapAcu) : (liveAcu > 0 ? liveAcu : (savedTx.amountCAD || defaultBaseVal));
+    const historicalBonusVal = snapBonus !== null ? parseFloat(snapBonus) : (liveBonus > 0 ? liveBonus : (savedTx.amountCAD || defaultBonusVal));
+
+    // Exact processing withdrawal amount sourced from av_converted_amount
+    const storedConverted = localStorage.getItem("av_converted_amount");
+    const parsedConverted = storedConverted !== null ? parseFloat(storedConverted) : 0;
+
+    // Dynamically fetch stored currency symbol & code
+    const storedSymbol = localStorage.getItem("av_converted_symbol") || "$";
+    const storedCurrency = localStorage.getItem("av_converted_currency") || "USD";
+
+    const withdrawnVal = parsedConverted > 0 
+        ? parsedConverted 
+        : (savedTx.amountCAD || (withdrawalSource === "bonus" ? historicalBonusVal : historicalDepositVal));
+
+    const withdrawnDisplay = parsedConverted > 0 
+        ? formatCurrency(withdrawnVal, storedSymbol, storedCurrency)
+        : formatCurrency(withdrawnVal, "$", "USD");
+
+    const bonusCardStat = document.querySelector(".hero-card .stat");
+    const historyTableBody = document.getElementById("transactionHistoryRows");
+
+    if (!historyTableBody) return;
+
+    let withdrawalTime = localStorage.getItem("av_withdrawal_time");
+
+    if (isWithdrawn && !withdrawalTime) {
+        withdrawalTime = new Date().toLocaleDateString('en-US', {
+            month: 'short', day: '2-digit', year: 'numeric'
+        }) + `, ` + new Date().toLocaleTimeString('en-US', {
+            hour: '2-digit', minute: '2-digit', hour12: true
+        });
+        localStorage.setItem("av_withdrawal_time", withdrawalTime);
+    } else if (!isWithdrawn) {
+        localStorage.removeItem("av_withdrawal_time");
+        localStorage.removeItem("av_withdrawal_tx");
+    }
+
+    const createRowHTML = (desc, date, statusLabel, statusStyle, amountText, amountColor, isSettled = false) => `
+        <div style="display: flex; flex-direction: column; gap: 6px; padding: 12px 4px; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 14px; opacity: ${isSettled ? '0.6' : '1'};">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+                <div style="font-weight: 600; color: #b4c6ef; line-height: 1.3; max-width: 70%;">${desc}</div>
+                <div><span style="${statusStyle} padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; white-space: nowrap;">${statusLabel}</span></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2px;">
+                <div style="color: rgba(167, 139, 250, 0.7); font-size: 12px;">${date}</div>
+                <div style="color: ${amountColor}; font-weight: 700; font-size: 15px; text-align: right; white-space: nowrap; letter-spacing: 0.3px;">${amountText}</div>
+            </div>
+        </div>
+    `;
+
+        if (bonusCardStat) {
+        if ((isWithdrawn && withdrawalSource === "bonus") || liveBonus <= 0) {
+            bonusCardStat.textContent = "$0.00";
+            bonusCardStat.style.animation = "none";
+            bonusCardStat.style.webkitTextFillColor = "#555";
+        } else {
+            bonusCardStat.textContent = formatCurrency(liveBonus);
+            bonusCardStat.style.animation = "";
+            bonusCardStat.style.webkitTextFillColor = "";
+        }
+    }
+
+
+    let rowsHTML = "";
+
+    // 1. Core Available Balance Row & Processing Withdrawal
+    if (isWithdrawn && withdrawalSource === "available") {
+        rowsHTML += createRowHTML(
+            "Core Available Balance Deposit", 
+            txTimes.balance, 
+            "Completed", 
+            "background: rgba(255,255,255,0.08); color: #8b949e;", 
+            `+${formatCurrency(historicalDepositVal)}`, 
+            "#8b949e",
+            true
+        );
+        rowsHTML += createRowHTML(
+            `Available Balance Withdrawal (${savedTx.method || 'Payout'})`, 
+            withdrawalTime || txTimes.balance, 
+            "Processing", 
+            "background: rgba(248,81,73,0.15); color: #f85149;", 
+            `-${withdrawnDisplay}`, 
+            "#f85149"
+        );
+    } else if (historicalDepositVal > 0) {
+        rowsHTML += createRowHTML(
+            "Core Available Balance Deposit", 
+            txTimes.balance, 
+            "Completed", 
+            "background: rgba(46,160,67,0.15); color: #3fb950;", 
+            `+${formatCurrency(historicalDepositVal)}`, 
+            "#3fb950"
+        );
+    }
+
+    // 2. Retention Bonus Row & Processing Withdrawal
+    if (historicalBonusVal > 0 || (isWithdrawn && withdrawalSource === "bonus")) {
+        const bonusAmountText = formatCurrency(historicalBonusVal);
+
+        if (isWithdrawn && withdrawalSource === "bonus") {
+            rowsHTML += createRowHTML(
+                "Retention Bonus Allocation", 
+                txTimes.bonusReceived, 
+                "Completed", 
+                "background: rgba(255,255,255,0.08); color: #8b949e;", 
+                `+${bonusAmountText}`, 
+                "#8b949e", 
+                true
+            );
+            rowsHTML += createRowHTML(
+                `Retention Bonus Withdrawal (${savedTx.method || 'Payout'})`, 
+                withdrawalTime || txTimes.bonusReceived, 
+                "Processing", 
+                "background: rgba(248,81,73,0.15); color: #f85149;", 
+                `-${withdrawnDisplay}`, 
+                "#f85149"
+            );
+        } else if (historicalBonusVal > 0) {
+            rowsHTML += createRowHTML(
+                "Retention Bonus Allocation", 
+                txTimes.bonusReceived, 
+                "Available", 
+                "background: rgba(56,139,253,0.15); color: #58a6ff;", 
+                `+${bonusAmountText}`, 
+                "#58a6ff"
+            );
+        }
+    }
+
+    historyTableBody.innerHTML = rowsHTML;
+}
+
+
+
+
+window.addEventListener("DOMContentLoaded", () => {
+    updateRetentionBonusUI();
+
+    const toggleBtn = document.getElementById("historyToggle");
+    const wrapper = document.getElementById("historyCollapseWrapper");
+    const caret = document.getElementById("toggleCaret");
+
+    if (toggleBtn && wrapper && caret) {
+        toggleBtn.addEventListener("click", () => {
+            if (wrapper.style.maxHeight === "0px" || !wrapper.style.maxHeight) {
+                wrapper.style.maxHeight = "500px";
+                caret.style.transform = "rotate(0deg)";
+            } else {
+                wrapper.style.maxHeight = "0px";
+                caret.style.transform = "rotate(-90deg)";
+            }
+        });
+    }
+});
+
 // ==========================================
 // 🔔 LIGHTWEIGHT TAB & BADGE WATCHER (Sub-pages)
 // ==========================================
