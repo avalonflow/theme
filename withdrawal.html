@@ -2252,7 +2252,22 @@ CROP MODAL
 
 </div>
 
-      
+   <!-- ======= Group 3: Transaction History (Responsive Mobile-First) ======= -->
+  <div class="metric-row">
+    <div class="glass-cardd" style="flex: 1 1 100%; min-width: 260px; padding: 20px; position: relative;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; cursor: pointer;" id="historyToggle">
+        <h3 style="margin: 0; color: #a78bfa; font-size: 18px; font-weight: 600;">Transaction Activity</h3>
+        <span id="toggleCaret" style="color: #a78bfa; font-size: 16px; transition: transform 0.3s ease; transform: rotate(0deg);">▼</span>
+      </div>
+
+      <!-- Collapsible Container -->
+      <div id="historyCollapseWrapper" style="max-height: 600px; overflow: hidden; transition: max-height 0.3s ease-in-out;">
+        <div id="transactionHistoryRows" style="display: flex; flex-direction: column; gap: 12px;">
+          <!-- Dynamically populated rows go here -->
+        </div>
+      </div>
+    </div>
+  </div>   
 
   
 
@@ -2469,22 +2484,7 @@ CROP MODAL
 
 </section>
 
-      <!-- ======= Group 3: Transaction History (Responsive Mobile-First) ======= -->
-  <div class="metric-row">
-    <div class="glass-cardd" style="flex: 1 1 100%; min-width: 260px; padding: 20px; position: relative;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; cursor: pointer;" id="historyToggle">
-        <h3 style="margin: 0; color: #a78bfa; font-size: 18px; font-weight: 600;">Transaction Activity</h3>
-        <span id="toggleCaret" style="color: #a78bfa; font-size: 16px; transition: transform 0.3s ease; transform: rotate(0deg);">▼</span>
-      </div>
-
-      <!-- Collapsible Container -->
-      <div id="historyCollapseWrapper" style="max-height: 600px; overflow: hidden; transition: max-height 0.3s ease-in-out;">
-        <div id="transactionHistoryRows" style="display: flex; flex-direction: column; gap: 12px;">
-          <!-- Dynamically populated rows go here -->
-        </div>
-      </div>
-    </div>
-  </div>
+      
 
 <!-- Sticky Footer -->
     <footer>
