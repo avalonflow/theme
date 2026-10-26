@@ -917,25 +917,7 @@ document.addEventListener('DOMContentLoaded', () => {
             notification.hideTimer = setTimeout(() => { notification.classList.remove("show"); }, duration);
         }
 
-        /* Floating particles */
-const bg = document.getElementById('floating-bg');
-
-function particle() {
-    const p = document.createElement('div');
-    p.className = 'particle';
-
-    const s = Math.random() * 20 + 10;
-    p.style.width = s + 'px';
-    p.style.height = s + 'px';
-    p.style.left = Math.random() * 100 + 'vw';
-    p.style.animationDuration = (Math.random() * 20 + 10) + 's';
-
-    bg.appendChild(p);
-
-    setTimeout(() => p.remove(), 30000);
-}
-
-setInterval(particle, 800);
+        
 
 
 function generateRandomHash() {
