@@ -744,7 +744,53 @@ html, body {
   color: #b5b5b5;
   font-size: 14px;
 }
-  
+ 
+/* ---------- Small Stat Cards ---------- */
+.stat-card {
+  flex: 1 1 180px; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.stat-card h4 {
+  color: #a78bfa; 
+  margin-bottom: 8px;
+}
+
+.stat-card h3 {
+  color: #a78bfa; 
+  margin-bottom: 8px;
+  width: 100%;
+  font-size: 15px;
+}
+
+#totalACU {
+  font-size: 22px;
+  font-weight: 600;
+white-space: nowrap;
+  color: #a78bfa;
+    background: linear-gradient(90deg, #58a6ff, #79c0ff, #1f6feb, #58a6ff);
+    background-size: 200% auto;
+    animation: gradientShift 6s linear infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* ---------------- TEXT ANIMATION ---------------- */
+@keyframes gradientShift {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+}
+
+
+.stats {
+  font-size: 28px;
+  font-weight: 600;
+  color: #a78bfa;
+}
 
 /* Payment method card */
 .payment-method {
@@ -3171,28 +3217,10 @@ if (typeof cancelCrop !== 'undefined' && cancelCrop) {
 
 window.addEventListener("DOMContentLoaded", () => {
 
-  /* Floating particles */
-const bg = document.getElementById('floating-bg');
-
-function particle() {
-    const p = document.createElement('div');
-    p.className = 'particle';
-
-    const s = Math.random() * 20 + 10;
-    p.style.width = s + 'px';
-    p.style.height = s + 'px';
-    p.style.left = Math.random() * 100 + 'vw';
-    p.style.animationDuration = (Math.random() * 20 + 10) + 's';
-
-    bg.appendChild(p);
-
-    setTimeout(() => p.remove(), 30000);
-}
-
-setInterval(particle, 800);
+  
 
 
-                                                        function logout(){
+                                                      function logout(){
     localStorage.removeItem("avalon_logged_in");
     localStorage.removeItem("avalon_seen_dashboard");
     window.location.replace('https://membership.avalonflow.site/signin');
