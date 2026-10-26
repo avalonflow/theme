@@ -729,36 +729,28 @@ opacity:0.25;
 }
 
 .glass-cardsrd {
-    background: rgba(120, 180, 255, 0.7);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border-radius: 24px;
-    
-    /* ADJUSTED PADDING: 16px top/bottom, 12px left/right */
-    /* Reduce the 12px even lower if you want it tighter to the text */
-    padding: 16px 12px; 
-
-    /* CENTERING & FIT-CONTENT */
-    display: block;        
-    margin: 0 auto;        
-    width: fit-content;    /* Forces the card to shrink completely to the text size */
-
-    /* 1. CRISP 3D BEVELLED BORDER */
-    border: 1px solid rgba(255, 255, 255, 0.45);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    border-right: 1px solid rgba(255, 255, 255, 0.25);
-
-    /* 2. MULTI-LAYERED 3D DEPTH SHADOWS */
-    box-shadow:
-        0 20px 40px rgba(0, 0, 0, 0.35),
-        0 8px 16px rgba(0, 0, 0, 0.2),
-        inset 0 2px 4px rgba(255, 255, 255, 0.5),
-        inset 0 0 30px rgba(255, 255, 255, 0.1);
-
-    /* 3. OPTIONAL: Subtle tilted perspective */
-    transform: perspective(1000px) translateZ(0);
+  background: rgba(120, 180, 255, 0.7);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 24px;
+  padding: 16px 12px;
+  display: block;
+  margin: 0 auto 20px auto;
+  width: fit-content;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  border-right: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow:
+      0 20px 40px rgba(0, 0, 0, 0.15),
+      0 8px 16px rgba(0, 0, 0, 0.1),
+      inset 0 2px 4px rgba(255, 255, 255, 0.5),
+      inset 0 0 30px rgba(255, 255, 255, 0.1);
+  transform: perspective(1000px) translateZ(0);
 }
 
+.metric-row .glass-cardd {
+  margin-bottom: 100px;
+}
 
 /* Top trust line & bottom note */
 .top-trust, .bottom-note {
@@ -1159,14 +1151,9 @@ opacity:0.9;
   display: flex;
   justify-content: center;
   align-items: center;
-
-  /* Reduced top padding dramatically so it sits near the top edge */
-  padding: 10px 0 10px 0; 
-
-  /* Optional: Ensures it stays firmly at the absolute top of the page layout */
+  padding: 10px 0 0 0;
   width: 100%;
-  margin-top: -112px; 
-
+  margin-top: 0;
   background: transparent !important;
 }
 
@@ -1578,13 +1565,13 @@ font-weight: bold;
 
 /* Update your CSS targeting rule to look like this */
 .payment-slider-viewport {
-    display: flex;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    width: 100%;
-margin-top: -50px;
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  margin-top: 10px;
 }
 
 .payment-slider-viewport::-webkit-scrollbar {
