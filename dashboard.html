@@ -1901,7 +1901,7 @@ CROP MODAL
   <div class="metric-row">
     <div class="glass-card" style="flex: 1 1 100%; min-width: 260px; padding: 20px; position: relative;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; cursor: pointer;" id="historyToggle">
-        <h3 style="margin: 0; color: #a78bfa; font-size: 18px; font-weight: 600;">Transaction History</h3>
+        <h3 style="margin: 0; color: #a78bfa; font-size: 18px; font-weight: 600;">Transaction Activity</h3>
         <span id="toggleCaret" style="color: #a78bfa; font-size: 16px; transition: transform 0.3s ease; transform: rotate(0deg);">▼</span>
       </div>
       
@@ -2297,25 +2297,7 @@ if (typeof cancelCrop !== 'undefined' && cancelCrop) {
 
 
 
-        /* Floating particles */
-const bg = document.getElementById('floating-bg');
-
-function particle() {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    
-    const s = Math.random() * 20 + 10;
-    p.style.width = s + 'px';
-    p.style.height = s + 'px';
-    p.style.left = Math.random() * 100 + 'vw';
-    p.style.animationDuration = (Math.random() * 20 + 10) + 's';
-    
-    bg.appendChild(p);
-    
-    setTimeout(() => p.remove(), 30000);
-}
-
-setInterval(particle, 800);
+        
 
 
         /* Sidebar toggle */
