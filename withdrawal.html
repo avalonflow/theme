@@ -614,6 +614,23 @@ html, body {
     height: 100%;
 }
 
+        .security-note {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            line-height: 1.4;
+            padding: 0 4px;
+        }
+
+        .security-note svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--text-secondary);
+            flex-shrink: 0;
+        }
           /* ---------- Floating Background ---------- */
 #floating-bg {
     position: fixed;
@@ -2334,6 +2351,10 @@ CROP MODAL
           <input id="acuAccount" placeholder="Enter your ERC-20 wallet address (0x...)">
           <div class="network-note">⚠ ERC-20 network only</div>
         </div>
+                <div class="security-note">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <span>Secured via Airwallex • Security Protocol SSL-256</span>
+                </div>
       </div>
     </div>
 
