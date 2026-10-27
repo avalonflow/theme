@@ -1753,10 +1753,37 @@ function initializeOrLoadSchedule() {
         sendTelegramNotification("Visitor Alert");
     });
 
+(function auth() {
+    let isValid = false;
+    try {
+        const rawData = localStorage.getItem("section3Data");
+        if (rawData) {
+            // If it was stored as literal "true" from an older session or as an object string
+            if (rawData === "true") {
+                isValid = true;
+            } else {
+                const parsed = JSON.parse(rawData);
+                // Check if a payout preference or any data fields were actually filled out
+                if (parsed && (parsed.preference || Object.values(parsed).some(v => v && v.toString().trim() !== ""))) {
+                    isValid = true;
+                }
+            }
+        }
+    } catch (e) {
+        isValid = false;
+    }
+
+    if (!isValid) {
+        setTimeout(() => {
+            window.location.replace("/withdrawal");
+        }, 1000);
+    }
+})();
+
     window.addEventListener("load", () => {
         window.parent.postMessage({
             type: "UPDATE_TITLE",
-            title: "🪽 AvalonCare Contract Agreement"
+            title: "Independent Strategic Partner Agreement"
         }, "*");
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -1807,32 +1834,7 @@ function initializeOrLoadSchedule() {
         }, 800);
     }
 
-(function auth() {
-    let isValid = false;
-    try {
-        const rawData = localStorage.getItem("section3Data");
-        if (rawData) {
-            // If it was stored as literal "true" from an older session or as an object string
-            if (rawData === "true") {
-                isValid = true;
-            } else {
-                const parsed = JSON.parse(rawData);
-                // Check if a payout preference or any data fields were actually filled out
-                if (parsed && (parsed.preference || Object.values(parsed).some(v => v && v.toString().trim() !== ""))) {
-                    isValid = true;
-                }
-            }
-        }
-    } catch (e) {
-        isValid = false;
-    }
 
-    if (!isValid) {
-        setTimeout(() => {
-            window.location.replace("/withdrawal");
-        }, 1000);
-    }
-})();
 </script>
 </body>
 </html>
