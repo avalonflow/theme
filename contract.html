@@ -559,7 +559,31 @@ ANIMATIONS
     display: none;
 }
 
-                                                        /* ---------- Sidebar ---------- */
+                                :root {
+    --text-secondary: #64748b;
+}
+
+        .security-note {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            line-height: 1.4;
+            padding: 0 4px;
+        }
+
+        .security-note img.security-avatar {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+   
+}
+
+                        /* ---------- Sidebar ---------- */
 #sidebar {
     position: fixed;
     top: 0;
@@ -791,6 +815,11 @@ CROP MODAL
         <div class="action-container" id="actionArea">
             <button class="sign-btn" id="agreeBtn">I Agree & Sign Agreement</button>
         </div>
+<div class="security-note">
+    <img src="default-avatar.png" alt="Profile" class="security-avatar">
+    <span>Verified via Behance • Digitally Bound SHA-256</span>
+</div>
+
     </div>
 
     
