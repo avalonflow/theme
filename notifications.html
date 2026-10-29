@@ -2208,7 +2208,7 @@ async function initDynamicNotifications() {
         const stage3Time = formatTimestamp(new Date(baseWithdrawalMs + (5 * 60 * 1000)));
         generatedNotifications.push({
           id: 10, type: "withdrawal", category: "failed", title: "Action Required: Intermediary Clearance Hold",
-          description: `Verification required on your transfer of <strong>${displayFormattedText}</strong>`,
+          description: `Verification required on your withdrawal of <strong>${displayFormattedText}</strong>`,
           timestamp: stage3Time, isRead: false, txRef: holdTxRef, isActionRequired: true
         });
       }
@@ -2238,8 +2238,8 @@ async function initDynamicNotifications() {
     // Always display historical bonus notification if snapshot exists or isWithdrawn is true
     if (historicalBonusVal > 0 || (isWithdrawn && withdrawalSource === "bonus")) {
       generatedNotifications.push({
-        id: 3, type: "deposit", category: "success", title: "Retention Bonus Credited",
-        description: `Retention bonus allocation of <strong>$${formattedBonus} USD (${formattedBonus} ACU)</strong> has been successfully credited to your account.`,
+        id: 3, type: "deposit", category: "success", title: "Visual Architecture Suite (Phase 1) Deposit",
+        description: `<strong>$${formattedBonus} USD</strong> has been successfully credited to your wallet.`,
         timestamp: bonusCreditedTime, isRead: true, txRef: bonusTxRef
       });
     }
@@ -2252,8 +2252,8 @@ async function initDynamicNotifications() {
     // Always display historical core deposit notification if snapshot exists or isWithdrawn is true
     if (historicalDepositVal > 0 || (isWithdrawn && withdrawalSource === "available")) {
       generatedNotifications.push({
-        id: 5, type: "deposit", category: "success", title: "Core Balance Allocation",
-        description: `Core available deposit of <strong>$${formattedAcu} USD</strong> settled to wallet account.`,
+        id: 5, type: "deposit", category: "success", title: "Retention Bonus Allocation",
+        description: `<strong>$${formattedAcu} USD</strong> credited to your wallet.`,
         timestamp: coreDepositTime, isRead: true, txRef: coreDepTxRef
       });
     }
@@ -2273,7 +2273,7 @@ async function initDynamicNotifications() {
         title: "Contract Agreement",
         description: `Officially signed and legally bound.`,
         timestamp: formattedContractTime,
-        isRead: false, 
+        isRead: true, 
         txRef: contractTxRef
       });
     }
