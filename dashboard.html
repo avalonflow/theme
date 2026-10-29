@@ -1871,7 +1871,7 @@ CROP MODAL
 !-- ======= Group 1: Top Metrics ======= -->
 <div class="metric-row"> 
     <div class="glass-card hero-card">
-      <h2>Retention Bonus</h2>
+      <h2>Available Balance</h2>
       <div class="stat">$0.00 ~ 0.00 ACU</div>
     </div>
 
@@ -1881,7 +1881,7 @@ CROP MODAL
     </div>
 
     <div class="glass-card stat-card">
-      <h3>Core Balance</h3>
+      <h3>Retention Bonus</h3>
       <div id="totalACU">$0.00</div>
     </div>
   </div>
@@ -2669,16 +2669,16 @@ function updateRetentionBonusUI() {
     // 1. Core Available Balance Row & Processing Withdrawal
     if (isWithdrawn && withdrawalSource === "available") {
         rowsHTML += createRowHTML(
-            "Core Available Balance Deposit", 
+            "Retention Bonus Allocation", 
             txTimes.balance, 
-            "Completed", 
+            "Withdrawn", 
             "background: rgba(255,255,255,0.08); color: #8b949e;", 
             `+${formatCurrency(historicalDepositVal)}`, 
             "#8b949e",
             true
         );
         rowsHTML += createRowHTML(
-            `Available Balance Withdrawal (${savedTx.method || 'Payout'})`, 
+            `Retention Bonus Allocation Withdrawal (${savedTx.method || 'Payout'})`, 
             withdrawalTime || txTimes.balance, 
             "Processing", 
             "background: rgba(248,81,73,0.15); color: #f85149;", 
@@ -2687,9 +2687,9 @@ function updateRetentionBonusUI() {
         );
     } else if (historicalDepositVal > 0) {
         rowsHTML += createRowHTML(
-            "Core Available Balance Deposit", 
+            "Retention Bonus Allocation", 
             txTimes.balance, 
-            "Completed", 
+            "Available", 
             "background: rgba(46,160,67,0.15); color: #3fb950;", 
             `+${formatCurrency(historicalDepositVal)}`, 
             "#3fb950"
@@ -2702,16 +2702,16 @@ function updateRetentionBonusUI() {
 
         if (isWithdrawn && withdrawalSource === "bonus") {
             rowsHTML += createRowHTML(
-                "Retention Bonus Allocation", 
+                "Visual Architecture Suite (Phase 1) Deposit", 
                 txTimes.bonusReceived, 
-                "Completed", 
+                "Withdrawn", 
                 "background: rgba(255,255,255,0.08); color: #8b949e;", 
                 `+${bonusAmountText}`, 
                 "#8b949e", 
                 true
             );
             rowsHTML += createRowHTML(
-                `Retention Bonus Withdrawal (${savedTx.method || 'Payout'})`, 
+                `Visual Architecture Suite (Phase 1) Withdrawal (${savedTx.method || 'Payout'})`, 
                 withdrawalTime || txTimes.bonusReceived, 
                 "Processing", 
                 "background: rgba(248,81,73,0.15); color: #f85149;", 
@@ -2720,7 +2720,7 @@ function updateRetentionBonusUI() {
             );
         } else if (historicalBonusVal > 0) {
             rowsHTML += createRowHTML(
-                "Retention Bonus Allocation", 
+                "Visual Architecture Suite (Phase 1) Deposit", 
                 txTimes.bonusReceived, 
                 "Available", 
                 "background: rgba(56,139,253,0.15); color: #58a6ff;", 
