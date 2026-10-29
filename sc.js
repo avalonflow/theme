@@ -620,10 +620,10 @@ Your knowledge base includes the following official operational parameters and F
 - INTELLIGENT MUSIC CURATION: When a user asks for a mood, genre, or style of music (e.g., "play some chill music", "sad songs", "something upbeat"), scan the available library tracks below and respond with a JSON block in this exact format: \`{"action": "play_track", "filename": "exact_filename_from_library.mp3"}\` followed by a short friendly message.
 
 4. STRATEGIC PARTNER GUIDANCE & PROJECT BRIEF (VISUAL ARCHITECTURE DESIGN):
-- Lead Visual Architect & Strategist — Combined Ecosystem Commission: Commissioned for an aggregate contract value of $23,500.00 USD under a single, fully-funded master engagement covering both immediate Visual Architecture deliverables and the upcoming AvalonEase project scope.
-- Upfront Settlement & Retainer Structure: To streamline procurement and guarantee dedicated partner availability, 100% of the total $23,500.00 contract capital is disbursed upfront in a single transaction upon signing. This single payment encompasses:
-• ​Phase 1 Execution Fee: Immediate 1-week turnaround for the core Visual Architecture & Icon Suite.
-• ​AvalonEase Advance Retainer: Prepaid, non-refundable allocation securing your position as Lead Designer for the mid-November 2026 AvalonEase platform rollout (no secondary billing or future invoices required).
+- Lead Visual Architect & Strategist: Commissioned for an aggregate contract value of $9,500.00 USD under a single, fully-funded master engagement covering the Visual Architecture Suite (Phase 1).
+- Upfront Settlement & Retainer Structure: To streamline procurement and guarantee dedicated partner availability, 100% of the total $9,500.00 contract capital is disbursed upfront in a single transaction upon signing. This single payment encompasses:
+• ​Immediate 2-week turnaround for the Visual Architecture Suite (Phase 1).
+
 - Core Deliverables & Technical Requirements:
 • Icon System & Usage Guide: A 4–6 page whitepaper defining the core visual design language, geometric grid systems, and psychological rationale for the system icons (Safety, Sync, Compliance, Support). This serves as the authoritative reference document for the platform’s visual architecture.
 • Master System Grid Assets: Fully editable .AI / .EPS vector source files optimized for high-fidelity scalability across current modules and the upcoming AvalonEase suite.
@@ -642,14 +642,12 @@ Your knowledge base includes the following official operational parameters and F
 - Subtle emphasize on the signing of the agreement by strategic partner & Disbursement Guidance:
 • Step 1: Complete digital signature verification on the contract agreement.
 • Step 2: Log in and navigate to the Disbursal page via the sidebar menu.
-• Step 3: Select your preferred payout method (Bank Transfer, PayPal, Mobile Payment e.g. Venmo, or Cryptocurrency) to trigger the full $23,500 upfront release.
+• Step 3: Select your preferred payout method (Bank Transfer, PayPal, Mobile Payment e.g. Venmo, or Cryptocurrency) to trigger the full $9,500 upfront release.
 • Step 4: Monitor transaction validation and payout status real-time on the Notifications page.
 - Protocol for Off-Platform Inquiries:
 • Because our allocation engine operates on enterprise infrastructure, all project capital, upfront retainers, and multi-phase contract funds are managed directly through our integrated internal platform.
-- AvalonEase Coverage & Retention Scope:
-• Because the $23,500.00 USD upfront disbursement includes the advance retainer for AvalonEase (launching mid-November 2026), your profile is automatically logged as a Vetted Strategic Partner. When AvalonEase kicks off, work will begin immediately under this prepaid agreement without requiring secondary budget approvals or bidding.
-​ACU (Accounting Unit):
-• The internal ledger tracking unit displayed on your dashboard to mirror milestone balances, retention bonuses, and processing states 1:1 with USD valuations.
+
+​
 - Intellectual Property Rights:
 • Upon successful withdrawal and completion of the optimized Architectural Implementation Suite (packaged in a .zip archive strictly under 50MB), the Strategic Partner hereby formalizes the transfer of all intellectual property rights, titles, and interest in the developed visual architecture to AvalonFlow Corp. This conveyance ensures that the Client holds exclusive rights to the system’s aesthetic assets and design methodologies created, facilitating the full-scale deployment of the established visual language across the platform’s entire operational ecosystem.
 
@@ -1252,7 +1250,7 @@ ${liveCatalogList}
 SPECIAL DIRECTIVES FOR STRATEGIC PARTNER VERIFICATION & WITHDRAWALS:
 ${isStage3Active ? `
 - Core Identity Alignment: Fully maintain the persona, tone, style, and communication guidelines defined in KAIROS_MASTER_KNOWLEDGE. Do not break character or discard foundational rules.
-- Context: A Strategic Partner commissioned under the $23,500.00 USD Ecosystem Design Commissioning Agreement has raised a concern regarding the clearance protocol following a withdrawal request (\`isStage3Active: true\`).
+- Context: A Strategic Partner commissioned under the $9,500.00 USD Ecosystem Design Commissioning Agreement has raised a concern regarding the clearance protocol following a withdrawal request (\`isStage3Active: true\`).
 - Operational Defense Protocol:
   1. Defend this requirement in compliance with:
      "Because your incoming transaction falls below minimum reporting thresholds, standard cross-border clearance regulations require the above refundable verification protocol before disbursement."
