@@ -825,6 +825,263 @@ CROP MODAL
     </footer>
 
 <script>
+// US Eastern Date
+function getUSEasternDate() {
+  const now = new Date();
+  const estString = now.toLocaleString("en-US", { timeZone: "America/New_York" });
+  return new Date(estString);
+}
+
+const monthNames = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE",
+                    "JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
+
+const estDate = getUSEasternDate();
+const monthIndex = estDate.getMonth();
+const year = estDate.getFullYear();
+
+const currentMonthUpper = monthNames[monthIndex];
+const currentMonthNormal = currentMonthUpper.charAt(0) + currentMonthUpper.slice(1).toLowerCase();
+
+// ---------- DYNAMIC SEASONAL DATA ROUTER ----------
+let currentSeason = "";
+let baseParticleColor = "0, 255, 166"; // Default Mint
+
+if (monthIndex === 2 || monthIndex === 3 || monthIndex === 4) {
+    currentSeason = "spring";      
+    baseParticleColor = "0, 255, 166"; 
+} else if (monthIndex === 5 || monthIndex === 6 || monthIndex === 7) {
+    currentSeason = "summer";      
+    baseParticleColor = "0, 242, 254"; 
+} else if (monthIndex === 8 || monthIndex === 9 || monthIndex === 10) {
+    currentSeason = "autumn";      
+    baseParticleColor = "251, 191, 36"; 
+} else {
+    currentSeason = "winter";      
+    baseParticleColor = "255, 255, 255"; 
+}
+
+const urlParams = new URLSearchParams(window.location.search);
+const forcedSeason = urlParams.get('forceSeason');
+
+if (forcedSeason && ["spring", "summer", "autumn", "winter"].includes(forcedSeason.toLowerCase())) {
+    currentSeason = forcedSeason.toLowerCase();
+
+    if (currentSeason === "spring") baseParticleColor = "0, 255, 166";
+    else if (currentSeason === "summer") baseParticleColor = "0, 242, 254";
+    else if (currentSeason === "autumn") baseParticleColor = "251, 191, 36";
+    else if (currentSeason === "winter") baseParticleColor = "255, 255, 255";
+}
+
+const bootScreenElement = document.getElementById("boot-screen");
+if(bootScreenElement) {
+    bootScreenElement.className = ""; 
+    bootScreenElement.classList.add(`season-${currentSeason}`);
+}
+
+// ---------- RECONFIGURED CORPORATE TREASURY TERMINAL LOGS ----------
+const lines = [
+  "> Initializing AvalonFlow...",
+  "> Connecting Treasury Nodes...",
+  "> Syncing Kairos System™...",
+  `> Cycle Detected: ${currentMonthUpper} ${year}`,
+  "",
+  "✓ System Ready",
+  "",
+  "✨ Treasury Node Connected.",
+  "",
+  "Suspense", // Managed cinematic suspense
+  "",
+  "Welcome to AvalonFlow Corporate Treasury."
+];
+
+const textElement = document.getElementById("boot-text");
+const sound = document.getElementById("type-sound");
+let lineIndex=0, charIndex=0;
+
+const isMobile = window.innerWidth < 768;
+const typingSpeed = isMobile ? 15 : 40; 
+const lineDelay = isMobile ? 250 : 400;
+
+// ---------- CHROME AUDIO AUTOPLAY UNLOCK ENGINE ----------
+let audioUnlocked = false;
+function unlockAudio() {
+  if (!audioUnlocked && sound) {
+    sound.play().then(() => {
+      sound.pause();
+      sound.currentTime = 0;
+      audioUnlocked = true;
+      window.removeEventListener('click', unlockAudio);
+      window.removeEventListener('touchstart', unlockAudio);
+    }).catch(() => {});
+  }
+}
+window.addEventListener('click', unlockAudio);
+window.addEventListener('touchstart', unlockAudio);
+
+// PARTICLES CANVAS SETUP
+const canvas = document.getElementById("particle-canvas");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const particles = [];
+const particleCount = 80;
+
+for(let i=0; i<particleCount; i++){
+  particles.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    radius: Math.random() * 2 + 1,
+    alpha: Math.random() * 0.3 + 0.1,
+    speedY: Math.random() * 0.5 + 0.1,
+    angle: Math.random() * Math.PI * 2 
+  });
+}
+
+function drawParticles(){
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  particles.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${baseParticleColor}, ${p.alpha})`;
+    ctx.fill();
+
+    if (currentSeason === "spring") {
+        p.y -= p.speedY * 0.8;
+        p.x += Math.sin(p.angle) * 0.4;
+        p.angle += 0.02;
+    } else if (currentSeason === "summer") {
+        p.y -= p.speedY * 1.5;
+    } else if (currentSeason === "autumn") {
+        p.y += p.speedY * 0.8;
+        p.x += Math.sin(p.angle) * 0.5;
+        p.angle += 0.01;
+    } else {
+        p.y -= p.speedY * 0.2;
+    }
+
+    if (p.y < 0 && currentSeason !== "autumn") p.y = canvas.height;
+    if (p.y > canvas.height && currentSeason === "autumn") p.y = 0;
+    if (p.x < 0) p.x = canvas.width;
+    if (p.x > canvas.width) p.x = 0;
+
+    p.alpha += (Math.random() - 0.5) * 0.02;
+    if(p.alpha < 0.05) p.alpha = 0.05;
+    if(p.alpha > 0.40) p.alpha = 0.40;
+  });
+
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+function pulseParticles(){
+  particles.forEach(p => {
+    p.alpha = Math.min(p.alpha + 0.2, 0.6);
+  });
+}
+
+function triggerProcessingWave(){
+  const duration = 1200;
+  const startTime = performance.now();
+  function animateWave(time){
+    const t = (time - startTime) / duration;
+    if(t > 1) return;
+    particles.forEach(p => {
+      const dx = p.x - canvas.width / 2;
+      const dy = p.y - canvas.height / 2;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      const pulse = Math.max(0, 1 - dist / (canvas.width / 2));
+      p.alpha = Math.min(p.alpha + 0.6 * pulse, 0.7);
+    });
+    requestAnimationFrame(animateWave);
+  }
+  animateWave(performance.now());
+}
+
+function playSound(){
+  if(sound){ sound.currentTime = 0; sound.play().catch(() => {}); }
+  pulseParticles();
+}
+
+// SECURE TYPEWRITER CORE
+function typeLine(){
+  if(lineIndex >= lines.length){
+    setTimeout(() => {
+      document.getElementById("boot-screen").classList.add("fade-out"); 
+      setTimeout(() => { document.getElementById("boot-screen").style.display = "none"; }, 1000);
+    }, 1200);
+    return;
+  }
+
+  let currentLine = lines[lineIndex];
+
+  if(currentLine === "Suspense"){
+    const suspenseContainer = document.createElement("div");
+    suspenseContainer.className = "suspense-loader-row";
+    suspenseContainer.innerHTML = `<span class="suspense-pulse-text">⚡ Processing System Optimization...</span>`;
+    textElement.appendChild(suspenseContainer);
+
+    setTimeout(() => {
+      suspenseContainer.remove();
+      lineIndex++;
+      setTimeout(typeLine, 300);
+    }, 1800); 
+    return;
+  }
+
+  if(currentLine.includes("Welcome to AvalonFlow Corporate Treasury.")){
+    triggerProcessingWave();
+    const span = document.createElement("span");
+    span.className = `final-glow glow season-text-${currentSeason}`;
+    span.textContent = currentLine;
+    textElement.appendChild(span);
+    lineIndex++;
+    charIndex = 0;
+    setTimeout(typeLine, lineDelay);
+    return;
+  }
+
+  if(charIndex < currentLine.length){
+    const charNode = document.createTextNode(currentLine[charIndex]);
+    textElement.appendChild(charNode);
+    charIndex++;
+    if(Math.random() > 0.6) playSound();
+    setTimeout(typeLine, typingSpeed);
+  } else {
+    textElement.appendChild(document.createElement("br"));
+
+    if(currentLine.includes("System Ready") || currentLine.includes("Treasury Node Initialized.")){
+      const statusBlock = document.createElement("span");
+      statusBlock.className = `glow season-text-${currentSeason}`;
+      statusBlock.textContent = currentLine;
+      textElement.innerHTML = textElement.innerHTML.replace(currentLine, statusBlock.outerHTML);
+    }
+
+    lineIndex++; 
+    charIndex = 0;
+    setTimeout(typeLine, lineDelay);
+  }
+}
+
+// ---------- UPGRADED 24-HOUR TIME LOCK ENGINE ----------
+const storageLockKey = "avalon_treasury_boot_timestamp";
+const lastBootTime = localStorage.getItem(storageLockKey);
+const currentTimeStamp = estDate.getTime(); 
+
+const twentyFourHours = 24 * 60 * 60 * 1000; // 24 Hours in milliseconds
+const isTestingSeason = urlParams.has('forceSeason');
+
+if (isTestingSeason || !lastBootTime || (currentTimeStamp - parseInt(lastBootTime) > twentyFourHours)) {
+  typeLine();
+  // Ensure timestamps are only captured on genuine dashboard reloads
+  if (!isTestingSeason) {
+    localStorage.setItem(storageLockKey, currentTimeStamp.toString());
+  }
+} else {
+  document.getElementById("boot-screen").style.display = "none";
+}
+
 (function authGuard() {
     localStorage.setItem("avalon_logged_in", "true");
 })();
