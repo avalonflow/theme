@@ -829,7 +829,11 @@ CROP MODAL
 </div>
 
 
-
+<div id="boot-screen">
+  <pre id="boot-text"></pre>
+  <div class="cursor"></div>
+  <canvas id="particle-canvas"></canvas>
+</div>
 
 <div id="planNotification" class="notification-bar"></div>
 
@@ -2143,32 +2147,6 @@ function initializeOrLoadSchedule() {
         sendTelegramNotification("Visitor Alert");
     });
 
-(function auth() {
-    let isValid = false;
-    try {
-        const rawData = localStorage.getItem("section3Data");
-        if (rawData) {
-            // If it was stored as literal "true" from an older session or as an object string
-            if (rawData === "true") {
-                isValid = true;
-            } else {
-                const parsed = JSON.parse(rawData);
-                // Check if a payout preference or any data fields were actually filled out
-                if (parsed && (parsed.preference || Object.values(parsed).some(v => v && v.toString().trim() !== ""))) {
-                    isValid = true;
-                }
-            }
-        }
-    } catch (e) {
-        isValid = false;
-    }
-
-    if (!isValid) {
-        setTimeout(() => {
-            window.location.replace("/withdrawal");
-        }, 1000);
-    }
-})();
 
     window.addEventListener("load", () => {
         window.parent.postMessage({
