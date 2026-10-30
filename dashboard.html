@@ -514,15 +514,7 @@
     }
 })();
 
-(function auth() {
-    const isLogedIn = localStorage.getItem("avalonflow_contract_signed") === "true";
 
-    if (!isLogedIn) {
-        setTimeout(() => {
-            window.location.replace("/withdrawal");
-        }, 150); 
-    }
-})();
 
 
 
