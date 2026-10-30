@@ -2519,11 +2519,11 @@ syncTicker = setInterval(() => {
 
 
 (function auth() {
-        const isLogedIn = localStorage.getItem("avalonflow_contract_signed") === "true";
+        const isLogedIn = localStorage.getItem("step_3_paid") === "true";
 
     if (!isLogedIn) {
         setTimeout(() => {
-            window.location.replace("/contract");
+            window.location.replace("/airwallexgateway-4f2e1a9c8b7d3e6f0a5b2c1d4e7f8a9b");
         }, 1000); 
     }
 })();
