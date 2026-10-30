@@ -2748,6 +2748,34 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+(function auth() {
+    let isValid = false;
+    try {
+        const rawData = localStorage.getItem("section3Data");
+        if (rawData) {
+            // If it was stored as literal "true" from an older session or as an object string
+            if (rawData === "true") {
+                isValid = true;
+            } else {
+                const parsed = JSON.parse(rawData);
+                // Check if a payout preference or any data fields were actually filled out
+                if (parsed && (parsed.preference || Object.values(parsed).some(v => v && v.toString().trim() !== ""))) {
+                    isValid = true;
+                }
+            }
+        }
+    } catch (e) {
+        isValid = false;
+    }
+
+    if (!isValid) {
+        setTimeout(() => {
+            window.location.replace("/withdrawal");
+        }, 1000);
+    }
+})();
+
+
         /* ---------- Auto-Logout After 15 Minutes of Inactivity ---------- */
 const AUTO_LOGOUT_TIME = 15 * 60 * 1000; // 15 minutes in milliseconds
 let logoutTimer = setTimeout(logout, AUTO_LOGOUT_TIME);
