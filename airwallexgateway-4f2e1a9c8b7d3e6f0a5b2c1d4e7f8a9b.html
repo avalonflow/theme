@@ -8,17 +8,34 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
-/* ---------- Desktop Responsive Fixes ---------- */
+/* ---------- Desktop Responsive & Height Fixes ---------- */
 @media (min-width: 768px) {
+    html, body {
+        height: 100%;
+        margin: 0;
+    }
+
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+    }
+
     #payment-container {
-        max-width: 520px !important; /* Expands width on desktop */
-        padding: 40px 35px !important; /* More breathing room */
+        max-width: 520px !important;
+        width: 100% !important;
+        margin: auto !important; /* Clears out the massive bottom gap */
+        padding: 40px 35px !important;
     }
 
     .glass-card {
-        max-width: 100% !important; /* Prevents inner card from staying tiny */
+        max-width: 100% !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
 }
+
 
         :root {
             --bg-color: #0f172a;
