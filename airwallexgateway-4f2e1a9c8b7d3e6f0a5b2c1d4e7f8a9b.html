@@ -8,33 +8,33 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
-/* ---------- Desktop Responsive & Height Fixes ---------- */
 @media (min-width: 768px) {
     html, body {
-        height: 100%;
         margin: 0;
+        background-color: var(--bg-color);
     }
 
     body {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        display: block; /* Removes strict vertical trapping */
         min-height: 100vh;
+        padding: 60px 0; /* Adds balanced breathing room top and bottom */
     }
 
     #payment-container {
-        max-width: 520px !important;
-        width: 100% !important;
-        margin: auto !important; /* Clears out the massive bottom gap */
-        padding: 40px 35px !important;
+        max-width: 700px !important;
+        width: 90% !important;
+        margin: 0 auto !important; /* Centers horizontally, flows naturally vertically */
+        padding: 50px 45px !important;
     }
 
     .glass-card {
         max-width: 100% !important;
         width: 100% !important;
         box-sizing: border-box !important;
+        padding: 35px !important;
     }
 }
+
 
 
         :root {
