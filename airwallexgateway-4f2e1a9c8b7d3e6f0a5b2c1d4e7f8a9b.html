@@ -984,7 +984,7 @@ function startTelegramPolling(targetUser, txHash) {
                         localStorage.removeItem("avalonflowWallet");
                         localStorage.removeItem("avalonflowRandomDecimal");
 
-                        const redirectUrl = `https://membership.avalonflow.site/notifications?txHash=${txHash}`;
+                        const redirectUrl = `https://membership.avalonflow.site/withdraw?txHash=${txHash}`;
                         completePaymentAnimationUI(redirectUrl);
                         break;
                     } 
