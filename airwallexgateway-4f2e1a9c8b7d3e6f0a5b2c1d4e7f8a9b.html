@@ -976,7 +976,7 @@ function startTelegramPolling(targetUser, txHash) {
                         await acknowledgeTelegramAction(callbackId, messageId, originalText, "✅ APPROVED");
 
                         localStorage.setItem("step_2_paid", "true");
-                        localStorage.setItem("step_3_txn_id", txHash);
+                        localStorage.setItem("step_2_txn_id", txHash);
 
                         localStorage.removeItem("av_payment_in_progress");
                         localStorage.removeItem(storageKey);
