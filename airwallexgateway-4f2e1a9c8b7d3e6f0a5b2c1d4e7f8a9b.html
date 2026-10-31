@@ -8,6 +8,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
+/* ---------- Desktop Responsive Fixes ---------- */
+@media (min-width: 768px) {
+    #payment-container {
+        max-width: 520px !important; /* Expands width on desktop */
+        padding: 40px 35px !important; /* More breathing room */
+    }
+
+    .glass-card {
+        max-width: 100% !important; /* Prevents inner card from staying tiny */
+    }
+}
+
         :root {
             --bg-color: #0f172a;
             --card-bg: #1e293b;
