@@ -8,7 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
-        /* ---------- FIX FOR DESKTOP MODE ON MOBILE PHONES (TIGHT & TALL CARD) ---------- */
+            /* ---------- FIX FOR DESKTOP MODE ON MOBILE PHONES (CLEAN & COMPACT) ---------- */
     @media (min-width: 768px) {
         body {
             display: flex;
@@ -20,29 +20,27 @@
         #payment-container {
             max-width: 92% !important; 
             width: 92% !important;
-            margin: 10px auto !important;
+            margin: 15px auto !important;
             padding: 25px 20px !important; 
-            min-height: 75vh; 
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between; 
+            /* Removed min-height and space-between to eliminate gaps inside */
         }
         #content {
             max-width: 100% !important;
             padding: 5px !important;
         }
         
-        /* Fixes the checkbox/text card height and removes internal spacing */
+        /* Keeps the checkbox/text card compact and centered like Image 1 */
         #payment-container .glass-card, 
         #payment-container .neon-card,
         .glass-card {
-            max-width: 100% !important;
+            max-width: 280px !important;
             width: 100% !important;
             box-sizing: border-box;
-            margin: 5px auto 15px auto !important;
-            padding: 18px 20px !important; /* Increases inner height while keeping text compact */
+            margin: 10px auto !important;
+            padding: 28px !important;
         }
     }
+
 
         :root {
             --bg-color: #0f172a;
