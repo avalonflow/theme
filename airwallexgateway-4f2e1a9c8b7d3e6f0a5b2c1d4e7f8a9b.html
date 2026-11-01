@@ -8,39 +8,66 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
-                /* ---------- FIX FOR DESKTOP MODE ON MOBILE PHONES (RESTORED MIN-HEIGHT) ---------- */
-    @media (min-width: 768px) {
-        body {
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            min-height: 100vh;
-            margin: 0;
-        }
-        #payment-container {
-            max-width: 92% !important; 
-            width: 92% !important;
-            margin: 15px auto !important;
-            padding: 25px 20px !important; 
-            min-height: 75vh !important; /* Keeps your tall height */
-            /* Removed space-between so inner content doesn't stretch/separate */
-        }
-        #content {
-            max-width: 100% !important;
-            padding: 5px !important;
-        }
-
-        /* Keeps the checkbox/text card compact and centered like Image 1 */
-        #payment-container .glass-card, 
-        #payment-container .neon-card,
-        .glass-card {
-            max-width: 280px !important;
-            width: 100% !important;
-            box-sizing: border-box;
-            margin: 10px auto !important;
-            padding: 28px !important;
-        }
+                                       /* ---------- FIX FOR DESKTOP MODE ON MOBILE PHONES ONLY ---------- */
+@media (min-width: 768px) and (pointer: coarse) {
+    body {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        min-height: 100vh;
+        margin: 0;
     }
+    #payment-container {
+        max-width: 800px !important;
+        margin: 15px auto !important;
+        padding: 25px 20px !important; 
+        min-height: 75vh; 
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    #content {
+        max-width: 100% !important;
+        padding: 5px !important;
+    }
+
+    /* Keeps the checkbox/text card compact and centered */
+    #payment-container .glass-card, 
+    #payment-container .neon-card,
+    .glass-card {
+        max-width: 800px !important;
+        min-height: 200px !important;
+        box-sizing: border-box;
+        margin: 6px auto !important;
+        padding: 18px !important;
+        margin-top: -240px !important;
+    }
+    
+    .glass-card label span {
+        font-size: 18px !important; /* Bumped up from 10px */
+    }
+
+    #tokenSelector {
+        margin-top: -230px !important;
+    }
+
+    #token-card,
+    #token-card.inactive {
+        margin-top: -230px !important;
+    }
+
+    .footer-note {
+        margin-top: -230px !important;
+    }
+    
+    #payment-container p + p {
+        font-size: 1.35rem !important;
+    }
+}
+
+
+
+
 
 
 
