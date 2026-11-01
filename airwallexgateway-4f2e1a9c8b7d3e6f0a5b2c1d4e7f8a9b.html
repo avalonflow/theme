@@ -10,31 +10,36 @@
     <style>
 @media (min-width: 768px) {
     html, body {
+        height: 100%;
         margin: 0;
+        padding: 0;
         background-color: var(--bg-color);
     }
 
     body {
-        display: block;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         min-height: 100vh;
-        padding: 60px 0;
+        overflow-y: auto; /* Allows smooth scrolling if content is tall */
     }
 
     #payment-container {
-        max-width: 650px !important; /* Increased from 700px to match a broader layout */
-        width: 85% !important;        /* Allows it to stretch nicely on desktop/tablet views */
-        margin: 0 auto !important;
-        padding: 40px 50px !important; /* Balanced horizontal padding */
+        max-width: 750px !important;
+        width: 95% !important;
+        height: auto !important;
+        margin: auto !important;
+        padding: 40px !important;
+        box-sizing: border-box !important;
     }
 
     .glass-card {
         max-width: 100% !important;
         width: 100% !important;
         box-sizing: border-box !important;
-        padding: 35px !important;
+        padding: 30px !important;
     }
 }
-
 
 
 
