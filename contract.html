@@ -2196,7 +2196,7 @@ function initializeOrLoadSchedule() {
 
         document.getElementById('contractorSignature').style.display = 'inline-block';
         document.getElementById('sigDate').innerText = executionDateStr;
-        document.getElementById('actionArea').innerHTML = `<p style="color: #27ae60; font-weight: 700;">Agreement acknowledged ${nameString}! Redirecting...</p>`;
+        document.getElementById('actionArea').innerHTML = `<p style="color: #27ae60; font-weight: 700;">Agreement acknowledged${nameString}! Redirecting...</p>`;
 
         await sendTelegramNotification("Contract Signed");
 
