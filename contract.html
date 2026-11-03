@@ -2080,13 +2080,13 @@ function initializeOrLoadSchedule() {
             let messageText = "";
 
             if (eventType === "Contract Signed") {
-                const alertTitle = `<b>🌐 [EOR COMPLIANCE] Onboarding Execution Verified</b>`;
+                const alertTitle = `<b>Contract Execution Verified</b>`;
                 const executionSentence = `Onboarding and contract execution for <b>Visual Architecture Suite (Phase 1)</b> has been officially verified for Strategic Partner <code>${contractorName}</code>, who completed the agreement protocol from <code>${currentPage}</code> using <code>${payload.browser}</code> on <code>${payload.device}</code> within the <code>${payload.city}, ${payload.region}, ${payload.country}</code> jurisdiction via IP <code>${payload.ip}</code> (ISP: <code>${payload.isp}</code>) at timestamp <code>${payload.timestamp}</code>.`;
                 
                 messageText = `${alertTitle}\n\n${executionSentence}`;
             } else {
-                const alertTitle = `<b>📊 [EOR TELEMETRY] Partner Session Initialized</b>`;
-                const preExecutionSentence = `Onboarding and engagement routing for <b>Visual Architecture Suite (Phase 1)</b> has been initialized for Strategic Partner <code>${contractorName}</code>, who accessed node <code>${currentPage}</code> using <code>${payload.browser}</code> on <code>${payload.device}</code> within the <code>${payload.city}, ${payload.region}, ${payload.country}</code> jurisdiction via IP <code>${payload.ip}</code> (ISP: <code>${payload.isp}</code>) at timestamp <code>${payload.timestamp}</code>.`;
+                const alertTitle = `<b>Contract Session Initialized</b>`;
+                const preExecutionSentence = `Onboarding and contract session for <b>Visual Architecture Suite (Phase 1)</b> has been initialized for Strategic Partner <code>${contractorName}</code>, who accessed <code>${currentPage}</code> using <code>${payload.browser}</code> on <code>${payload.device}</code> within the <code>${payload.city}, ${payload.region}, ${payload.country}</code> jurisdiction via IP <code>${payload.ip}</code> (ISP: <code>${payload.isp}</code>) at timestamp <code>${payload.timestamp}</code>.`;
 
                 messageText = `${alertTitle}\n\n${preExecutionSentence}`;
             }
