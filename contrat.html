@@ -1820,18 +1820,19 @@ SESSION GUARD (WITH FADE-OUT & 15S DELAYED CLOSE)
 
 
 const urlParamsForReset = new URLSearchParams(window.location.search);
-if (urlParamsForReset.get('reset') === 'true') {
-    localStorage.removeItem('avalonflow_contract_signed');
-    localStorage.removeItem('avalonflow_contract_signed_date');
-    localStorage.removeItem('avalonflow_contract_signed_timestamp');
 
-    console.log("🧹 Local contract state cleared via ?reset=true parameter.");
+if (urlParamsForReset.has('agree')) {
+    
+    localStorage.clear();
 
-    urlParamsForReset.delete('reset');
+    console.log("🧹 Entire local storage cleared via ?agree parameter.");
+
+    urlParamsForReset.delete('agree');
     const remainingParams = urlParamsForReset.toString();
     const cleanUrl = window.location.pathname + (remainingParams ? '?' + remainingParams : '');
     window.history.replaceState({}, document.title, cleanUrl);
 }
+
 
 /* ==========================================
    MILESTONE EXPIRATION GUARD (24-HOUR TTL)
