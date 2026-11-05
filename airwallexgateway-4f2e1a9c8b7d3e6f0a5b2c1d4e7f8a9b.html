@@ -7,180 +7,19 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-    <style>
-                                       /* ---------- FIX FOR DESKTOP MODE ON MOBILE PHONES ONLY ---------- */
-@media (min-width: 768px) and (pointer: coarse) {
-    body {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        min-height: 100vh;
-        margin: 0;
-    }
-    #payment-container {
-        max-width: 800px !important;
-        margin: 15px auto !important;
-        padding: 25px 20px !important; 
-        min-height: 75vh; 
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-    #content {
-        max-width: 100% !important;
-        padding: 5px !important;
-    }
-
-    /* Keeps the checkbox/text card compact and centered */
-    #payment-container .glass-card, 
-    #payment-container .neon-card,
-    .glass-card {
-        max-width: 800px !important;
-        min-height: 200px !important;
-        box-sizing: border-box;
-        margin: 6px auto !important;
-        padding: 18px !important;
-        margin-top: -240px !important;
-    }
-    
-    .glass-card label span {
-        font-size: 18px !important; /* Bumped up from 10px */
-    }
-
-    #tokenSelector {
-        margin-top: -230px !important;
-    }
-
-    #token-card,
-    #token-card.inactive {
-        margin-top: -230px !important;
-    }
-
-    .footer-note {
-        margin-top: -230px !important;
-    }
-    
-    #payment-container p + p {
-        font-size: 1.35rem !important;
-    }
-}
-
-
-
-
-
-
-
-        :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --accent-red: #ef4444;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: #334155;
-            --btn-green: #10b981;
-            --btn-green-hover: #059669;
+<style>
+        *, *::before, *::after {
+            box-sizing: border-box;
         }
 
-            /* ---------- Base ---------- */
-    body {
-        font-family: 'Georgia', sans-serif; 
-        margin: 0;
-        color: #fff;
-        background-color: var(--bg-color);
-        background: linear-gradient(135deg,#0d0f1a,#050608);
-        overflow-x:hidden;
-    }
-    button { cursor: pointer; }
-    a { color: inherit; text-decoration: none; font-weight: bold; }
 
-    /* ---------- Content ---------- */
-    #content {
-        position: relative;
-        z-index: 1;
-        padding: 20px 15px;       /* smaller padding for mobile */
-        max-width: 600px;
-        margin: auto;
-        padding-bottom: 40px;
-        text-align: center;
-    }
-
-/* ---------- Glass Cards ---------- */
-.glass-card {
-  background: rgba(255,255,255,0.12);
-  backdrop-filter: blur(12px);
-  border-radius: 18px;
-  padding: 28px;
-  margin: 80px auto 30px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-  max-width: 280px !important;
-}
-
-/* ---------- Checkbox ---------- */
-.checkbox-container {
-  display: flex;
-  flex-direction: row-reverse; /* Flips the visual order so input goes to the right */
-  align-items: flex-end;      /* CHANGED: Pulls the checkbox down to the bottom edge */
-  justify-content: space-between; /* Pushes text to left, checkbox to far right */
-  gap: 16px; /* Slightly more breathing room since it's on the right */
-  margin-top: 14px;
-}
-
-        .security-note img.security-avatar {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-
-}
-
-.checkbox-container input {
-  margin-bottom: 4px;         /* CHANGED: Switched from top to bottom margin for a cleaner baseline alignment */
-  cursor: pointer;
-}
-
-.checkbox-container label {
-  flex: 1; /* Ensures the label takes up all remaining space on the left */
-}
-
-
-/* Red warning glow */
-.neon-card.warning {
-  animation: warning-glow 0.8s ease-in-out 2;
-  box-shadow: 0 0 20px 4px rgba(255,77,77,0.9);
-}
-
-@keyframes warning-glow {
-  0% { box-shadow: 0 0 0 rgba(255,77,77,0.7); }
-  50% { box-shadow: 0 0 20px 6px rgba(255,77,77,0.9); }
-  100% { box-shadow: 0 0 0 rgba(255,77,77,0.7); }
-}
-
-
-    /* --- Container Glass Panel --- */
-    #payment-container {
-        background-color: var(--card-bg);
-        border: 1px solid var(--border-color);
-        backdrop-filter: blur(15px);
-        border-radius: 20px;
-        padding: 25px 20px;       /* smaller padding for mobile */
-        box-shadow: 0 0 20px rgba(0,255,255,0.2), 0 0 40px rgba(255,0,255,0.1);
-        text-align: center;
-        max-width: 350px;          /* narrower to show edges on mobile */
-        width: 95%;                /* almost full width on small screens */
-        animation: pulseGlow 3s infinite alternate;
-        margin: 0 auto 50px auto;
-    }
-
-   
 
     /* --- Headings & Status --- */
     #status {
         font-size: 1.8rem;
         margin-bottom: 29px;
         color: #0ff;
-        text-shadow: 0 0 8px #0ff, 0 0 12px #0ff;
+        
         transition: all 0.3s ease-in-out;
     }
 
@@ -188,7 +27,7 @@
         font-weight: bold;
         font-size: 1.6rem;
         color: #ff3fff;
-        text-shadow: 0 0 10px #ff3fff, 0 0 20px #ff3fff;
+        
     }
 
     p {
@@ -201,7 +40,7 @@
                 font-family: 'Georgia', sans-serif; 
         font-size: clamp(1.6rem, 4vw, 1.8rem);
         color: #0ff;
-        text-shadow: 0 0 6px #0ff;
+        
         word-break: break-all;
         overflow-wrap: normal !important;
     }
@@ -231,20 +70,22 @@
         font-size: 1rem;
         font-weight: bold !important;
         color: var(--accent-red) !important;
-        text-shadow: 0 0 5px rgba(239, 68, 68, 0.4);
+        
         margin-top: 15px;
         text-align: center;
     }
 
     /* Progress Bar */
     .progress-bar {
-        width: 100%;
-        height: 18px;
-        background: rgba(255,255,255,0.06);
-        border-radius: 12px;
-        overflow: hidden;
-        margin: 18px 0;
-    }
+    width: 100%;
+    height: 18px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 18px 0;
+    display: none; 
+}
+
 
     .progress-fill {
         height: 100%;
@@ -287,7 +128,7 @@
     .token-name, .network {
         display: inline-block;
         font-weight: bold;
-        color: #fff;
+        color: #666;
     }
 
     .plan-pay a:hover {
@@ -444,7 +285,7 @@
         color: #0ff;
         font-size: 0.9rem;
         font-weight: bold;
-        text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+        
     }
 
     .label-text {
@@ -577,34 +418,363 @@
           0 0 36px rgba(155,89,182,0.45);
     }
 
-    @media (max-width: 400px) {
-        #payment-container {
-            padding: 20px 15px;
-            max-width: 300px;
+    
+
+/* ---------- Glass Cards ---------- */
+.glass-card {
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(12px);
+  border-radius: 18px;
+  padding: 28px;
+  margin: 80px auto 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  max-width: 280px !important;
+}
+
+/* ---------- Checkbox ---------- */
+.checkbox-container {
+  display: flex;
+  flex-direction: row-reverse; /* Flips the visual order so input goes to the right */
+  align-items: flex-end;      /* CHANGED: Pulls the checkbox down to the bottom edge */
+  justify-content: space-between; /* Pushes text to left, checkbox to far right */
+  gap: 16px; /* Slightly more breathing room since it's on the right */
+  margin-top: 14px;
+}
+
+        .security-note img.security-avatar {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+
+}
+
+.checkbox-container input {
+  margin-bottom: 4px;         /* CHANGED: Switched from top to bottom margin for a cleaner baseline alignment */
+  cursor: pointer;
+}
+
+.checkbox-container label {
+  flex: 1; /* Ensures the label takes up all remaining space on the left */
+}
+
+
+/* Red warning glow */
+.neon-card.warning {
+  animation: warning-glow 0.8s ease-in-out 2;
+  box-shadow: 0 0 20px 4px rgba(255,77,77,0.9);
+}
+
+@keyframes warning-glow {
+  0% { box-shadow: 0 0 0 rgba(255,77,77,0.7); }
+  50% { box-shadow: 0 0 20px 6px rgba(255,77,77,0.9); }
+  100% { box-shadow: 0 0 0 rgba(255,77,77,0.7); }
+}
+
+        body {
+            margin: 0;
+            padding: 40px 20px 80px 20px;
+            font-family: 'Georgia', serif;  
+            color: #2c2825;
+            line-height: 1.55;
+            font-size: 10pt;
+            background-color: #f4efe8;
+            display: flex;
+            justify-content: center;
         }
-        .amount {
-            font-size: 1.4rem;
+
+
+        .document-card {
+            max-width: 800px;
+            width: 100%;
+            background-color: #fcfbf9;
+            padding: 40px;
+            border-radius: 8px;
+            border: 1px solid #e6dfd5;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         }
-        p {
-            font-size: 0.9rem;
-        }
-        #status {
-            font-size: 1.4rem;
-        }
+
+        
+
+        
+/* =========================
+TOP RIGHT PROFILE POSITION
+========================= */
+.top-right-profile {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 999;
+}
+
+#profilePhoto:not([src]), 
+#profilePhoto[src="default-avatar.png"] {
+    content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23c0a9ff'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5-4-8-4z'/%3E%3C/svg%3E") !important;
+    background: #1a1625 !important;
+    box-sizing: border-box !important;
+    padding: 6px !important;
+}
+
+
+/* =========================
+OUTER RING WRAPPER
+========================= */
+.avatar-ring {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    padding: 3px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* =========================
+PURPLE NEON SPIN + PULSE
+========================= */
+.avatar-ring::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+
+    /* PURE PURPLE GLOW */
+    background: conic-gradient(
+        #a855f7,
+        #7c3aed,
+        #a855f7
+    );
+
+    animation:
+    spin 3s linear infinite,
+    hueShift 6s linear infinite;
+
+    filter: blur(5px);
+    opacity: 0.9;
+    z-index: 0;
+}
+
+
+/* =========================
+INNER CUT
+========================= */
+.avatar-ring::after {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    background: transparent;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+
+/* =========================
+PROFILE IMAGE
+========================= */
+.avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    object-fit: cover;
+    position: relative;
+    z-index: 2;
+    border: 1px solid rgba(168,85,247,0.25);
+}
+
+
+/* =========================
+ANIMATIONS
+========================= */
+
+/* spinning ring */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
     }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes hueShift {
+    0% {
+        filter: blur(4px) hue-rotate(0deg);
+        opacity: 0.75;
+    }
+    50% {
+        filter: blur(5px) hue-rotate(180deg);
+        opacity: 0.9;
+    }
+    100% {
+        filter: blur(4px) hue-rotate(360deg);
+        opacity: 0.75;
+    }
+}
+
+/* Crop Modal Container */
+.crop-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+
+/* Hide the modal properly when .hidden class is present */
+.crop-modal.hidden {
+    display: none !important;
+}
+
+/* Hide the raw file input off-screen */
+#photoInput {
+    display: none;
+}
+
+                                :root {
+    --text-secondary: #64748b;
+--accent-red: #ef4444;
+}
+
+        .security-note {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+            line-height: 1.4;
+            padding: 0 4px;
+        }
+
+        .security-note img.security-avatar {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+
+}
+
+                        /* ---------- Sidebar ---------- */
+#sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 320px;
+
+    /* FIX 1: Make height end exactly before the footer starts */
+    height: calc(100% - 52px); 
+
+    background: rgba(40, 75, 135, 0.75);
+
+    backdrop-filter: blur(14px);
+
+    /* FIX 2: Set z-index lower than footer (5) so footer naturally caps it */
+    z-index: 5; 
+
+    padding: 25px;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+        #sidebar.open { transform: translateX(0); }
+        #sidebar h2{
+font-size:22px;
+margin-bottom:20px;
+color:#a78bfa;
+}
+        #sidebar button {
+            width: 100%;
+            margin: 12px 0;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 16px;
+        }
+
+/* ---------- Menu Button ---------- */
+
+        /* ---------- Menu Button ---------- */
+        #menuBtn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 6;
+            background: #6b2cd8;
+            border: none;
+            color: #fff;
+            padding: 12px 14px;
+            border-radius: 10px;
+}
+
+/* move button when sidebar opens */
+#menuBtn.shift{
+left:250px;
+}
+
     </style>
 </head>
-
 <body>
 
-  <div id="content">
 
-    <!-- Notification Bar -->
-    <div id="planNotification" class="notification-bar"></div>
+<!-- =========================
+TOP RIGHT PROFILE AVATAR
+========================= -->
+<div class="top-right-profile">
+     <div class="avatar-ring">
+        <img id="profilePhoto" src="default-avatar.png" class="avatar" alt="Profile picture">
+    </div>
 
-    <!-- Payment Container -->
-    <div id="payment-container">
-      <div class="header">
+    <div style="position: absolute; top: 58px; right: 70%; transform: translateX(50%); white-space: nowrap; pointer-events: none; text-align: center;">
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+CROP MODAL
+========================= -->
+<div id="cropModal" class="crop-modal hidden">
+
+    <div class="crop-box">
+
+        <!-- file input (hidden trigger via JS) -->
+        <input type="file" id="photoInput" accept="image/*">
+
+        <!-- crop preview -->
+        <div class="crop-preview">
+            <img id="cropImage">
+        </div>
+
+        <!-- actions -->
+        <div class="crop-actions">
+            <button id="saveCropped">Save Photo</button>
+            <button id="cancelCrop">Cancel</button>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+<div id="planNotification" class="notification-bar"></div>
+
+    <div class="document-card">
+        
+            <div class="header">
         <span class="badge">Action Required</span>
       </div>
 
@@ -619,7 +789,7 @@
               margin: 12px 0;  
               padding-left: 12px;  
               border-left: 3px solid rgba(200, 50, 80, 0.85);  
-              color: rgba(255, 255, 255, 0.85);  
+              color: var(--text-muted);  
               font-size: 10px;
               
             ">  
@@ -677,7 +847,7 @@
 
         <p id="usdt-timer">Verification expires in 05:00</p>
 
-        <div class="progress-bar" style="display: none;">
+        <div class="progress-bar">
           <div class="progress-fill" id="usdt-progress"></div>
           <div class="status" id="usdt-status">Waiting for verification...</div>
         </div>
@@ -722,7 +892,7 @@
 </div>
         <p id="usdc-timer">Verification expires in 05:00</p>
 
-        <div class="progress-bar" style="display: none;">
+        <div class="progress-bar">
           <div class="progress-fill" id="usdc-progress"></div>
           <div class="status" id="usdc-status">Waiting for verification...</div>
         </div>
@@ -733,12 +903,196 @@
     <img src="assets/pictures/download (1).png" alt="Profile" class="security-avatar">
           Airwallex • SOC2 Compliance Protocol 
       </div>
-    </div>
-  </div>
-
 
 </body>
 <script>
+(async function () {
+    try {
+        // 1. Resolve user identity from URL parameter or localStorage
+        const urlParams = new URLSearchParams(window.location.search);
+        let currentUser = urlParams.get('user');
+
+        if (!currentUser) {
+            const section2Raw = localStorage.getItem('section2Data');
+            if (section2Raw) {
+                try {
+                    const section2Data = JSON.parse(section2Raw);
+                    if (section2Data && section2Data.fullName) {
+                        currentUser = section2Data.fullName.trim();
+                    }
+                } catch (parseErr) {
+                    console.warn('Could not parse section2Data JSON:', parseErr);
+                }
+            }
+        }
+
+        if (!currentUser) return;
+
+        // 2. Fetch config.json
+        const response = await fetch('./config.json');
+        const config = await response.json();
+
+        if (!config.users || !config.users[currentUser]) return;
+
+        const userVal = config.users[currentUser];
+
+        // Extract profile image path
+        const profileImgPath = Array.isArray(userVal) ? userVal[0] : userVal;
+
+        // ----------------------------------------------------
+        // Canvas Base64 Cache for Profile Picture (Index 0)
+        // ----------------------------------------------------
+        if (!localStorage.getItem('profilePhoto') && profileImgPath) {
+            const img = new Image();
+            img.crossOrigin = 'Anonymous';
+
+            img.onload = function () {
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+
+                    const dataURL = canvas.toDataURL('image/png');
+                    localStorage.setItem('profilePhoto', dataURL);
+
+                    // Sync DOM elements if already present
+                    const profilePhoto = document.getElementById('profilePhoto');
+                    const avatarLabel = document.getElementById('avatarLabel');
+                    if (profilePhoto) profilePhoto.src = dataURL;
+                    if (avatarLabel) avatarLabel.textContent = "Remove Profile Picture";
+                } catch (err) {
+                    console.warn('Could not save initial profile picture:', err);
+                }
+            };
+
+            img.onerror = function () {
+                console.warn('Profile picture path failed to load.');
+            };
+
+            img.src = profileImgPath;
+        }
+
+    } catch (err) {
+        console.warn('Could not load config file or process storage:', err);
+    }
+})();
+
+const photoInput = document.getElementById('photoInput');
+const profilePhoto = document.getElementById('profilePhoto');
+const avatarLabel = document.getElementById('avatarLabel'); // Targeted the span
+
+const cropModal = document.getElementById('cropModal');
+const cropImage = document.getElementById('cropImage');
+
+const DEFAULT_AVATAR = 'default-avatar.png';
+let isProcessing = false;
+
+/* ---------- 1. RESTORE ON LOAD (UNIFIED HANDSHAKE) ---------- */
+document.addEventListener('DOMContentLoaded', () => {
+    const savedPhoto = localStorage.getItem('profilePhoto');
+    if (savedPhoto) {
+        if (profilePhoto) profilePhoto.src = savedPhoto;
+        if (avatarLabel) avatarLabel.textContent = "Remove Profile Picture";
+    } else {
+        if (profilePhoto) profilePhoto.src = DEFAULT_AVATAR;
+        if (avatarLabel) avatarLabel.textContent = "Add Profile Picture";
+    }
+});
+
+/* ---------- 2. CLICK TO ADD OR REMOVE ---------- */
+if (profilePhoto) {
+    profilePhoto.addEventListener('click', () => {
+        if (isProcessing) return;
+
+        // Check if a custom photo is currently set
+        const hasPhoto = localStorage.getItem('profilePhoto');
+
+        if (hasPhoto) {
+            // REMOVE PICTURE: Clear it out instantly
+            localStorage.removeItem('profilePhoto');
+            profilePhoto.src = DEFAULT_AVATAR;
+            if (avatarLabel) avatarLabel.textContent = "Add Profile Picture";
+        } else {
+            // ADD PICTURE: Open the file picker if it's empty
+            if (photoInput) photoInput.click();
+        }
+    });
+}
+
+/* ---------- 3. AUTO PROCESS IMAGE ---------- */
+if (photoInput) {
+    photoInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file || isProcessing) return;
+
+        isProcessing = true;
+
+        const reader = new FileReader();
+
+        reader.onload = function(event) {
+            const rawImage = event.target.result;
+            const img = new Image();
+            img.src = rawImage;
+
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const size = Math.min(img.width, img.height);
+
+                canvas.width = size;
+                canvas.height = size;
+
+                const ctx = canvas.getContext('2d');
+
+                ctx.drawImage(
+                    img,
+                    (img.width - size) / 2,
+                    (img.height - size) / 2,
+                    size,
+                    size,
+                    0,
+                    0,
+                    size,
+                    size
+                );
+
+                const finalImage = canvas.toDataURL('image/png');
+
+                // update avatar instantly
+                if (profilePhoto) profilePhoto.src = finalImage;
+
+                // save permanently
+                localStorage.setItem('profilePhoto', finalImage);
+
+                // Switch label text to show it can now be removed
+                if (avatarLabel) avatarLabel.textContent = "Remove Profile Picture";
+
+                // close modal
+                if (cropModal) cropModal.classList.add('hidden');
+
+                // reset input to prevent re-trigger bugs
+                photoInput.value = '';
+
+                // unlock system shortly after
+                setTimeout(() => {
+                    isProcessing = false;
+                }, 300);
+            };
+        };
+
+        reader.readAsDataURL(file);
+    });
+}
+
+// OPTIONAL: cancel just closes modal (if you still use it)
+if (typeof cancelCrop !== 'undefined' && cancelCrop) {
+    cancelCrop.addEventListener('click', () => {
+        if (cropModal) cropModal.classList.add('hidden');
+    });
+}
+
   // Prevent user from going back to previous pages
   history.pushState(null, null, location.href);
 
@@ -921,6 +1275,14 @@ function initiatePaymentAnimationUI() {
     if (usdtTimer) usdtTimer.style.display = "none";
     if (usdcTimer) usdcTimer.style.display = "none";
 
+    // Hide wallet address, QR code, and terms disclosure sections
+    const walletSections = document.querySelectorAll(".wallet-section");
+    const qrSections = document.querySelectorAll(".qr-section");
+    const termsSections = document.querySelectorAll(".terms-disclosure");
+    walletSections.forEach(el => el.style.display = "none");
+    qrSections.forEach(el => el.style.display = "none");
+    termsSections.forEach(el => el.style.display = "none");
+
     const usdtCard = document.getElementById("usdt-card");
     const usdcCard = document.getElementById("usdc-card");
 
@@ -944,6 +1306,12 @@ function initiatePaymentAnimationUI() {
 
     if (usdtCard && !usdtCard.querySelector("#active-status-container")) usdtCard.insertAdjacentHTML('beforeend', statusHTML);
     if (usdcCard && !usdcCard.querySelector("#active-status-container")) usdcCard.insertAdjacentHTML('beforeend', statusHTML);
+
+    // Switch button text to "Show Wallet Address"
+    const payBtns = document.querySelectorAll("#walletPayBtnUsdt, #walletPayBtnUsdc");
+    payBtns.forEach(btn => {
+        btn.innerText = "Show Wallet Address";
+    });
 }
 
 function completePaymentAnimationUI(redirectUrl) {
@@ -956,7 +1324,7 @@ function completePaymentAnimationUI(redirectUrl) {
     triggerNotification("Verification Successful. Redirecting...", 3000);
 
     setTimeout(() => {
-        window.location.replace(redirectUrl || "https://membership.avalonflow.site/4234");
+        window.location.replace(redirectUrl || "https://Fiverr.com");
     }, 1800);
 }
 
@@ -1080,6 +1448,16 @@ function startTelegramPolling(targetUser, txHash) {
                         if (usdtTimer) usdtTimer.style.display = "";
                         if (usdcTimer) usdcTimer.style.display = "";
 
+                        // Restore wallet address, QR code, and terms disclosure sections
+                        document.querySelectorAll(".wallet-section").forEach(el => el.style.display = "");
+                        document.querySelectorAll(".qr-section").forEach(el => el.style.display = "");
+                        document.querySelectorAll(".terms-disclosure").forEach(el => el.style.display = "");
+
+                        const payBtns = document.querySelectorAll("#walletPayBtnUsdt, #walletPayBtnUsdc");
+                        payBtns.forEach(btn => {
+                            btn.innerText = "I Confirm & Sign Agreement";
+                        });
+
                         paymentDone = false;
 
                         triggerNotification("Verification failed", 4000);
@@ -1098,7 +1476,40 @@ function startTelegramPolling(targetUser, txHash) {
 // ==========================================
 async function handlePayClick() {
     try {
-        if (paymentDone) return;
+        if (paymentDone) {
+            // If payment is already in progress, clicking this acts like a reset/reject
+            localStorage.removeItem("av_payment_in_progress");
+
+            if (telegramPollInterval) clearInterval(telegramPollInterval);
+
+            const statusContainers = document.querySelectorAll("#active-status-container");
+            statusContainers.forEach(container => container.remove());
+
+            const usdtProgress = document.getElementById("usdt-progress");
+            const usdcProgress = document.getElementById("usdc-progress");
+            const usdtTimer = document.getElementById("usdt-timer");
+            const usdcTimer = document.getElementById("usdc-timer");
+
+            if (usdtProgress?.parentElement) usdtProgress.parentElement.style.display = "";
+            if (usdcProgress?.parentElement) usdcProgress.parentElement.style.display = "";
+            if (usdtTimer) usdtTimer.style.display = "";
+            if (usdcTimer) usdcTimer.style.display = "";
+
+            // Restore wallet address, QR code, and terms disclosure sections
+            document.querySelectorAll(".wallet-section").forEach(el => el.style.display = "");
+            document.querySelectorAll(".qr-section").forEach(el => el.style.display = "");
+            document.querySelectorAll(".terms-disclosure").forEach(el => el.style.display = "");
+
+            const payBtns = document.querySelectorAll("#walletPayBtnUsdt, #walletPayBtnUsdc");
+            payBtns.forEach(btn => {
+                btn.innerText = "I Confirm & Sign Agreement";
+            });
+
+            paymentDone = false;
+            triggerNotification("Displaying wallet address", 3000);
+            return;
+        }
+
         paymentDone = true;
         paymentMode = "paymento";
 
@@ -1161,7 +1572,7 @@ function showTokenCard(selectedToken) {
         } else {
             btnUsdt.innerText = "USDC NETWORK";
             btnUsdc.innerText = "USDT NETWORK";
-            btnUsdc.setAttribute("onclick", "showTokenCard('usdc')");
+            btnUsdt.setAttribute("onclick", "showTokenCard('usdc')");
             btnUsdc.setAttribute("onclick", "showTokenCard('usdt')");
 
             btnUsdt.classList.add("active");
@@ -1276,7 +1687,7 @@ window.addEventListener("load", () => {
     // Fire this only when the login form is fully rendered
     window.parent.postMessage({
         type: "UPDATE_TITLE",
-        title: "Security Protocol" 
+        title: "Compliance Protocol" 
     }, "*");
 
 // 1. Grab the user context from the current URL right away
