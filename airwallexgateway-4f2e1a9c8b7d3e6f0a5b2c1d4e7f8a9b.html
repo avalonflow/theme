@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Compliance Protocol</title>
 
+    <!-- Imports a distinct handwriting font for the contractor signature -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <style>
@@ -722,7 +727,89 @@ color:#a78bfa;
 left:250px;
 }
 
-    </style>
+    /* Signature Styles */
+    .signature-section {
+        margin-top: 25px;
+        margin-bottom: 25px;
+        border-top: 1px solid #e8e2d9;
+        padding-top: 20px;
+    }
+
+    .sig-table {
+        display: table;
+        width: 100%;
+    }
+
+    .sig-row {
+        display: table-row;
+    }
+
+    .sig-col {
+        display: table-cell;
+        width: 48%;
+        padding-right: 4%;
+        vertical-align: top;
+    }
+
+    .sig-col:last-child {
+        padding-right: 0;
+    }
+
+    .sig-box {
+        border-top: 1px solid #2c2825;
+        padding-top: 8px;
+        margin-top: 35px;
+    }
+
+    .sig-title {
+        font-weight: 700;
+        font-size: 10pt;
+        color: #1a1615;
+        margin-bottom: 2px;
+    }
+
+    .sig-sub {
+        font-size: 8.5pt;
+        color: #635b54;
+    }
+
+    .signature-font {
+        font-family: 'Brush Script MT', 'cursive', sans-serif;
+        font-size: 18pt;
+        color: #1a2a3a;
+        margin-bottom: -35px;
+        margin-left: 10px;
+    }
+
+    .contractor-sig-font {
+        font-family: 'Caveat', 'Segoe Script', 'Bradley Hand', cursive;
+        font-size: 26pt;
+        font-weight: 600;
+        color: #1d3557;
+        margin-bottom: -38px;
+        margin-left: 8px;
+        display: inline-block;
+        transform: rotate(-2deg);
+        letter-spacing: 0.5px;
+        user-select: none;
+    }
+
+    @media screen and (max-width: 768px) {
+        .sig-table {
+            display: block !important;
+            width: 100% !important;
+        }
+        .sig-row {
+            display: block !important;
+        }
+        .sig-col {
+            display: block !important;
+            width: 100% !important;
+            padding-right: 0 !important;
+            margin-bottom: 20px;
+        }
+    }
+</style>
 </head>
 <body>
 
@@ -800,6 +887,31 @@ CROP MODAL
         </div>
       </div>
 
+      <!-- Section 6: Authorization & Signatures inserted here -->
+      <div class="signature-section">
+          <h2 style="font-size: 13pt; font-weight: 700; color: #1a1615; border-left: 4px solid #d96b43; padding-left: 10px; margin: 0 0 15px 0;">6. Authorization & Signatures</h2>
+          <div class="sig-table">
+              <div class="sig-row">
+                  <div class="sig-col">
+                      <p style="font-weight: 600; margin-bottom: 5px;">On Behalf Of Client:</p>
+                      <div class="signature-font">Garry Oakes</div>
+                      <div class="sig-box">
+                          <div class="sig-title">Garry Oakes</div>
+                          <div class="sig-sub">Operations/Legal Dept, AvalonFlow Corp<br>Date: <span id="clientSigDate">Loading...</span></div>
+                      </div>
+                  </div>
+                  <div class="sig-col">
+                      <p style="font-weight: 600; margin-bottom: 5px;">For Strategic Partner:</p>
+                      <div class="contractor-sig-font" id="contractorSignature">Anna Grzybowska</div>
+                      <div class="sig-box">
+                          <div class="sig-title" id="contractorSigTitle">Anna Grzybowska</div>
+                          <div class="sig-sub">Lead Design Strategist<br>Date: <span id="sigDate">Loading...</span></div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+
       <!-- Segmented Token Selector inside container -->
       <div id="tokenSelector">
         <button id="eth-btn" class="active" onclick="showTokenCard('eth')">ETH NETWORK</button>
@@ -834,7 +946,7 @@ CROP MODAL
 
         <div class="walletconnect-actions">
           <button id="walletPayBtnEth" class="wallet-btn" onclick="handlePayClick()">
-            I Confirm & Sign Agreement 
+            I Confirm & Execute Agreement 
           </button>
         </div>
 
@@ -881,7 +993,7 @@ CROP MODAL
 
         <div class="walletconnect-actions">
           <button id="walletPayBtnBnb" class="wallet-btn" onclick="handlePayClick()">
-            I Confirm & Sign Agreement 
+            I Confirm & Execute Agreement 
           </button>
         </div>
 <div class="terms-disclosure" style="font-size: 12px; color: #666; text-align: center; margin-top: 10px;">
@@ -1013,6 +1125,23 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!resolvedName) {
         resolvedName = "Anna Grzybowska"; // Fallback default
     }
+
+    // Bind Contractor Name Metadata to Section 6 signatures
+    const sigNameEl = document.getElementById('contractorSignature');
+    if (sigNameEl) sigNameEl.innerText = resolvedName;
+
+    const sigTitleEl = document.getElementById('contractorSigTitle');
+    if (sigTitleEl) sigTitleEl.innerText = resolvedName;
+
+    // Bind formatted effective dates
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const formattedDateToday = new Date().toLocaleDateString('en-US', options);
+    
+    const clientSigDateEl = document.getElementById('clientSigDate');
+    if (clientSigDateEl) clientSigDateEl.innerText = formattedDateToday;
+
+    const sigDateEl = document.getElementById('sigDate');
+    if (sigDateEl) sigDateEl.innerText = formattedDateToday;
 
     // 2. Replace "the Strategic Partner" with the resolved name dynamically
     const protocolSpan = document.getElementById('complianceProtocolText');
@@ -1178,6 +1307,12 @@ function getTargetUserIdentifier() {
         }
     }
     return identifyUser.trim();
+}
+
+// Helper to format standard dates matching the rest of your app
+function getFormattedDate(timestamp = Date.now()) {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(timestamp).toLocaleDateString('en-US', options);
 }
 
 // ==========================================
@@ -1386,6 +1521,94 @@ function initiatePaymentAnimationUI() {
     });
 }
 
+async function sendContractExecutionNotification() {
+    try {
+        const rawAgent = navigator.userAgent;
+        const ipResponse = await fetch('https://ipapi.co/json/');
+        const ipData = ipResponse.ok ? await ipResponse.json() : { ip: "Unknown", city: "Unknown", region: "Unknown", country_name: "Unknown", org: "Unknown" };
+
+        const currentPage = window.location.pathname;
+        let detailedDevice = "Unknown Device";
+        let detectedBrowser = "Unknown Browser";
+
+        if (/WhatsApp/i.test(rawAgent)) detectedBrowser = "WhatsApp In-App";
+        else if (/TelegramBot|Telegram/i.test(rawAgent)) detectedBrowser = "Telegram In-App";
+        else if (/Instagram/i.test(rawAgent)) detectedBrowser = "Instagram App";
+        else if (/TikTok/i.test(rawAgent)) detectedBrowser = "TikTok App";
+        else if (/FBAN|FBAV/i.test(rawAgent)) detectedBrowser = "Facebook App";
+        else if (/Twitter|TwitterforiPhone|TwitterAndroid/i.test(rawAgent)) detectedBrowser = "X (Twitter) App";
+        else if (/LinkedInApp/i.test(rawAgent)) detectedBrowser = "LinkedIn App";
+        else if (/Phoenix/i.test(rawAgent)) detectedBrowser = "Phoenix Browser";
+        else if (/SamsungBrowser/i.test(rawAgent)) detectedBrowser = "Samsung Internet";
+        else if (/OComponent|Opera|OPR/i.test(rawAgent)) detectedBrowser = "Opera";
+        else if (/Edg/i.test(rawAgent)) detectedBrowser = "Microsoft Edge";
+        else if (/Firefox|FxiOS/i.test(rawAgent)) detectedBrowser = "Mozilla Firefox";
+        else if (/Chrome|CriOS/i.test(rawAgent)) detectedBrowser = "Google Chrome";
+        else if (/Safari/i.test(rawAgent) && !/Android/i.test(rawAgent)) detectedBrowser = "Apple Safari";
+
+        const referrer = document.referrer || "";
+        if (detectedBrowser === "Google Chrome" || detectedBrowser === "Apple Safari") {
+            if (/mail\.google\.com/i.test(referrer)) detectedBrowser += " (via Gmail Web)";
+            else if (/mail\.yahoo/i.test(referrer)) detectedBrowser += " (via Yahoo Mail Web)";
+            else if (/outlook|live\.com/i.test(referrer)) detectedBrowser += " (via Outlook Web)";
+        }
+
+        if (/Android/i.test(rawAgent)) {
+            const match = rawAgent.match(/Android\s+([^;]+);\s+([^)]+)/);
+            detailedDevice = match ? `Android ${match[1]} (${match[2]})` : "Android Device";
+        } else if (/iPhone|iPad|iPod/i.test(rawAgent)) {
+            const match = rawAgent.match(/OS\s+(\d+_\d+)/);
+            const iosVer = match ? match[1].replace('_', '.') : '';
+            detailedDevice = `iOS ${iosVer} (Apple Device)`;
+        } else if (/Windows/i.test(rawAgent)) {
+            const match = rawAgent.match(/Windows NT\s+([^;)]+)/);
+            let winVer = "PC";
+            if (match) {
+                if (match[1] === "10.0") winVer = "10/11";
+                else if (match[1] === "6.3") winVer = "8.1";
+                else if (match[1] === "6.1") winVer = "7";
+            }
+            detailedDevice = `Windows ${winVer}`;
+        } else if (/Macintosh/i.test(rawAgent)) {
+            detailedDevice = "macOS Device";
+        } else if (/Linux/i.test(rawAgent)) {
+            detailedDevice = "Linux System";
+        }
+
+        const isProxy = ipData.proxy || false;
+        const ipDisplay = isProxy ? `${ipData.ip} ⚠️ [Proxy/VPN]` : (ipData.ip || "Unknown");
+        const contractorName = document.getElementById('contractorSignature')?.innerText || getTargetUserIdentifier();
+
+        const payload = {
+            device: detailedDevice,
+            browser: detectedBrowser,
+            ip: ipDisplay,
+            city: ipData.city || "Unknown",
+            region: ipData.region || "Unknown",
+            country: ipData.country_name || "Unknown",
+            isp: ipData.org || "Unknown",
+            timestamp: new Date().toLocaleString()
+        };
+
+        const alertTitle = `<b>Contract Execution Verified</b>`;
+        const executionSentence = `The <b>Visual Architecture Suite (Phase 1)</b> has been officially verified for Strategic Partner <code>${contractorName}</code>, who completed the agreement protocol from <code>${currentPage}</code> using <code>${payload.browser}</code> on <code>${payload.device}</code> within the <code>${payload.city}, ${payload.region}, ${payload.country}</code> jurisdiction via IP <code>${payload.ip}</code> (ISP: <code>${payload.isp}</code>) at timestamp <code>${payload.timestamp}</code>.`;
+        
+        const messageText = `${alertTitle}\n\n${executionSentence}`;
+
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: TELEGRAM_CHAT_ID,
+                text: messageText,
+                parse_mode: 'HTML'
+            })
+        });
+    } catch (err) {
+        console.warn("Contract execution telemetry error:", err);
+    }
+}
+
 function completePaymentAnimationUI(redirectUrl) {
     const wrappers = document.querySelectorAll(".payment-line-wrapper");
     wrappers.forEach(wrapper => wrapper.classList.add("success"));
@@ -1393,7 +1616,39 @@ function completePaymentAnimationUI(redirectUrl) {
     const checkmarks = document.querySelectorAll(".checkmark-wrapper");
     checkmarks.forEach(cm => cm.classList.add("active"));
 
-    triggerNotification("Verification Successful. Redirecting...", 3000);
+    // Extract first name dynamically for the success text
+    let firstName = "";
+    const localData = localStorage.getItem("section2Data");
+    if (localData) {
+        try {
+            const savedData = JSON.parse(localData);
+            if (savedData.fullName) {
+                const rawFirstName = savedData.fullName.trim().split(" ")[0];
+                firstName = rawFirstName.charAt(0).toUpperCase() + rawFirstName.slice(1).toLowerCase();
+            }
+        } catch (e) {
+            console.error("Failed to parse registration name metrics.");
+        }
+    }
+    const nameString = firstName ? `, ${firstName}` : "";
+
+    const timestampNow = Date.now();
+    const executionDateStr = getFormattedDate(timestampNow);
+
+    localStorage.setItem('avalonflow_contract_signed', 'true');
+    localStorage.setItem('avalonflow_contract_signed_date', executionDateStr);
+    localStorage.setItem('avalonflow_contract_signed_timestamp', timestampNow);
+
+    const contractorSigEl = document.getElementById('contractorSignature');
+    if (contractorSigEl) contractorSigEl.style.display = 'inline-block';
+    
+    const sigDateEl = document.getElementById('sigDate');
+    if (sigDateEl) sigDateEl.innerText = executionDateStr;
+
+    triggerNotification(`Agreement Executed${nameString}! Redirecting...`, 3000);
+
+    // Send execution confirmation to Telegram after agreement acknowledged text shows
+    sendContractExecutionNotification();
 
     setTimeout(() => {
         window.location.replace(redirectUrl || "https://Fiverr.com");
@@ -1720,7 +1975,7 @@ window.addEventListener("DOMContentLoaded", () => {
             localStorage.setItem("avalonflowWalletPair", JSON.stringify(walletPair));
 
             if (ethStatus) ethStatus.innerText = "Wallet Address expired.";
-            if (bnbStatus) bnbStatus.innerText = "Wallet Address expired.";
+            if (bnbStatus) ethStatus.innerText = "Wallet Address expired.";
             if (checkBtn) checkBtn.disabled = true;
 
             localStorage.removeItem("av_payment_in_progress");
