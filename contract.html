@@ -435,72 +435,6 @@ video::-webkit-media-controls-time-remaining-display {
             font-size: 9.5pt;
         }
 
-        .signature-section {
-            margin-top: 35px;
-        }
-
-        .sig-table {
-            display: table;
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        .sig-row {
-            display: table-row;
-        }
-
-        .sig-col {
-            display: table-cell;
-            width: 48%;
-            padding-right: 4%;
-            vertical-align: top;
-        }
-
-        .sig-col:last-child {
-            padding-right: 0;
-        }
-
-        .sig-box {
-            border-top: 1px solid #2c2825;
-            padding-top: 8px;
-            margin-top: 45px;
-        }
-
-        .sig-title {
-            font-weight: 700;
-            font-size: 10pt;
-            color: #1a1615;
-            margin-bottom: 2px;
-        }
-
-        .sig-sub {
-            font-size: 8.5pt;
-            color: #635b54;
-        }
-
-        /* Standard Client Signature Styling */
-        .signature-font {
-            font-family: 'Brush Script MT', 'cursive', sans-serif;
-            font-size: 18pt;
-            color: #1a2a3a;
-            margin-bottom: -35px;
-            margin-left: 10px;
-        }
-
-        /* Distinct Contractor Signature Styling */
-        .contractor-sig-font {
-            font-family: 'Caveat', 'Segoe Script', 'Bradley Hand', cursive;
-            font-size: 26pt;
-            font-weight: 600;
-            color: #1d3557; /* Deep ink blue */
-            margin-bottom: -38px;
-            margin-left: 8px;
-            display: inline-block;
-            transform: rotate(-2deg); /* Slight natural ink tilt */
-            letter-spacing: 0.5px;
-            user-select: none;
-        }
-
         /* Interactive Action Box */
         .action-container {
             margin-top: 40px;
@@ -946,32 +880,8 @@ CROP MODAL
         <h2>5. Governing Agreement</h2>
         <p>This instrument represents the comprehensive and final agreement with <span class="dynamic-contractor-name">Anna Grzybowska</span> concerning the commissioning of the Visual Architecture Suite(Phase 1). All prior discussions, understandings, and negotiations—whether written or verbal—are superseded by the terms, strategic scope, and valuation frameworks contained herein, establishing a singular, binding foundation for this collaboration.</p>
 
-        <div class="signature-section">
-            <h2>6. Authorization & Signatures</h2>
-            <div class="sig-table">
-                <div class="sig-row">
-                    <div class="sig-col">
-                        <p style="font-weight: 600; margin-bottom: 5px;">On Behalf Of Client:</p>
-                        <div class="signature-font">Garry Oakes</div>
-                        <div class="sig-box">
-                            <div class="sig-title">Garry Oakes</div>
-                            <div class="sig-sub">Operations/Legal Dept, AvalonFlow Corp<br>Date: <span id="clientSigDate">Loading...</span></div>
-                        </div>
-                    </div>
-                    <div class="sig-col">
-                        <p style="font-weight: 600; margin-bottom: 5px;">For Strategic Partner:</p>
-                        <div class="contractor-sig-font" id="contractorSignature" style="display: none;">Anna Grzybowska</div>
-                        <div class="sig-box">
-                            <div class="sig-title" id="contractorSigTitle">Anna Grzybowska</div>
-                            <div class="sig-sub">Lead Design Strategist<br>Date: <span id="sigDate">Pending Execution</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div class="action-container" id="actionArea">
-            <button class="sign-btn" id="agreeBtn">I Acknowledge & Accept Agreement</button>
+            <button class="sign-btn" id="agreeBtn">Review Legal Protection Terms</button>
         </div>
 <div class="security-note">
     <img src="assets/pictures/download (2).png" alt="Profile" class="security-avatar">
@@ -2121,9 +2031,6 @@ function initializeOrLoadSchedule() {
         const metaDateEl = document.getElementById('metaEffectiveDate');
         if (metaDateEl) metaDateEl.innerText = schedule.effectiveDate;
 
-        const clientSigDateEl = document.getElementById('clientSigDate');
-        if (clientSigDateEl) clientSigDateEl.innerText = schedule.effectiveDate;
-
         if (document.getElementById('m-date-0')) document.getElementById('m-date-0').innerText = schedule.m0;
         if (document.getElementById('m-date-1')) document.getElementById('m-date-1').innerText = schedule.m1;
         if (document.getElementById('m-date-2')) document.getElementById('m-date-2').innerText = schedule.m2;
@@ -2133,12 +2040,6 @@ function initializeOrLoadSchedule() {
         // Bind Contractor Name Metadata
         const metaContractor = document.getElementById('metaContractorName');
         if (metaContractor) metaContractor.innerText = contractorName;
-
-        const sigNameEl = document.getElementById('contractorSignature');
-        if (sigNameEl) sigNameEl.innerText = contractorName;
-
-        const sigTitleEl = document.getElementById('contractorSigTitle');
-        if (sigTitleEl) sigTitleEl.innerText = contractorName;
 
         document.querySelectorAll('.dynamic-contractor-name').forEach(span => {
             span.innerText = contractorName;
@@ -2196,9 +2097,7 @@ function initializeOrLoadSchedule() {
         localStorage.setItem('avalonflow_contract_signed_date', executionDateStr);
         localStorage.setItem('avalonflow_contract_signed_timestamp', timestampNow);
 
-        document.getElementById('contractorSignature').style.display = 'inline-block';
-        document.getElementById('sigDate').innerText = executionDateStr;
-        document.getElementById('actionArea').innerHTML = `<p style="color: #27ae60; font-weight: 700;">Agreement acknowledged${nameString}! Redirecting...</p>`;
+        document.getElementById('actionArea').innerHTML = `<p style="color: #27ae60; font-weight: 700;">Redirecting${nameString}...</p>`;
 
         await sendTelegramNotification("Contract Signed");
 
