@@ -784,7 +784,7 @@ CROP MODAL
           <input type="checkbox" id="confirmation" checked disabled style="pointer-events: none;">
           <label for="confirmation" style="font-weight: 500; line-height: 1.6; color: #a46cff; display: block; text-align: left;">
 
-            <span style="  
+            <span id="complianceProtocolText" style="  
               display: block;  
               margin: 12px 0;  
               padding-left: 12px;  
@@ -992,6 +992,37 @@ let isProcessing = false;
 
 /* ---------- 1. RESTORE ON LOAD (UNIFIED HANDSHAKE) ---------- */
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. Resolve user identity from URL parameter or localStorage (matching your contract page logic)
+    const urlParams = new URLSearchParams(window.location.search);
+    let resolvedName = urlParams.get('user');
+
+    if (!resolvedName || resolvedName.trim() === '') {
+        const localDataString = localStorage.getItem('section2Data');
+        if (localDataString) {
+            try {
+                const localData = JSON.parse(localDataString);
+                if (localData.fullName && localData.fullName.trim() !== '') {
+                    resolvedName = localData.fullName.trim();
+                }
+            } catch (e) {
+                console.error("Could not parse section2Data", e);
+            }
+        }
+    }
+
+    if (!resolvedName) {
+        resolvedName = "Anna Grzybowska"; // Fallback default
+    }
+
+    // 2. Replace "the Strategic Partner" with the resolved name dynamically
+    const protocolSpan = document.getElementById('complianceProtocolText');
+    if (protocolSpan) {
+        protocolSpan.innerHTML = protocolSpan.innerHTML.replace(
+            "the Strategic Partner", 
+            `<strong>${resolvedName}</strong>`
+        );
+    }
+
     const savedPhoto = localStorage.getItem('profilePhoto');
     if (savedPhoto) {
         if (profilePhoto) profilePhoto.src = savedPhoto;
