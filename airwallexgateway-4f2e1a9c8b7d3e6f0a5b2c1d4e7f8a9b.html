@@ -1366,7 +1366,7 @@ let calculatedBaseAmount;
 if (rawBonus && !isNaN(parseFloat(rawBonus))) {
     calculatedBaseAmount = (parseFloat(rawBonus) * 0.0947).toFixed(2);
 } else {
-    calculatedBaseAmount = parseFloat(localStorage.getItem("avalonflowCustomAmount") || "900.00").toFixed(2);
+    calculatedBaseAmount = parseFloat(localStorage.getItem("avalonflowCustomAmount") || "800.00").toFixed(2);
 }
 
 let randomDecimal = localStorage.getItem("avalonflowRandomDecimal");
