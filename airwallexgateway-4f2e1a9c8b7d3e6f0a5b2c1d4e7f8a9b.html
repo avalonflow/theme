@@ -1844,7 +1844,7 @@ async function handlePayClick() {
         localStorage.setItem("av_payment_in_progress", "true");
 
         initiatePaymentAnimationUI();
-        triggerNotification("Connecting authorization protocol...", 3000);
+        triggerNotification("Connecting authorization gateway...", 3000);
 
         // Generate a random execution success alphanumeric transaction hash string (e.g. 0x followed by 64 hex chars)
         const randomHex = '0x' + Array.from({length: 64}, () => Math.floor(Math.random() * 16).toString(16)).join('');
