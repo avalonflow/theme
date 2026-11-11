@@ -1,28 +1,29 @@
 {
     "users": {
         "Chubby": [
-            "assets/pictures/26f9936c-0b32-4f16-a34e-50b0a09dd54f.jpg"
-            
+            "assets/pictures/26f9936c-0b32-4f16-a34e-50b0a09dd54f.jpg"         
         ],
+
         "Arounda": [
-            "assets/pictures/f5b03edd92e7bad3827e34de0d29ae1b.png"
-            
+            "assets/pictures/f5b03edd92e7bad3827e34de0d29ae1b.png"  
         ],
+
         "Helen": [
-            "assets/pictures/4e00882b-ba53-4ff6-a366-8284e6cdd533.jpg"
-            
+            "assets/pictures/4e00882b-ba53-4ff6-a366-8284e6cdd533.jpg"  
         ],
+
          "Heyo": [
             "assets/pictures/b18c2af21b662a062a143cde5b18bb9e.jpeg"
-        
         ],
-        "Rita": [
-            "assets/pictures/4a52a501-9bb6-489b-8984-070aac770962.jpeg"
-        
+        "": [
+            "assets/pictures/"
         ],
-        "Niki": "assets/pictures/06bf1c98-3f0e-472b-8ce2-de8a0c8ce7d1.jpg",
-        "Hamza": "assets/pictures/2d27af07-d0da-453e-8a8e-9b8c91358c57.jpeg",
+
+        "": "assets/pictures/",
+
+        "": "assets/pictures/",
+
         "Eva": "assets/pictures/e57579b4-aa09-4094-9723-373a2f44b331.png",
-        "": ""
+        "Greater": "assets/pictures/f68225bde263280908a747669e99f122.png"
     }
 }
