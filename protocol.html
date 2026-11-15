@@ -1537,8 +1537,8 @@ window.addEventListener("load", () => {
     const urlParams = new URLSearchParams(window.location.search);
     const userParam = urlParams.get('user');
     const destinationPath = userParam 
-        ? `/airwallexgateway-4f2e1a9c8b7d3e6f0a5b2c1d4e7f8a9b?user=${encodeURIComponent(userParam)}` 
-        : '/airwallexgateway-4f2e1a9c8b7d3e6f0a5b2c1d4e7f8a9b';
+        ? `/protocol?user=${encodeURIComponent(userParam)}` 
+        : '/protocol';
 
     window.parent.postMessage({ type: "UPDATE_URL", path: destinationPath }, "*");
 });
