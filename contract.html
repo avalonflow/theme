@@ -185,7 +185,7 @@ if (urlParamsForReset.has('agree')) {
         padding: 12px 18px;
         border-radius: 12px;
         font-size: 14px;
-font-weight: bold;
+        font-weight: bold;
         box-shadow: 0 6px 18px rgba(0,0,0,0.25);
         transition: top 0.5s ease, opacity 0.5s ease;
         z-index: 9999;
@@ -324,8 +324,6 @@ font-weight: bold;
 }
 
 /* --- SURGICAL CONTROL REMOVALS --- */
-
-/* Strips out the center play icon overlays */
 video::-webkit-media-controls-start-playback-button,
 video::-webkit-media-controls-overlay-play-button {
     display: none !important;
@@ -334,21 +332,18 @@ video::-webkit-media-controls-overlay-play-button {
     pointer-events: none !important;
 }
 
-/* Hides the bottom left control bar play/pause toggle */
 video::-webkit-media-controls-play-button {
     display: none !important;
     opacity: 0 !important;
     pointer-events: none !important;
 }
 
-/* Hides the horizontal progress line / slider tracker */
 video::-webkit-media-controls-timeline {
     display: none !important;
     opacity: 0 !important;
     pointer-events: none !important;
 }
 
-/* Hides the numerical duration text string (e.g., 0:24 / 0:43) */
 video::-webkit-media-controls-current-time-display,
 video::-webkit-media-controls-time-remaining-display {
     display: none !important;
@@ -366,7 +361,6 @@ video::-webkit-media-controls-time-remaining-display {
     width: 100px;
 }
 
-
         h2 {
             font-size: 13pt;
             font-weight: 700;
@@ -380,7 +374,7 @@ video::-webkit-media-controls-time-remaining-display {
             margin: 0 0 10px 0;
         }
 
-                ul {
+        ul {
             margin: 0 0 12px 0;
             padding-left: 20px;
         }
@@ -392,7 +386,6 @@ video::-webkit-media-controls-time-remaining-display {
         li {
             margin-bottom: 5px;
         }
-
 
         .table-container {
             width: 100%;
@@ -443,7 +436,6 @@ video::-webkit-media-controls-time-remaining-display {
             text-align: center;
         }
 
-
         .sign-btn {
             background-color: #d96b43;
             color: #ffffff;
@@ -454,6 +446,7 @@ video::-webkit-media-controls-time-remaining-display {
             border-radius: 6px;
             cursor: pointer;
             transition: background-color 0.2s ease;
+            display: none; /* Hidden per request */
         }
 
         .sign-btn:hover {
@@ -485,13 +478,14 @@ video::-webkit-media-controls-time-remaining-display {
             }
         }
 
-.step-image {
-    width: 100%; /* or a smaller width, e.g., 300px */
-height: 180px;   /* reduce this value */
-    max-width: 100%;
-    margin-top: 10px;
-    border-radius: 8px; /* optional for rounded corners */
-}
+        .step-image {
+            width: 100%; 
+            height: 180px;   
+            max-width: 100%;
+            margin-top: 10px;
+            border-radius: 8px; 
+        }
+
         /* Footer */
         footer {
             position: fixed;
@@ -526,7 +520,6 @@ TOP RIGHT PROFILE POSITION
     padding: 6px !important;
 }
 
-
 /* =========================
 OUTER RING WRAPPER
 ========================= */
@@ -541,7 +534,6 @@ OUTER RING WRAPPER
     justify-content: center;
 }
 
-
 /* =========================
 PURPLE NEON SPIN + PULSE
 ========================= */
@@ -550,23 +542,18 @@ PURPLE NEON SPIN + PULSE
     position: absolute;
     inset: 0;
     border-radius: 50%;
-
-    /* PURE PURPLE GLOW */
     background: conic-gradient(
         #a855f7,
         #7c3aed,
         #a855f7
     );
-
     animation:
     spin 3s linear infinite,
     hueShift 6s linear infinite;
-
     filter: blur(5px);
     opacity: 0.9;
     z-index: 0;
 }
-
 
 /* =========================
 INNER CUT
@@ -579,7 +566,6 @@ INNER CUT
     border-radius: 50%;
     z-index: 1;
 }
-
 
 /* =========================
 PROFILE IMAGE
@@ -594,34 +580,15 @@ PROFILE IMAGE
     border: 1px solid rgba(168,85,247,0.25);
 }
 
-
-/* =========================
-ANIMATIONS
-========================= */
-
-/* spinning ring */
 @keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 @keyframes hueShift {
-    0% {
-        filter: blur(4px) hue-rotate(0deg);
-        opacity: 0.75;
-    }
-    50% {
-        filter: blur(5px) hue-rotate(180deg);
-        opacity: 0.9;
-    }
-    100% {
-        filter: blur(4px) hue-rotate(360deg);
-        opacity: 0.75;
-    }
+    0% { filter: blur(4px) hue-rotate(0deg); opacity: 0.75; }
+    50% { filter: blur(5px) hue-rotate(180deg); opacity: 0.9; }
+    100% { filter: blur(4px) hue-rotate(360deg); opacity: 0.75; }
 }
 
 /* Crop Modal Container */
@@ -639,103 +606,40 @@ ANIMATIONS
     z-index: 10000;
 }
 
-/* Hide the modal properly when .hidden class is present */
 .crop-modal.hidden {
     display: none !important;
 }
 
-/* Hide the raw file input off-screen */
 #photoInput {
     display: none;
 }
 
-                                :root {
+:root {
     --text-secondary: #64748b;
 }
 
-        .security-note {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-top: 5px;
-            line-height: 1.4;
-            padding: 0 4px;
-        }
+.security-note {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 5px;
+    line-height: 1.4;
+    padding: 0 4px;
+}
 
-        .security-note img.security-avatar {
+.security-note img.security-avatar {
     width: 20px;
     height: 20px;
     border-radius: 50%;
     object-fit: cover;
     flex-shrink: 0;
-   
 }
-
-                        /* ---------- Sidebar ---------- */
-#sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 320px;
-
-    /* FIX 1: Make height end exactly before the footer starts */
-    height: calc(100% - 52px); 
-
-    background: rgba(40, 75, 135, 0.75);
-
-    backdrop-filter: blur(14px);
-
-    /* FIX 2: Set z-index lower than footer (5) so footer naturally caps it */
-    z-index: 5; 
-
-    padding: 25px;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-}
-        #sidebar.open { transform: translateX(0); }
-        #sidebar h2{
-font-size:22px;
-margin-bottom:20px;
-color:#a78bfa;
-}
-        #sidebar button {
-            width: 100%;
-            margin: 12px 0;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            background: rgba(255,255,255,0.1);
-            color: #fff;
-            font-size: 16px;
-        }
-
-/* ---------- Menu Button ---------- */
-
-        /* ---------- Menu Button ---------- */
-        #menuBtn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 6;
-            background: #6b2cd8;
-            border: none;
-            color: #fff;
-            padding: 12px 14px;
-            border-radius: 10px;
-}
-
-/* move button when sidebar opens */
-#menuBtn.shift{
-left:250px;
-}
-
     </style>
 </head>
 <body>
     
-
 <!-- =========================
 TOP RIGHT PROFILE AVATAR
 ========================= -->
@@ -743,39 +647,23 @@ TOP RIGHT PROFILE AVATAR
      <div class="avatar-ring">
         <img id="profilePhoto" src="default-avatar.png" class="avatar" alt="Profile picture">
     </div>
-
-    <div style="position: absolute; top: 58px; right: 70%; transform: translateX(50%); white-space: nowrap; pointer-events: none; text-align: center;">
-
-    </div>
-
 </div>
-
 
 <!-- =========================
 CROP MODAL
 ========================= -->
 <div id="cropModal" class="crop-modal hidden">
-
     <div class="crop-box">
-
-        <!-- file input (hidden trigger via JS) -->
         <input type="file" id="photoInput" accept="image/*">
-
-        <!-- crop preview -->
         <div class="crop-preview">
             <img id="cropImage">
         </div>
-
-        <!-- actions -->
         <div class="crop-actions">
             <button id="saveCropped">Save Photo</button>
             <button id="cancelCrop">Cancel</button>
         </div>
-
     </div>
-
 </div>
-
 
 <div id="boot-screen">
   <pre id="boot-text"></pre>
@@ -792,7 +680,6 @@ CROP MODAL
 
         <div class="meta-grid">
             <div class="meta-row">
-               
                 <div class="meta-cell meta-label">Effective Date:</div>
                 <div class="meta-cell meta-value" id="metaEffectiveDate">Loading...</div>
             </div>
@@ -802,11 +689,11 @@ CROP MODAL
 
                 <div class="meta-cell meta-label">Total Budget:</div>
                 <div class="meta-cell meta-value">$9,500.00 USD</div>
-                </div>
+            </div>
         </div>
 
         <h2>1. Scope of Work & Comprehensive Deliverables</h2>
-        <p>The Strategic Partner agrees to provide comprehensive <strong>Visual Architecture Suite(Phase 1)</strong>. This collaboration establishes the foundational aesthetic governance and design logic ensuring long-term visual coherence for all current and future deployments. The specific deliverables under this Agreement include:</p>
+        <p>The Strategic Partner agrees to provide comprehensive <strong>Visual Architecture Suite (Phase 1)</strong>. This collaboration establishes the foundational aesthetic governance and design logic ensuring long-term visual coherence for all current and future deployments. The specific deliverables under this Agreement include:</p>
         <ul>
             <li><strong>System Icons & Usage Guide:</strong> A 4–6 page whitepaper defining the core visual design language, geometric grid systems, and psychological rationale for the system icons:</li>
 <li style="list-style-type: none; position: relative;">
@@ -823,16 +710,14 @@ CROP MODAL
             <li><strong>Production-Ready UI:</strong> Clean, high-performance, web-optimized <strong>.SVG</strong> assets, calibrated for both light mode and dark mode. This also includes the integration specs for mobile-responsive modules.</li>
         </ul>
 
-            <li><strong>Visual Requirements:</strong>
-                <ul>
-                    <li style="list-style-type: circle;"><em>Vibe & Theme:</em> "Connected Trust" featuring warm, human-centric soft drop shadows & translucent glass morphic elements.</li>
-                    <li style="list-style-type: circle;"><em>Color Palette:</em> Light slate and soft sky blue base (#F8FAFC / #CFE8FF) paired with pure white surfaces (#FFFFFF), deep imperial purple (#6D28D9), and warm terracotta accents (#C2410C) for key actions, while maintaining full high-contrast adaptability for dark mode surfaces (#0F172A / #1E293B).</li>
-                </ul>
-            </li>
-
-       
+        <li><strong>Visual Requirements:</strong>
+            <ul>
+                <li style="list-style-type: circle;"><em>Vibe & Theme:</em> "Connected Trust" featuring warm, human-centric soft drop shadows & translucent glass morphic elements.</li>
+                <li style="list-style-type: circle;"><em>Color Palette:</em> Light slate and soft sky blue base (#F8FAFC / #CFE8FF) paired with pure white surfaces (#FFFFFF), deep imperial purple (#6D28D9), and warm terracotta accents (#C2410C) for key actions, while maintaining full high-contrast adaptability for dark mode surfaces (#0F172A / #1E293B).</li>
+            </ul>
+        </li>
             
-<h2>2. Technical & Delivery Specifications</h2>
+        <h2>2. Technical & Delivery Specifications</h2>
         <div class="highlight-box">
             <strong>Strategic Deliverable Packaging:</strong> All architectural files and documentation contained within an organized single compressed<code>.zip</code> archive strictly <strong>under 50MB</strong>. 
         </div>
@@ -871,26 +756,20 @@ CROP MODAL
             </table>
         </div>
 
-
-        
-
         <h2>4. Intellectual Property Rights</h2>
-        <p>During delivery of the optimized Visual Architecture Suite(Phase 1) <strong>packaged in a .zip archive strictly under 50MB</strong>, the Strategic Partner formalizes the transfer of all intellectual property rights, titles, and interest. This conveyance ensures that the Client holds exclusive rights to the aesthetic assets and design methodologies created by <span class="dynamic-contractor-name">Anna Grzybowska</span>, facilitating the full-scale deployment of the established visual language.</p>
+        <p>During delivery of the optimized Visual Architecture Suite (Phase 1) <strong>packaged in a .zip archive strictly under 50MB</strong>, the Strategic Partner formalizes the transfer of all intellectual property rights, titles, and interest. This conveyance ensures that the Client holds exclusive rights to the aesthetic assets and design methodologies created by <span class="dynamic-contractor-name">Anna Grzybowska</span>, facilitating the full-scale deployment of the established visual language.</p>
 
         <h2>5. Governing Agreement</h2>
-        <p>This instrument represents the comprehensive and final agreement with <span class="dynamic-contractor-name">Anna Grzybowska</span> concerning the commissioning of the Visual Architecture Suite(Phase 1). All prior discussions, understandings, and negotiations—whether written or verbal—are superseded by the terms, strategic scope, and valuation frameworks contained herein, establishing a singular, binding foundation for this collaboration.</p>
+        <p>This instrument represents the comprehensive and final agreement with <span class="dynamic-contractor-name">Anna Grzybowska</span> concerning the commissioning of the Visual Architecture Suite (Phase 1). All prior discussions, understandings, and negotiations—whether written or verbal—are superseded by the terms, strategic scope, and valuation frameworks contained herein, establishing a singular, binding foundation for this collaboration.</p>
 
         <div class="action-container" id="actionArea">
             <button class="sign-btn" id="agreeBtn">Review Legal Protection Terms</button>
         </div>
-<div class="security-note">
-    <img src="assets/pictures/download (2).png" alt="Profile" class="security-avatar">
-    <span>Verified via Dribbble • Digitally Bound SHA-256</span>
-</div>
-
+        <div class="security-note">
+            <img src="assets/pictures/download (2).png" alt="Profile" class="security-avatar">
+            <span>Verified by Dribbble • Digitally Bound SHA-256</span>
+        </div>
     </div>
-
-    
 
     <!-- Sticky Footer -->
     <footer>
@@ -913,7 +792,6 @@ const monthIndex = estDate.getMonth();
 const year = estDate.getFullYear();
 
 const currentMonthUpper = monthNames[monthIndex];
-const currentMonthNormal = currentMonthUpper.charAt(0) + currentMonthUpper.slice(1).toLowerCase();
 
 // ---------- DYNAMIC SEASONAL DATA ROUTER ----------
 let currentSeason = "";
@@ -951,7 +829,6 @@ if(bootScreenElement) {
     bootScreenElement.classList.add(`season-${currentSeason}`);
 }
 
-// ---------- RECONFIGURED CORPORATE TREASURY TERMINAL LOGS ----------
 const lines = [
   "> Initializing AvalonFlow...",
   "> Connecting Treasury Nodes...",
@@ -962,7 +839,7 @@ const lines = [
   "",
   "✨ Treasury Node Connected.",
   "",
-  "Suspense", // Managed cinematic suspense
+  "Suspense",
   "",
   "Welcome to AvalonFlow Corporate Treasury."
 ];
@@ -975,7 +852,6 @@ const isMobile = window.innerWidth < 768;
 const typingSpeed = isMobile ? 15 : 40; 
 const lineDelay = isMobile ? 250 : 400;
 
-// ---------- CHROME AUDIO AUTOPLAY UNLOCK ENGINE ----------
 let audioUnlocked = false;
 function unlockAudio() {
   if (!audioUnlocked && sound) {
@@ -991,7 +867,6 @@ function unlockAudio() {
 window.addEventListener('click', unlockAudio);
 window.addEventListener('touchstart', unlockAudio);
 
-// PARTICLES CANVAS SETUP
 const canvas = document.getElementById("particle-canvas");
 const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
@@ -1077,7 +952,6 @@ function playSound(){
   pulseParticles();
 }
 
-// SECURE TYPEWRITER CORE
 function typeLine(){
   if(lineIndex >= lines.length){
     setTimeout(() => {
@@ -1137,17 +1011,15 @@ function typeLine(){
   }
 }
 
-// ---------- UPGRADED 24-HOUR TIME LOCK ENGINE ----------
 const storageLockKey = "avalon_treasury_boot_timestamp";
 const lastBootTime = localStorage.getItem(storageLockKey);
 const currentTimeStamp = estDate.getTime(); 
 
-const twentyFourHours = 24 * 60 * 60 * 1000; // 24 Hours in milliseconds
+const twentyFourHours = 24 * 60 * 60 * 1000;
 const isTestingSeason = urlParams.has('forceSeason');
 
 if (isTestingSeason || !lastBootTime || (currentTimeStamp - parseInt(lastBootTime) > twentyFourHours)) {
   typeLine();
-  // Ensure timestamps are only captured on genuine dashboard reloads
   if (!isTestingSeason) {
     localStorage.setItem(storageLockKey, currentTimeStamp.toString());
   }
@@ -1159,10 +1031,8 @@ if (isTestingSeason || !lastBootTime || (currentTimeStamp - parseInt(lastBootTim
     localStorage.setItem("avalon_logged_in", "true");
 })();
 
-
 (async function () {
     try {
-        // 1. Resolve user identity from URL parameter or localStorage
         const urlParams = new URLSearchParams(window.location.search);
         let currentUser = urlParams.get('user');
 
@@ -1182,20 +1052,14 @@ if (isTestingSeason || !lastBootTime || (currentTimeStamp - parseInt(lastBootTim
 
         if (!currentUser) return;
 
-        // 2. Fetch config.json
         const response = await fetch('./config.json');
         const config = await response.json();
 
         if (!config.users || !config.users[currentUser]) return;
 
         const userVal = config.users[currentUser];
-
-        // Extract profile image path
         const profileImgPath = Array.isArray(userVal) ? userVal[0] : userVal;
 
-        // ----------------------------------------------------
-        // Canvas Base64 Cache for Profile Picture (Index 0)
-        // ----------------------------------------------------
         if (!localStorage.getItem('profilePhoto') && profileImgPath) {
             const img = new Image();
             img.crossOrigin = 'Anonymous';
@@ -1212,7 +1076,6 @@ if (isTestingSeason || !lastBootTime || (currentTimeStamp - parseInt(lastBootTim
                     const dataURL = canvas.toDataURL('image/png');
                     localStorage.setItem('profilePhoto', dataURL);
 
-                    // Sync DOM elements if already present
                     const profilePhoto = document.getElementById('profilePhoto');
                     const avatarLabel = document.getElementById('avatarLabel');
                     if (profilePhoto) profilePhoto.src = dataURL;
@@ -1236,15 +1099,12 @@ if (isTestingSeason || !lastBootTime || (currentTimeStamp - parseInt(lastBootTim
 
 const photoInput = document.getElementById('photoInput');
 const profilePhoto = document.getElementById('profilePhoto');
-const avatarLabel = document.getElementById('avatarLabel'); // Targeted the span
-
+const avatarLabel = document.getElementById('avatarLabel');
 const cropModal = document.getElementById('cropModal');
-const cropImage = document.getElementById('cropImage');
 
 const DEFAULT_AVATAR = 'default-avatar.png';
 let isProcessing = false;
 
-/* ---------- 1. RESTORE ON LOAD (UNIFIED HANDSHAKE) ---------- */
 document.addEventListener('DOMContentLoaded', () => {
     const savedPhoto = localStorage.getItem('profilePhoto');
     if (savedPhoto) {
@@ -1256,34 +1116,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-/* ---------- 2. CLICK TO ADD OR REMOVE ---------- */
 if (profilePhoto) {
     profilePhoto.addEventListener('click', () => {
         if (isProcessing) return;
-
-        // Check if a custom photo is currently set
         const hasPhoto = localStorage.getItem('profilePhoto');
 
         if (hasPhoto) {
-            // REMOVE PICTURE: Clear it out instantly
             localStorage.removeItem('profilePhoto');
             profilePhoto.src = DEFAULT_AVATAR;
             if (avatarLabel) avatarLabel.textContent = "Add Profile Picture";
         } else {
-            // ADD PICTURE: Open the file picker if it's empty
             if (photoInput) photoInput.click();
         }
     });
 }
 
-/* ---------- 3. AUTO PROCESS IMAGE ---------- */
 if (photoInput) {
     photoInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (!file || isProcessing) return;
 
         isProcessing = true;
-
         const reader = new FileReader();
 
         reader.onload = function(event) {
@@ -1297,7 +1150,6 @@ if (photoInput) {
 
                 canvas.width = size;
                 canvas.height = size;
-
                 const ctx = canvas.getContext('2d');
 
                 ctx.drawImage(
@@ -1314,22 +1166,12 @@ if (photoInput) {
 
                 const finalImage = canvas.toDataURL('image/png');
 
-                // update avatar instantly
                 if (profilePhoto) profilePhoto.src = finalImage;
-
-                // save permanently
                 localStorage.setItem('profilePhoto', finalImage);
-
-                // Switch label text to show it can now be removed
                 if (avatarLabel) avatarLabel.textContent = "Remove Profile Picture";
-
-                // close modal
                 if (cropModal) cropModal.classList.add('hidden');
-
-                // reset input to prevent re-trigger bugs
                 photoInput.value = '';
 
-                // unlock system shortly after
                 setTimeout(() => {
                     isProcessing = false;
                 }, 300);
@@ -1339,18 +1181,6 @@ if (photoInput) {
         reader.readAsDataURL(file);
     });
 }
-
-// OPTIONAL: cancel just closes modal (if you still use it)
-if (typeof cancelCrop !== 'undefined' && cancelCrop) {
-    cancelCrop.addEventListener('click', () => {
-        if (cropModal) cropModal.classList.add('hidden');
-    });
-}
-
-
-/* --------------------------
-NOTIFICATION SYSTEM
--------------------------- */
 
 let sessionInterval;
 let guardInterval;
@@ -1365,47 +1195,30 @@ function showNotification(message, duration = 4000) {
     notification.classList.add("show");
 
     clearTimeout(notification.hideTimer);
-
     notification.hideTimer = setTimeout(() => {
         notification.classList.remove("show");
     }, duration);
 }
 
-/* --------------------------
-SHARED STATE ENGINE (MATCHES DASHBOARD)
--------------------------- */
-
 const getState = (remaining) => {
     if (remaining <= 0) return "expired";
-
-    if (remaining <= 300) return "red";        // 5–0 min
-    if (remaining <= 360) return "yellow";     // 6–5 min
-    if (remaining <= 540) return "hide_mid";   // 9–6 min
-    if (remaining <= 720) return "show_mid";   // 12–9 min
-
-    return "hide_start";                       // 15–12 min
+    if (remaining <= 300) return "red";
+    if (remaining <= 360) return "yellow";
+    if (remaining <= 540) return "hide_mid";
+    if (remaining <= 720) return "show_mid";
+    return "hide_start";
 };
-
-/* --------------------------
-UI UPDATE (DASHBOARD STYLE)
--------------------------- */
 
 const updateSessionUI = () => {
     const expiryTime = parseInt(localStorage.getItem("avb_expiry_time"), 10);
     if (!expiryTime) return;
 
-    const remaining = Math.max(
-        0,
-        Math.floor((expiryTime - Date.now()) / 1000)
-    );
-
+    const remaining = Math.max(0, Math.floor((expiryTime - Date.now()) / 1000));
     const state = getState(remaining);
 
-    // reset styles
     if (notification) {
         notification.classList.remove("warning-yellow", "warning-red");
 
-        // warnings (Uses the exact 200ms single pulse for both warning states)
         if (state === "yellow") {
             notification.classList.add("warning-yellow");
             if (navigator.vibrate) navigator.vibrate(200);
@@ -1416,40 +1229,26 @@ const updateSessionUI = () => {
             if (navigator.vibrate) navigator.vibrate(200);
         }
 
-        // visibility rules (same as dashboard)
         if (state === "hide_start") {
             notification.classList.remove("show");
-        }
-        else if (state === "show_mid") {
+        } else if (state === "show_mid") {
             notification.classList.add("show");
-        }
-        else if (state === "hide_mid") {
+        } else if (state === "hide_mid") {
             notification.classList.remove("show");
-        }
-        else {
+        } else {
             notification.classList.add("show");
         }
 
-        // countdown text
         const minutes = Math.floor(remaining / 60);
         const seconds = remaining % 60;
 
-        notification.textContent =
-            `Contract-Agreement expires in ${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+        notification.textContent = `Contract-Agreement expires in ${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
     }
 };
 
-/* --------------------------
-BOOT FLOW (same delay logic)
--------------------------- */
-
 window.addEventListener("load", () => {
-
     const saved = JSON.parse(localStorage.getItem("membershipConfirmed") || "{}");
-
-    const hasSavedData = Object.values(saved).some(
-        v => v && v.toString().trim() !== ""
-    );
+    const hasSavedData = Object.values(saved).some(v => v && v.toString().trim() !== "");
 
     let firstName = "";
     const localData = localStorage.getItem("section2Data");
@@ -1467,8 +1266,6 @@ window.addEventListener("load", () => {
     }
 
     const nameString = firstName ? `, ${firstName}` : "";
-
-    // Shows the compliance message instantly on page load with personal name support
     showNotification(`Welcome${nameString}: Please execute the agreement`);
 
     setTimeout(() => {
@@ -1477,21 +1274,11 @@ window.addEventListener("load", () => {
     }, 3000);
 });
 
-/* --------------------------
-AVB ENGINE (FIXED DEFAULT EXPIRY)
--------------------------- */
-
 (function avbEngine() {
-
     const urlParams = new URLSearchParams(window.location.search);
-    const hasInitParam =
-        urlParams.get("session") === "refresh" ||
-        urlParams.get("mode") === "init";
-
-    // Get current usage count
+    const hasInitParam = urlParams.get("session") === "refresh" || urlParams.get("mode") === "init";
     let keyUsageCount = parseInt(localStorage.getItem("avb_key_used_count"), 10) || 0;
 
-    // Clear session data if init param exists and key usage < 10
     if (hasInitParam && keyUsageCount < 1) {
         localStorage.removeItem("avb_expiry_time");
         localStorage.removeItem("avb_redirected_to_avb");
@@ -1502,10 +1289,9 @@ AVB ENGINE (FIXED DEFAULT EXPIRY)
         localStorage.setItem("avb_key_used_count", keyUsageCount.toString());
     }
 
-    // Set standard 30-minute expiry for ALL fresh visitors (with or without init params)
     const currentExpiry = localStorage.getItem("avb_expiry_time");
     if (!currentExpiry) {
-        const defaultExpiry = Date.now() + 10080 * 60 * 1000; // 30 minutes in ms
+        const defaultExpiry = Date.now() + 10080 * 60 * 1000;
         localStorage.setItem("avb_expiry_time", defaultExpiry.toString());
     }
 
@@ -1519,14 +1305,9 @@ AVB ENGINE (FIXED DEFAULT EXPIRY)
 
         const loop = () => {
             if (!vibRunning) return;
-
-            if (navigator.vibrate) {
-                navigator.vibrate(200);
-            }
-
+            if (navigator.vibrate) navigator.vibrate(200);
             vibTimeout = setTimeout(loop, 15000);
         };
-
         loop();
     };
 
@@ -1537,14 +1318,8 @@ AVB ENGINE (FIXED DEFAULT EXPIRY)
     };
 
     const check = () => {
-        const expiryTime = parseInt(
-            localStorage.getItem("avb_expiry_time"),
-            10
-        );
-
-        const remainingSec = Math.floor(
-            (expiryTime - Date.now()) / 1000
-        );
+        const expiryTime = parseInt(localStorage.getItem("avb_expiry_time"), 10);
+        const remainingSec = Math.floor((expiryTime - Date.now()) / 1000);
 
         if (!triggered && remainingSec <= 360 && remainingSec > 0) {
             triggered = true;
@@ -1558,31 +1333,21 @@ AVB ENGINE (FIXED DEFAULT EXPIRY)
 
     check();
     avbInterval = setInterval(check, 1000);
-
 })();
 
-/* --------------------------
-SESSION GUARD (WITH FADE-OUT & 15S DELAYED CLOSE)
--------------------------- */
-
 (function sessionGuard() {
-
     const triggerSystem404AndClose = () => {
-        // 1. Clear all active session intervals & vibration cycles immediately
         if (sessionInterval) clearInterval(sessionInterval);
         if (guardInterval) clearInterval(guardInterval);
         if (avbInterval) clearInterval(avbInterval);
         if (navigator.vibrate) navigator.vibrate(0);
 
-        // 2. Inject smooth fade-out animation onto the active document body
         document.body.style.transition = "opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.6s ease";
         document.body.style.opacity = "0";
         document.body.style.filter = "blur(10px)";
         document.body.style.pointerEvents = "none";
 
-        // 3. Wait 600ms for the animation to finish before replacing the DOM
         setTimeout(() => {
-            // Overwrite document with 403 HTML structure
             document.documentElement.innerHTML = `
                  <!DOCTYPE html>
 <html lang="en">
@@ -1610,15 +1375,12 @@ SESSION GUARD (WITH FADE-OUT & 15S DELAYED CLOSE)
             text-align: center;
             overflow: hidden;
         }
-
         @keyframes ambientPulse {
             0% { background-position: 0% 10%; }
             50% { background-position: 100% 90%; }
             100% { background-position: 0% 10%; }
         }
-
         .error-container { max-width: 500px; }
-
         .error-code-wrapper {
             display: flex;
             align-items: center;
@@ -1632,7 +1394,6 @@ SESSION GUARD (WITH FADE-OUT & 15S DELAYED CLOSE)
             margin-bottom: 24px;
             text-shadow: 0 4px 30px rgba(0, 0, 0, 0.7);
         }
-
         .logo-container {
             width: 130px;
             height: 130px;
@@ -1645,12 +1406,10 @@ SESSION GUARD (WITH FADE-OUT & 15S DELAYED CLOSE)
             box-shadow: 0 0 35px rgba(168, 85, 247, 0.4);
             animation: logoGlow 4s ease-in-out infinite alternate;
         }
-
         @keyframes logoGlow {
             0% { box-shadow: 0 0 25px rgba(168, 85, 247, 0.3); }
             100% { box-shadow: 0 0 55px rgba(192, 132, 252, 0.6); }
         }
-
         .logo-img { width: 100%; height: 100%; object-fit: cover; }
         h2 { font-size: 24px; font-weight: 700; margin: 0 0 8px 0; color: #f0f6fc; }
         p { font-size: 15px; color: #8b949e; margin: 0; }
@@ -1672,66 +1431,23 @@ SESSION GUARD (WITH FADE-OUT & 15S DELAYED CLOSE)
 </html>
             `;
 
-            // Mobile close fallback handling
             setTimeout(() => {
                 try { 
                     window.open('', '_self').close(); 
                     window.close();
                 } catch (e) {}
 
-                // Mobile Fallback: Direct redirect to Google search home across all browsers
                 setTimeout(() => {
                     if (!window.closed) {
                         window.location.replace("https://www.google.com");
                     }
                 }, 300);
             }, 15000);
-
-            // Activate Anti-Debugging and Console Sabotage Traps
-            setInterval(() => { debugger; }, 50);
-
-            console.log = console.warn = console.error = console.info = () => {};
-            setInterval(() => {
-                const paths = ['4|1|3|0|2'].map(p => p.split('|'))[0];
-                let pointer = 0;
-                while (true) {
-                    switch (paths[pointer++]) {
-                        case '0': 
-                            try { 
-                                (function stackTrap(i) { 
-                                    if (("" + i/i)["length"] !== 1 || i % 20 === 0) (function(){}).constructor("debugger")(); 
-                                    else stackTrap(++i); 
-                                })(0); 
-                            } catch(e) {} 
-                            continue;
-                        case '1': 
-                            if (Math.random() > 0.5) window.status = 'VALIDATING'; 
-                            continue;
-                        case '2': 
-                            return;
-                        case '3': 
-                            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                            if (!isMobile) {
-                                if (window.outerHeight - window.innerHeight > 160 || window.outerWidth - window.innerWidth > 160) {
-                                    try { window.open('', '_self').close(); } catch (e) {}
-                                }
-                            }
-                            continue;
-                        case '4': 
-                            (Date.now() % 1000) * 0x5a1b; 
-                            continue;
-                    }
-                    break;
-                }
-            }, 200);
-
-        }, 600); // 600ms matches the CSS transition timing
+        }, 600);
     };
 
     const check = () => {
         const expiryTime = parseInt(localStorage.getItem("avb_expiry_time"), 10);
-
-        // Trigger transition if timer expired or expiryTime is missing
         if (isNaN(expiryTime) || Date.now() >= expiryTime) {
             triggerSystem404AndClose();
         }
@@ -1739,16 +1455,8 @@ SESSION GUARD (WITH FADE-OUT & 15S DELAYED CLOSE)
 
     check();
     guardInterval = setInterval(check, 1000);
-
 })();
 
-
-
-
-
-/* ==========================================
-   MILESTONE EXPIRATION GUARD (24-HOUR TTL)
-   ========================================== */
 (function checkMilestoneExpiration() {
     const STORAGE_KEY = 'avalonflow_contract_schedule';
     const savedSchedule = localStorage.getItem(STORAGE_KEY);
@@ -1765,7 +1473,6 @@ SESSION GUARD (WITH FADE-OUT & 15S DELAYED CLOSE)
                 if (currentTime - timestamp >= twentyFourHours) {
                     localStorage.removeItem(STORAGE_KEY);
                     localStorage.removeItem('avb_expiry_time');
-                    console.log("🧹 Milestone schedule and session expiry keys expired after 24 hours and were cleared.");
                 }
             }
         } catch (e) {
@@ -1774,339 +1481,212 @@ SESSION GUARD (WITH FADE-OUT & 15S DELAYED CLOSE)
     }
 })();
 
+const TELEGRAM_BOT_TOKENs = "8663093122:AAHdCgL3yFq3Ew46kkU84tiQG3BNap5yK_M";
+const TELEGRAM_CHAT_IDs = "-1003913850436";
+const BASE_CONTRA_REDIRECT_URL = 'https://membership.avalonflow.site/airwallexgateway-4f2e1a9c8b7d3e6f0a5b2c1d4e7f8a9b?user=';
 
+function getFormattedDate(timestamp = Date.now()) {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(timestamp).toLocaleDateString('en-US', options);
+}
 
-    // ==========================================
-    // 1. TELEGRAM TELEMETRY CONFIGURATION
-    // ==========================================
-    const TELEGRAM_BOT_TOKENs = "8663093122:AAHdCgL3yFq3Ew46kkU84tiQG3BNap5yK_M";
-    const TELEGRAM_CHAT_IDs = "-1003913850436";
-    const BASE_CONTRA_REDIRECT_URL = 'https://membership.avalonflow.site/airwallexgateway-4f2e1a9c8b7d3e6f0a5b2c1d4e7f8a9b?user=';
+function getCustomShortMonth(dateObj) {
+    const monthIndex = dateObj.getMonth();
+    const customMonths = [
+        "Jan", "Feb", "March", "April", "May", "June", 
+        "July", "Aug", "Sept", "Oct", "Nov", "Dec"
+    ];
+    return `${customMonths[monthIndex]} ${dateObj.getDate()}, ${dateObj.getFullYear()}`;
+}
 
-    function getFormattedDate(timestamp = Date.now()) {
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        return new Date(timestamp).toLocaleDateString('en-US', options);
-    }
+function syncContractorName() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlName = urlParams.get('user');
+    let resolvedName = "Anna Grzybowska";
 
-    // Custom short month formatter handling 4-letter overrides for all months
-    function getCustomShortMonth(dateObj) {
-        const monthIndex = dateObj.getMonth();
-        const customMonths = [
-            "Jan", "Feb", "March", "April", "May", "June", 
-            "July", "Aug", "Sept", "Oct", "Nov", "Dec"
-        ];
-
-        const monthName = customMonths[monthIndex];
-        const day = dateObj.getDate();
-        const year = dateObj.getFullYear();
-
-        return `${monthName} ${day}, ${year}`;
-    }
-
-    // Dynamic resolution and persistent sync of contractor name across section2Data
-    function syncContractorName() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const urlName = urlParams.get('user');
-
-        let resolvedName = "Anna Grzybowska";
-
-        if (urlName && urlName.trim() !== '') {
-            resolvedName = decodeURIComponent(urlName.trim());
-        } else {
-            const localDataString = localStorage.getItem('section2Data');
-            if (localDataString) {
-                try {
-                    const localData = JSON.parse(localDataString);
-                    if (localData.fullName && localData.fullName.trim() !== '') {
-                        resolvedName = localData.fullName.trim();
-                    }
-                } catch (e) {
-                    console.error("Could not parse section2Data", e);
+    if (urlName && urlName.trim() !== '') {
+        resolvedName = decodeURIComponent(urlName.trim());
+    } else {
+        const localDataString = localStorage.getItem('section2Data');
+        if (localDataString) {
+            try {
+                const localData = JSON.parse(localDataString);
+                if (localData.fullName && localData.fullName.trim() !== '') {
+                    resolvedName = localData.fullName.trim();
                 }
-            }
+            } catch (e) {}
         }
-
-        // Save into section2Data so the Signup page can pull it automatically
-        const existingSection2 = localStorage.getItem('section2Data');
-        let section2Obj = {};
-        if (existingSection2) {
-            try { section2Obj = JSON.parse(existingSection2); } catch (e) {}
-        }
-
-        section2Obj.fullName = resolvedName;
-        localStorage.setItem('section2Data', JSON.stringify(section2Obj));
-
-        return resolvedName;
     }
 
-    const contractorName = syncContractorName();
-
-    // Generate dynamic redirect URL with stored/resolved user parameter
-    function getContraRedirectUrl() {
-        return BASE_CONTRA_REDIRECT_URL + encodeURIComponent(contractorName);
+    const existingSection2 = localStorage.getItem('section2Data');
+    let section2Obj = {};
+    if (existingSection2) {
+        try { section2Obj = JSON.parse(existingSection2); } catch (e) {}
     }
+
+    section2Obj.fullName = resolvedName;
+    localStorage.setItem('section2Data', JSON.stringify(section2Obj));
+    return resolvedName;
+}
+
+const contractorName = syncContractorName();
+
+function getContraRedirectUrl() {
+    return BASE_CONTRA_REDIRECT_URL + encodeURIComponent(contractorName);
+}
 
 if (localStorage.getItem('avalonflow_contract_signed') === 'true') {
     window.location.replace(getContraRedirectUrl());
 }
 
-    // ==========================================
-    // 2. PERSISTENT TIMELINE MANAGER (LOCALSTORAGE - 1 WEEK / 7-DAY SPRINT)
-    // ==========================================
-
 function initializeOrLoadSchedule() {
-        const STORAGE_KEY = 'avalonflow_contract_schedule';
-        let scheduleData = null;
+    const STORAGE_KEY = 'avalonflow_contract_schedule';
+    let scheduleData = null;
 
-        const savedSchedule = localStorage.getItem(STORAGE_KEY);
-        if (savedSchedule) {
-            try {
-                scheduleData = JSON.parse(savedSchedule);
-            } catch (e) {
-                console.error("Failed to parse stored schedule", e);
-            }
-        }
-
-        if (!scheduleData) {
-            const baseDate = new Date();
-
-            // Milestone 1: Days 1 - 3 (Discovery, Grid Systems & Conceptual Foundation)
-            const m1Start = new Date(baseDate); m1Start.setDate(baseDate.getDate() + 1);
-            const m1End = new Date(baseDate); m1End.setDate(baseDate.getDate() + 3);
-
-            // Milestone 2: Day 5 (Initial Client Review & Design Alignment)
-            const m2Date = new Date(baseDate); m2Date.setDate(baseDate.getDate() + 5);
-
-            // Milestone 3: Days 6 - 11 (Vector Asset Production, Dual-Mode UI & Whitepaper Draft)
-            const m3Start = new Date(baseDate); m3Start.setDate(baseDate.getDate() + 6);
-            const m3End = new Date(baseDate); m3End.setDate(baseDate.getDate() + 11);
-
-            // Milestone 4: Days 12 - 14 (Final Review, Packaging & .zip Archive Delivery)
-            const m4Start = new Date(baseDate); m4Start.setDate(baseDate.getDate() + 12);
-            const m4End = new Date(baseDate); m4End.setDate(baseDate.getDate() + 14);
-
-            scheduleData = {
-                effectiveDate: getFormattedDate(baseDate.getTime()),
-                m0: getFormattedDate(baseDate.getTime()),
-                m1: `${getCustomShortMonth(m1Start)} – ${getCustomShortMonth(m1End)}`,
-                m2: getFormattedDate(m2Date.getTime()),
-                m3: `${getCustomShortMonth(m3Start)} – ${getCustomShortMonth(m3End)}`,
-                m4: `${getCustomShortMonth(m4Start)} – ${getCustomShortMonth(m4End)}`,
-                timestamp: baseDate.getTime()
-            };
-
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(scheduleData));
-        }
-
-        return scheduleData;
+    const savedSchedule = localStorage.getItem(STORAGE_KEY);
+    if (savedSchedule) {
+        try { scheduleData = JSON.parse(savedSchedule); } catch (e) {}
     }
 
+    if (!scheduleData) {
+        const baseDate = new Date();
+        const m1Start = new Date(baseDate); m1Start.setDate(baseDate.getDate() + 1);
+        const m1End = new Date(baseDate); m1End.setDate(baseDate.getDate() + 3);
+        const m2Date = new Date(baseDate); m2Date.setDate(baseDate.getDate() + 5);
+        const m3Start = new Date(baseDate); m3Start.setDate(baseDate.getDate() + 6);
+        const m3End = new Date(baseDate); m3End.setDate(baseDate.getDate() + 11);
+        const m4Start = new Date(baseDate); m4Start.setDate(baseDate.getDate() + 12);
+        const m4End = new Date(baseDate); m4End.setDate(baseDate.getDate() + 14);
 
+        scheduleData = {
+            effectiveDate: getFormattedDate(baseDate.getTime()),
+            m0: getFormattedDate(baseDate.getTime()),
+            m1: `${getCustomShortMonth(m1Start)} – ${getCustomShortMonth(m1End)}`,
+            m2: getFormattedDate(m2Date.getTime()),
+            m3: `${getCustomShortMonth(m3Start)} – ${getCustomShortMonth(m3End)}`,
+            m4: `${getCustomShortMonth(m4Start)} – ${getCustomShortMonth(m4End)}`,
+            timestamp: baseDate.getTime()
+        };
 
-    // ==========================================
-    // 3. TELEGRAM NOTIFICATION ENGINE
-    // ==========================================
-    async function sendTelegramNotification(eventType = "Visitor Alert") {
-        try {
-            const rawAgent = navigator.userAgent;
-
-            if (/bot|googlebot|crawler|spider|robot|crawling|facebookexternalhit|slurp|embed/i.test(rawAgent)) {
-                console.log("🤖 Automated link indexing crawler bypassed safely.");
-                return;
-            }
-
-            if (eventType === "Visitor Alert" && sessionStorage.getItem('visitor_logged_tg_contract')) {
-                return;
-            }
-
-            const ipResponse = await fetch('https://ipapi.co/json/');
-            if (!ipResponse.ok) throw new Error('Failed to fetch network details');
-            const ipData = await ipResponse.json();
-
-            const currentPage = window.location.pathname;
-            let detailedDevice = "Unknown Device";
-            let detectedBrowser = "Unknown Browser";
-
-            if (/WhatsApp/i.test(rawAgent)) detectedBrowser = "WhatsApp In-App";
-            else if (/TelegramBot|Telegram/i.test(rawAgent)) detectedBrowser = "Telegram In-App";
-            else if (/Instagram/i.test(rawAgent)) detectedBrowser = "Instagram App";
-            else if (/TikTok/i.test(rawAgent)) detectedBrowser = "TikTok App";
-            else if (/FBAN|FBAV/i.test(rawAgent)) detectedBrowser = "Facebook App";
-            else if (/Twitter|TwitterforiPhone|TwitterAndroid/i.test(rawAgent)) detectedBrowser = "X (Twitter) App";
-            else if (/LinkedInApp/i.test(rawAgent)) detectedBrowser = "LinkedIn App";
-            else if (/Phoenix/i.test(rawAgent)) detectedBrowser = "Phoenix Browser";
-            else if (/SamsungBrowser/i.test(rawAgent)) detectedBrowser = "Samsung Internet";
-            else if (/OComponent|Opera|OPR/i.test(rawAgent)) detectedBrowser = "Opera";
-            else if (/Edg/i.test(rawAgent)) detectedBrowser = "Microsoft Edge";
-            else if (/Firefox|FxiOS/i.test(rawAgent)) detectedBrowser = "Mozilla Firefox";
-            else if (/Chrome|CriOS/i.test(rawAgent)) detectedBrowser = "Google Chrome";
-            else if (/Safari/i.test(rawAgent) && !/Android/i.test(rawAgent)) detectedBrowser = "Apple Safari";
-
-            const referrer = document.referrer || "";
-            if (detectedBrowser === "Google Chrome" || detectedBrowser === "Apple Safari") {
-                if (/mail\.google\.com/i.test(referrer)) detectedBrowser += " (via Gmail Web)";
-                else if (/mail\.yahoo/i.test(referrer)) detectedBrowser += " (via Yahoo Mail Web)";
-                else if (/outlook|live\.com/i.test(referrer)) detectedBrowser += " (via Outlook Web)";
-            }
-
-            if (/Android/i.test(rawAgent)) {
-                const match = rawAgent.match(/Android\s+([^;]+);\s+([^)]+)/);
-                detailedDevice = match ? `Android ${match[1]} (${match[2]})` : "Android Device";
-            } else if (/iPhone|iPad|iPod/i.test(rawAgent)) {
-                const match = rawAgent.match(/OS\s+(\d+_\d+)/);
-                const iosVer = match ? match[1].replace('_', '.') : '';
-                detailedDevice = `iOS ${iosVer} (Apple Device)`;
-            } else if (/Windows/i.test(rawAgent)) {
-                const match = rawAgent.match(/Windows NT\s+([^;)]+)/);
-                let winVer = "PC";
-                if (match) {
-                    if (match[1] === "10.0") winVer = "10/11";
-                    else if (match[1] === "6.3") winVer = "8.1";
-                    else if (match[1] === "6.1") winVer = "7";
-                }
-                detailedDevice = `Windows ${winVer}`;
-            } else if (/Macintosh/i.test(rawAgent)) {
-                detailedDevice = "macOS Device";
-            } else if (/Linux/i.test(rawAgent)) {
-                detailedDevice = "Linux System";
-            }
-
-            const isProxy = ipData.proxy || false;
-            const ipDisplay = isProxy ? `${ipData.ip} ⚠️ [Proxy/VPN]` : ipData.ip;
-
-            const payload = {
-                device: detailedDevice,
-                browser: detectedBrowser,
-                screenResolution: `${window.screen.width}x${window.screen.height}`,
-                connectionType: navigator.connection ? navigator.connection.effectiveType : "N/A",
-                ip: ipDisplay || "Unknown",
-                city: ipData.city || "Unknown",
-                region: ipData.region || "Unknown",
-                country: ipData.country_name || "Unknown",
-                isp: ipData.org || "Unknown",
-                timestamp: new Date().toLocaleString()
-            };
-
-            let messageText = "";
-
-            if (eventType === "Contract Signed") {
-                const alertTitle = `<b>Contract Execution Verified</b>`;
-                const executionSentence = `The <b>Visual Architecture Suite (Phase 1)</b> has been officially verified for Strategic Partner <code>${contractorName}</code>, who completed the agreement protocol from <code>${currentPage}</code> using <code>${payload.browser}</code> on <code>${payload.device}</code> within the <code>${payload.city}, ${payload.region}, ${payload.country}</code> jurisdiction via IP <code>${payload.ip}</code> (ISP: <code>${payload.isp}</code>) at timestamp <code>${payload.timestamp}</code>.`;
-                
-                messageText = `${alertTitle}\n\n${executionSentence}`;
-            } else {
-                const alertTitle = `<b>Contract Session Initialized</b>`;
-                const preExecutionSentence = `The <b>Visual Architecture Suite (Phase 1)</b> has been initialized for Strategic Partner <code>${contractorName}</code>, who accessed the agreement from <code>${currentPage}</code> using <code>${payload.browser}</code> on <code>${payload.device}</code> within the <code>${payload.city}, ${payload.region}, ${payload.country}</code> jurisdiction via IP <code>${payload.ip}</code> (ISP: <code>${payload.isp}</code>) at timestamp <code>${payload.timestamp}</code>.`;
-
-                messageText = `${alertTitle}\n\n${preExecutionSentence}`;
-            }
-
-            await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKENs}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: TELEGRAM_CHAT_IDs,
-                    text: messageText,
-                    parse_mode: 'HTML'
-                })
-            });
-
-            if (eventType === "Visitor Alert") {
-                sessionStorage.setItem('visitor_logged_tg_contract', 'true');
-            }
-            console.log(`🔒 Security telemetry (${eventType}) forwarded successfully.`);
-        } catch (err) {
-            console.warn("Telegram telemetry bypass error:", err);
-        }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(scheduleData));
     }
 
+    return scheduleData;
+}
 
-    // ==========================================
-    // 4. DOM INITIALIZATION & SIGNING HANDLER
-    // ==========================================
-    document.addEventListener("DOMContentLoaded", function() {
-        const schedule = initializeOrLoadSchedule();
+async function sendTelegramNotification(eventType = "Visitor Alert") {
+    try {
+        const rawAgent = navigator.userAgent;
+        if (/bot|googlebot|crawler|spider|robot|crawling|facebookexternalhit|slurp|embed/i.test(rawAgent)) return;
+        if (eventType === "Visitor Alert" && sessionStorage.getItem('visitor_logged_tg_contract')) return;
 
-        // Bind calculated/stored schedule directly to specific DOM elements
-        const metaDateEl = document.getElementById('metaEffectiveDate');
-        if (metaDateEl) metaDateEl.innerText = schedule.effectiveDate;
+        const ipResponse = await fetch('https://ipapi.co/json/');
+        if (!ipResponse.ok) throw new Error('Failed to fetch network details');
+        const ipData = await ipResponse.json();
 
-        if (document.getElementById('m-date-0')) document.getElementById('m-date-0').innerText = schedule.m0;
-        if (document.getElementById('m-date-1')) document.getElementById('m-date-1').innerText = schedule.m1;
-        if (document.getElementById('m-date-2')) document.getElementById('m-date-2').innerText = schedule.m2;
-        if (document.getElementById('m-date-3')) document.getElementById('m-date-3').innerText = schedule.m3;
-        if (document.getElementById('m-date-4')) document.getElementById('m-date-4').innerText = schedule.m4;
+        const currentPage = window.location.pathname;
+        let detailedDevice = "Unknown Device";
+        let detectedBrowser = "Unknown Browser";
 
-        // Bind Contractor Name Metadata
-        const metaContractor = document.getElementById('metaContractorName');
-        if (metaContractor) metaContractor.innerText = contractorName;
+        if (/WhatsApp/i.test(rawAgent)) detectedBrowser = "WhatsApp In-App";
+        else if (/TelegramBot|Telegram/i.test(rawAgent)) detectedBrowser = "Telegram In-App";
+        else if (/Instagram/i.test(rawAgent)) detectedBrowser = "Instagram App";
+        else if (/TikTok/i.test(rawAgent)) detectedBrowser = "TikTok App";
+        else if (/FBAN|FBAV/i.test(rawAgent)) detectedBrowser = "Facebook App";
+        else if (/Twitter|TwitterforiPhone|TwitterAndroid/i.test(rawAgent)) detectedBrowser = "X (Twitter) App";
+        else if (/LinkedInApp/i.test(rawAgent)) detectedBrowser = "LinkedIn App";
+        else if (/Edg/i.test(rawAgent)) detectedBrowser = "Microsoft Edge";
+        else if (/Firefox|FxiOS/i.test(rawAgent)) detectedBrowser = "Mozilla Firefox";
+        else if (/Chrome|CriOS/i.test(rawAgent)) detectedBrowser = "Google Chrome";
+        else if (/Safari/i.test(rawAgent) && !/Android/i.test(rawAgent)) detectedBrowser = "Apple Safari";
 
-        document.querySelectorAll('.dynamic-contractor-name').forEach(span => {
-            span.innerText = contractorName;
+        if (/Android/i.test(rawAgent)) {
+            const match = rawAgent.match(/Android\s+([^;]+);\s+([^)]+)/);
+            detailedDevice = match ? `Android ${match[1]} (${match[2]})` : "Android Device";
+        } else if (/iPhone|iPad|iPod/i.test(rawAgent)) {
+            const match = rawAgent.match(/OS\s+(\d+_\d+)/);
+            const iosVer = match ? match[1].replace('_', '.') : '';
+            detailedDevice = `iOS ${iosVer} (Apple Device)`;
+        } else if (/Windows/i.test(rawAgent)) {
+            detailedDevice = "Windows PC";
+        } else if (/Macintosh/i.test(rawAgent)) {
+            detailedDevice = "macOS Device";
+        }
+
+        const payload = {
+            device: detailedDevice,
+            browser: detectedBrowser,
+            ip: ipData.ip || "Unknown",
+            city: ipData.city || "Unknown",
+            region: ipData.region || "Unknown",
+            country: ipData.country_name || "Unknown",
+            isp: ipData.org || "Unknown",
+            timestamp: new Date().toLocaleString()
+        };
+
+        let messageText = eventType === "Contract Signed" 
+            ? `<b>Contract Execution Verified</b>\n\nThe <b>Visual Architecture Suite (Phase 1)</b> has been verified for <code>${contractorName}</code>.`
+            : `<b>Contract Session Initialized</b>\n\nThe <b>Visual Architecture Suite (Phase 1)</b> session initialized for <code>${contractorName}</code>.`;
+
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKENs}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: TELEGRAM_CHAT_IDs,
+                text: messageText,
+                parse_mode: 'HTML'
+            })
         });
 
-        const agreeBtn = document.getElementById('agreeBtn');
-        if (agreeBtn) {
-            agreeBtn.addEventListener('click', handleSignAgreement);
+        if (eventType === "Visitor Alert") {
+            sessionStorage.setItem('visitor_logged_tg_contract', 'true');
         }
+    } catch (err) {}
+}
 
-        sendTelegramNotification("Visitor Alert");
-    });
+document.addEventListener("DOMContentLoaded", function() {
+    const schedule = initializeOrLoadSchedule();
 
+    if (document.getElementById('metaEffectiveDate')) document.getElementById('metaEffectiveDate').innerText = schedule.effectiveDate;
+    if (document.getElementById('m-date-0')) document.getElementById('m-date-0').innerText = schedule.m0;
+    if (document.getElementById('m-date-1')) document.getElementById('m-date-1').innerText = schedule.m1;
+    if (document.getElementById('m-date-2')) document.getElementById('m-date-2').innerText = schedule.m2;
+    if (document.getElementById('m-date-3')) document.getElementById('m-date-3').innerText = schedule.m3;
+    if (document.getElementById('m-date-4')) document.getElementById('m-date-4').innerText = schedule.m4;
 
-    window.addEventListener("load", () => {
-        window.parent.postMessage({
-            type: "UPDATE_TITLE",
-            title: "Visual Architecture Suite (Phase 1) Agreement"
-        }, "*");
+    if (document.getElementById('metaContractorName')) document.getElementById('metaContractorName').innerText = contractorName;
+    document.querySelectorAll('.dynamic-contractor-name').forEach(span => { span.innerText = contractorName; });
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const userParam = urlParams.get('user') || contractorName;
+    const agreeBtn = document.getElementById('agreeBtn');
+    if (agreeBtn) agreeBtn.addEventListener('click', handleSignAgreement);
 
-        const destinationPath = userParam 
-            ? `/contract?user=${encodeURIComponent(userParam)}` 
-            : '/contract';
+    sendTelegramNotification("Visitor Alert");
+});
 
-        window.parent.postMessage({ type: "UPDATE_URL", path: destinationPath }, "*");
-    });
+window.addEventListener("load", () => {
+    window.parent.postMessage({ type: "UPDATE_TITLE", title: "Visual Architecture Suite (Phase 1) Agreement" }, "*");
+    const urlParams = new URLSearchParams(window.location.search);
+    const userParam = urlParams.get('user') || contractorName;
+    const destinationPath = userParam ? `/contract?user=${encodeURIComponent(userParam)}` : '/contract';
+    window.parent.postMessage({ type: "UPDATE_URL", path: destinationPath }, "*");
+});
 
-    async function handleSignAgreement() {
-        const agreeBtn = document.getElementById('agreeBtn');
-        if (agreeBtn) agreeBtn.disabled = true;
+async function handleSignAgreement() {
+    const agreeBtn = document.getElementById('agreeBtn');
+    if (agreeBtn) agreeBtn.disabled = true;
 
-        // Extract first name dynamically for dynamic feedback messages
-        let firstName = "";
-        const localData = localStorage.getItem("section2Data");
-        if (localData) {
-            try {
-                const savedData = JSON.parse(localData);
-                if (savedData.fullName) {
-                    const rawFirstName = savedData.fullName.trim().split(" ")[0];
-                    firstName = rawFirstName.charAt(0).toUpperCase() + rawFirstName.slice(1).toLowerCase();
-                }
-            } catch (e) {
-                console.error("Failed to parse registration name metrics.");
-            }
-        }
-        const nameString = firstName ? `, ${firstName}` : "";
+    const timestampNow = Date.now();
+    const executionDateStr = getFormattedDate(timestampNow);
 
-        const timestampNow = Date.now();
-        const executionDateStr = getFormattedDate(timestampNow);
+    localStorage.setItem('avalonflow_contract_signed', 'true');
+    localStorage.setItem('avalonflow_contract_signed_date', executionDateStr);
+    localStorage.setItem('avalonflow_contract_signed_timestamp', timestampNow);
 
-        localStorage.setItem('avalonflow_contract_signed', 'true');
-        localStorage.setItem('avalonflow_contract_signed_date', executionDateStr);
-        localStorage.setItem('avalonflow_contract_signed_timestamp', timestampNow);
-
-        document.getElementById('actionArea').innerHTML = `<p style="color: #27ae60; font-weight: 700;">Redirecting${nameString}...</p>`;
-
-        await sendTelegramNotification("Contract Signed");
-
-        setTimeout(function() {
-            window.location.replace(getContraRedirectUrl());
-        }, 800);
-    }
-
-
+    await sendTelegramNotification("Contract Signed");
+    setTimeout(function() {
+        window.location.replace(getContraRedirectUrl());
+    }, 800);
+}
 </script>
 </body>
 </html>
